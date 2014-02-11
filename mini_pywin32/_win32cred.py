@@ -42,5 +42,9 @@ _CredRead = advapi.CredReadW
 _CredRead.argtypes = [c_wchar_p, DWORD, DWORD, POINTER(PCREDENTIAL)]
 _CredRead.restype = BOOL
 
+_CredDelete = advapi.CredDeleteW
+_CredDelete.argtypes = [c_wchar_p, DWORD, DWORD]
+_CredDelete.restype = BOOL
+
 _PyString_FromStringAndSize = ctypes.pythonapi.PyString_FromStringAndSize
 _PyString_FromStringAndSize.restype = py_object

@@ -1,8 +1,11 @@
 import unittest
 
+import pywintypes
 import win32cred
 
-from mini_pywin32.win32cred import CredRead, CredWrite, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC
+from mini_pywin32._winerrors import ERROR_NOT_FOUND
+from mini_pywin32.errors import Win32Error
+from mini_pywin32.win32cred import CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC
 
 class TestCred(unittest.TestCase):
     def test_write_simple(self):
@@ -56,3 +59,41 @@ class TestCred(unittest.TestCase):
         self.assertEqual(credentials["UserName"], username)
         self.assertEqual(credentials["TargetName"], target)
         self.assertEqual(credentials["Comment"], comment)
+
+    def test_read_doesnt_exists(self):
+        target = "Floupi_dont_exists@MiniPyWin"
+        with self.assertRaises(Win32Error) as e:
+            credentials = CredRead(target, CRED_TYPE_GENERIC)
+        self.assertTrue(e.exception.winerror, ERROR_NOT_FOUND)
+
+    def test_delete_simple(self):
+        service = "MiniPyWin32Cred"
+        username = "john"
+        password = "doe"
+        comment = "Created by MiniPyWin32Cred test suite"
+
+        target = "{0}@{1}".format(username, password)
+
+        r_credentials = {"Type": CRED_TYPE_GENERIC,
+                       "TargetName": target,
+                       "UserName": username,
+                       "CredentialBlob": password,
+                       "Comment": comment,
+                       "Persist": CRED_PERSIST_ENTERPRISE}
+        CredWrite(r_credentials, 0)
+
+        credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)
+        self.assertTrue(credentials is not None)
+
+        CredDelete(target, CRED_TYPE_GENERIC)
+
+        with self.assertRaises(Win32Error) as e:
+            CredRead(target, CRED_TYPE_GENERIC)
+        self.assertEqual(e.exception.winerror, ERROR_NOT_FOUND)
+
+    def test_delete_doesnt_exists(self):
+        target = "Floupi_doesnt_exists@MiniPyWin32"
+
+        with self.assertRaises(Win32Error) as e:
+            CredDelete(target, CRED_TYPE_GENERIC)
+        self.assertEqual(e.exception.winerror, ERROR_NOT_FOUND)

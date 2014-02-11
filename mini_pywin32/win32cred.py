@@ -1,9 +1,9 @@
 import ctypes
 
 from .compat import unicode_str
-from .errors import MiniPyWin32Exception
+from .errors import MiniPyWin32Exception, Win32Error
 
-from . import _win32cred
+from . import _win32cred, _winerrors
 
 __all__ = ["CredWrite", "CredRead", "CRED_TYPE_GENERIC", "CRED_PERSIST_ENTERPRISE"]
 
@@ -69,7 +69,8 @@ def CredWrite(credential, flag):
 
     res = _win32cred._CredWrite(c_pcreds, 0)
     if res != 1:
-        raise MiniPyWin32Exception("Error while writing creds")
+        last_error = ctypes.GetLastError()
+        raise Win32Error("Error while writing creds", last_error)
 
 def CredRead(TargetName, Type):
     """
@@ -87,6 +88,8 @@ def CredRead(TargetName, Type):
 
             - UserName: the retrieved username
             - CredentialBlob: the password (as an utf-16 encoded 'string')
+
+        None if the target name was not found.
     """
     if not Type == CRED_TYPE_GENERIC:
         raise MiniPyWin32Exception("Type != CRED_TYPE_GENERIC not yet supported")
@@ -98,17 +101,41 @@ def CredRead(TargetName, Type):
 
     res = _win32cred._CredRead(c_target, c_type, c_flag, ctypes.byref(c_pcreds))
     if res != 1:
-        raise MiniPyWin32Exception("Error while reading creds")
+        last_error = ctypes.GetLastError()
+        raise Win32Error("Error while reading creds", last_error)
+    else:
+        try:
+            c_creds = c_pcreds.contents
+            res = {}
+            res["UserName"] = c_creds.UserName
+            blob = _win32cred._PyString_FromStringAndSize(c_creds.CredentialBlob,
+                    c_creds.CredentialBlobSize)
+            res["CredentialBlob"] = blob
+            res["Comment"] = c_creds.Comment
+            res["TargetName"] = c_creds.TargetName
+            return res
+        finally:
+            _win32cred.advapi.CredFree(c_pcreds)
 
-    try:
-        c_creds = c_pcreds.contents
-        res = {}
-        res["UserName"] = c_creds.UserName
-        blob = _win32cred._PyString_FromStringAndSize(c_creds.CredentialBlob,
-                c_creds.CredentialBlobSize)
-        res["CredentialBlob"] = blob
-        res["Comment"] = c_creds.Comment
-        res["TargetName"] = c_creds.TargetName
-        return res
-    finally:
-        _win32cred.advapi.CredFree(c_pcreds)
+def CredDelete(TargetName, Type):
+    """
+    Remove the given target name from the stored credentials.
+
+    Mimic pywin32 win32cred.CreadDelete.
+
+    Parameters
+    ----------
+    TargetName: str-like
+        The target name to fetch from the keyring.
+    """
+    if not Type == CRED_TYPE_GENERIC:
+        raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
+
+    c_target = ctypes.c_wchar_p(TargetName)
+    c_type = Type
+
+    res = _win32cred._CredDelete(c_target, c_type, 0)
+    if res != 1:
+        last_error = ctypes.GetLastError()
+        raise Win32Error("Error while deleting credentials",
+                         last_error)
