@@ -91,12 +91,12 @@ def CredRead(TargetName, Type):
     if not Type == CRED_TYPE_GENERIC:
         raise MiniPyWin32Exception("Type != CRED_TYPE_GENERIC not yet supported")
 
-    c_target = c_wchar_p(TargetName)
+    c_target = ctypes.c_wchar_p(TargetName)
     c_type = Type
     c_flag = 0
     c_pcreds = _win32cred.PCREDENTIAL()
 
-    res = _win32cred._CredRead(c_target, c_type, c_flag, byref(c_pcreds))
+    res = _win32cred._CredRead(c_target, c_type, c_flag, ctypes.byref(c_pcreds))
     if res != 1:
         raise MiniPyWin32Exception("Error while reading creds")
 
@@ -104,9 +104,11 @@ def CredRead(TargetName, Type):
         c_creds = c_pcreds.contents
         res = {}
         res["UserName"] = c_creds.UserName
-        blob = ctypes.pythonapi.PyString_FromStringAndSize(c_creds.CredentialBlob,
+        blob = _win32cred._PyString_FromStringAndSize(c_creds.CredentialBlob,
                 c_creds.CredentialBlobSize)
         res["CredentialBlob"] = blob
+        res["Comment"] = c_creds.Comment
+        res["TargetName"] = c_creds.TargetName
         return res
     finally:
         _win32cred.advapi.CredFree(c_pcreds)

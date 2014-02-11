@@ -41,3 +41,6 @@ _CredWrite.restype = BOOL
 _CredRead = advapi.CredReadW
 _CredRead.argtypes = [c_wchar_p, DWORD, DWORD, POINTER(PCREDENTIAL)]
 _CredRead.restype = BOOL
+
+_PyString_FromStringAndSize = ctypes.pythonapi.PyString_FromStringAndSize
+_PyString_FromStringAndSize.restype = py_object
