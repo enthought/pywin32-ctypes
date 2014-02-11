@@ -86,7 +86,7 @@ def CredRead(TargetName, Type):
         A dictionary containing the following:
 
             - UserName: the retrieved username
-            - CredentialBlob: the 'blob'
+            - CredentialBlob: the password (as an utf-16 encoded 'string')
     """
     if not Type == CRED_TYPE_GENERIC:
         raise MiniPyWin32Exception("Type != CRED_TYPE_GENERIC not yet supported")
