@@ -5,7 +5,8 @@ from ctypes.wintypes import (
     BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, WCHAR, WORD, HRSRC,
     HGLOBAL, LPVOID)
 
-from .util import check_null, check_zero, function_factory, LONG_PTR
+from ._common import LONG_PTR
+from ._util import check_null, check_zero, function_factory
 
 kernel32 = ctypes.windll.kernel32
 
