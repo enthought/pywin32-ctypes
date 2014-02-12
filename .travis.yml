@@ -12,4 +12,4 @@ install:
   - wine msiexec /i python-2.7.6.msi
 
 script:
-  - echo "ok"
+  - echo "Ok"
