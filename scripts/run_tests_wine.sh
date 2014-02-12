@@ -1,6 +1,8 @@
 #! /bin/sh
 set -e
 
+export DISPLAY=:99.0
+
 PYTHON="c:/Python27/python.exe"
 COVERAGE="c:/Python27/Scripts/coverage.exe"
 

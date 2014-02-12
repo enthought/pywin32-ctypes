@@ -14,5 +14,4 @@ install:
   - sh scripts/setup_tests_wine.sh
 
 script:
-  - echo "Ok"
-    #  - sh scripts/run_tests_wine.sh
+  - sh scripts/run_tests_wine.sh
