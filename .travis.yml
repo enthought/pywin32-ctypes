@@ -3,13 +3,15 @@ language: python
 python:
   - "2.7"
 
-#before_install:
-#  - sudo apt-get update
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
+  - sudo apt-get update
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 
-#install:
-#  - sudo apt-get install wine
-#  - wget http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
-#  - wine msiexec /i python-2.7.6.msi
+install:
+  - sudo apt-get install wine
+  - sh scripts/setup_tests_wine.sh
 
 script:
-  - echo "Ok"
+  - sh scripts/run_tests_wine.sh
