@@ -14,7 +14,7 @@ def LoadLibraryEx(FileName, handle, flags):
 def EnumResourceTypes(hModule):
     resource_types = []
 
-    def callback(hModule, typeid, lParam):
+    def callback(hModule, typeid, param):
         resource_types.append(typeid)
         return True
 
@@ -23,26 +23,27 @@ def EnumResourceTypes(hModule):
     return resource_types
 
 
-def EnumResourceNames(hModule, Type):
+def EnumResourceNames(hModule, type_):
     resource_names = []
 
-    def callback(hModule, type_id, type_name, lParam):
+    def callback(hModule, type_, type_name, param):
         resource_names.append(type_name)
         return True
 
     _win32api._EnumResourceNames(
-        hModule, Type, _win32api.ENUMRESNAMEPROC(callback), 0)
+        hModule, type_, _win32api.ENUMRESNAMEPROC(callback), 0)
     return resource_names
 
 
-def EnumResourceLanguages(hModule, Type, Name):
+def EnumResourceLanguages(hModule, type_, name):
     resource_languages = []
 
-    def callback(hModule, type_name, res_name, language_id, lParam):
+    def callback(hModule, type_name, res_name, language_id, param):
         resource_languages.append(language_id)
         return True
 
-    _win32api._EnumResourceLanguages(hModule, Type, Name, callback, None)
+    _win32api._EnumResourceLanguages(
+        hModule, type_, name, _win32api.ENUMRESLANGPROC(callback), 0)
     return resource_languages
 
 
