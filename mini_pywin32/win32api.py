@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
-from ctypes.wintypes import WORD
-
+from ctypes.wintypes import HMODULE, WORD
 
 from . import _win32api, _win32cred
 
@@ -77,5 +76,4 @@ def LoadResource(hModule, type_, name, language):
 
 
 def FreeLibrary(hModule):
-    c_hModule = _win32api.HMODULE(hModule)
-    return _win32api._FreeLibrary(c_hModule)
+    return _win32api._FreeLibrary(HMODULE(hModule))

@@ -19,13 +19,18 @@ class TestWin32API(unittest.TestCase):
         mini = self._load_library(mini_pywin32.win32api)
         self.assertEqual(mini, self.handle)
 
+        with self.assertRaises(WindowsError):
+            mini_pywin32.win32api.LoadLibraryEx('ttt.dll', 0, 0x2)
+
     def test_free_library(self):
         self.handle = self._load_library(win32api)
         self.assertIsNone(self._free_library(win32api, self.handle))
-        # This should fail since the library handle is already free.
-        # FIXME: we should probably raise a WindowsError.
-        self.assertEqual(
-            self._free_library(mini_pywin32.win32api, self.handle), 1)
+        self.assertNotEqual(
+            self._free_library(mini_pywin32.win32api, self.handle),
+            0)
+
+        with self.assertRaises(WindowsError):
+            self._free_library(mini_pywin32.win32api, -3)
 
     def test_enum_resource_types(self):
         self.handle = self._load_library(win32api)
@@ -64,6 +69,7 @@ class TestWin32API(unittest.TestCase):
                         resource_type, resource_name,
                         resource_language)
                     self.assertEqual(mini, original)
+
 
     def _load_library(self, module):
         # backward shim for win32api module which does not export
