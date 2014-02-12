@@ -2,18 +2,22 @@ from __future__ import absolute_import
 
 import ctypes
 from ctypes.wintypes import (
-    BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, LPARAM, WCHAR, WORD,
-    HRSRC, HGLOBAL, LPVOID)
+    BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, WCHAR, WORD, HRSRC,
+    HGLOBAL, LPVOID)
 
 from .util import check_null, check_zero, function_factory, LONG_PTR
 
 kernel32 = ctypes.windll.kernel32
 
+ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LONG_PTR)
+ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LONG, LONG_PTR)
+ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
+    BOOL, HMODULE, WCHAR, WCHAR, WORD, LONG_PTR)
 
 _LoadLibraryEx = function_factory(
-        kernel32.LoadLibraryExW,
-        [LPCWSTR, HANDLE, DWORD],
-        HMODULE, check_null)
+    kernel32.LoadLibraryExW,
+    [LPCWSTR, HANDLE, DWORD],
+    HMODULE, check_null)
 
 _FreeLibrary = function_factory(
     kernel32.FreeLibrary,
@@ -21,22 +25,18 @@ _FreeLibrary = function_factory(
     BOOL,
     check_zero)
 
-ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LPARAM)
 _EnumResourceTypes = function_factory(
     kernel32.EnumResourceTypesW,
     [HMODULE, ENUMRESTYPEPROC, LONG_PTR],
     BOOL,
     check_zero)
 
-ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LONG, LPARAM)
 _EnumResourceNames = function_factory(
     kernel32.EnumResourceNamesW,
     [HMODULE, DWORD, ENUMRESNAMEPROC, LONG_PTR],
     BOOL,
     check_zero)
 
-ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
-    BOOL, HMODULE, WCHAR, WCHAR, WORD, LPARAM)
 _EnumResourceLanguages = function_factory(
     kernel32.EnumResourceLanguagesW,
     [HMODULE, LPCWSTR, LPCWSTR, ENUMRESLANGPROC, LONG_PTR],
