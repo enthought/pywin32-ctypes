@@ -11,7 +11,7 @@ before_install:
 install:
   - sudo apt-get install wine
   - wget http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
-  - DISPLAY=:99.0 wine msiexec /i python-2.7.6.msi
+  - DISPLAY=:99.0 wine msiexec /i python-2.7.6.msi /qn
 
 script:
   - echo "Ok"
