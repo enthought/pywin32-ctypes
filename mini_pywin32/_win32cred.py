@@ -16,19 +16,19 @@ def _encode_password(password):
     return unicode_str(password).encode("utf-16")
 
 class CREDENTIAL(Structure):
-    _fields_ = [("Flags", DWORD),
-                ("Type", DWORD),
-                ("TargetName", c_wchar_p),
-                ("Comment", c_wchar_p),
-                ("LastWritten", FILETIME),
-                ("CredentialBlobSize", DWORD),
-                ("CredentialBlob", LPBYTE),
-                ("Persist", DWORD),
-                ("_DO_NOT_USE_AttributeCount", DWORD),
-                ("__DO_NOT_USE_Attribute", c_void_p),
-                ("TargetAlias", c_wchar_p),
-                ("UserName", c_wchar_p),
-               ]
+    _fields_ = [
+        ("Flags", DWORD),
+        ("Type", DWORD),
+        ("TargetName", c_wchar_p),
+        ("Comment", c_wchar_p),
+        ("LastWritten", FILETIME),
+        ("CredentialBlobSize", DWORD),
+        ("CredentialBlob", LPBYTE),
+        ("Persist", DWORD),
+        ("_DO_NOT_USE_AttributeCount", DWORD),
+        ("__DO_NOT_USE_Attribute", c_void_p),
+        ("TargetAlias", c_wchar_p),
+        ("UserName", c_wchar_p)]
 
 PCREDENTIAL = POINTER(CREDENTIAL)
 
