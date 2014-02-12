@@ -5,12 +5,13 @@ keyring.
 from __future__ import absolute_import
 
 import ctypes
+from ctypes import POINTER, Structure
+from ctypes.wintypes import (
+    BOOL, DWORD, FILETIME, c_void_p, c_wchar_p, LPCWSTR)
 
-from ctypes import POINTER, Structure, byref, pointer
-from ctypes.wintypes import (BOOL, BYTE, DWORD, FILETIME, c_char_p, c_void_p,
-    c_wchar_p, c_ssize_t, create_string_buffer, pythonapi, py_object)
+from ._common import LPBYTE
+from ._util import function_factory, check_zero
 
-LPBYTE = POINTER(BYTE)
 
 def _encode_password(password):
     return unicode_str(password).encode("utf-16")
