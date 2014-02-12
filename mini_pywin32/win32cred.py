@@ -1,7 +1,7 @@
 import ctypes
 
 from .compat import unicode_str
-from .errors import MiniPyWin32Exception, Win32Error
+from .pywintypes import error
 
 from . import _win32cred, _winerrors
 
@@ -70,7 +70,7 @@ def CredWrite(credential, flag):
     res = _win32cred._CredWrite(c_pcreds, 0)
     if res != 1:
         last_error = ctypes.GetLastError()
-        raise Win32Error("Error while writing creds", last_error)
+        raise error(last_error)
 
 def CredRead(TargetName, Type):
     """
@@ -92,7 +92,7 @@ def CredRead(TargetName, Type):
         None if the target name was not found.
     """
     if not Type == CRED_TYPE_GENERIC:
-        raise MiniPyWin32Exception("Type != CRED_TYPE_GENERIC not yet supported")
+        raise ValueError("Type != CRED_TYPE_GENERIC not yet supported")
 
     c_target = ctypes.c_wchar_p(TargetName)
     c_type = Type
@@ -102,7 +102,7 @@ def CredRead(TargetName, Type):
     res = _win32cred._CredRead(c_target, c_type, c_flag, ctypes.byref(c_pcreds))
     if res != 1:
         last_error = ctypes.GetLastError()
-        raise Win32Error("Error while reading creds", last_error)
+        raise error(last_error)
     else:
         try:
             c_creds = c_pcreds.contents
@@ -137,5 +137,4 @@ def CredDelete(TargetName, Type):
     res = _win32cred._CredDelete(c_target, c_type, 0)
     if res != 1:
         last_error = ctypes.GetLastError()
-        raise Win32Error("Error while deleting credentials",
-                         last_error)
+        raise error(last_error)
