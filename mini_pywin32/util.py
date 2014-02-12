@@ -7,10 +7,12 @@ elif ctypes.sizeof(ctypes.c_longlong) == ctypes.sizeof(ctypes.c_void_p):
     LONG_PTR = ctypes.c_longlong
 
 
-def function_factory(function, argument_types, return_type, error_checking):
+def function_factory(
+        function, argument_types, return_type=None, error_checking=None):
     function.argtypes = argument_types
     function.restype = return_type
-    function.errcheck = error_checking
+    if error_checking is not None:
+        function.errcheck = error_checking
     return function
 
 def check_null(result, func, arguments, *args):

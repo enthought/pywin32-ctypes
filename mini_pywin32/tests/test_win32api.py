@@ -26,8 +26,7 @@ class TestWin32API(unittest.TestCase):
         self.handle = self._load_library(win32api)
         self.assertIsNone(self._free_library(win32api, self.handle))
         self.assertNotEqual(
-            self._free_library(mini_pywin32.win32api, self.handle),
-            0)
+            self._free_library(mini_pywin32.win32api, self.handle), 0)
 
         with self.assertRaises(WindowsError):
             self._free_library(mini_pywin32.win32api, -3)
@@ -37,6 +36,9 @@ class TestWin32API(unittest.TestCase):
         original = self._enum_resource_types(win32api, self.handle)
         mini = self._enum_resource_types(mini_pywin32.win32api, self.handle)
         self.assertEqual(mini, original)
+
+        with self.assertRaises(WindowsError):
+            mini_pywin32.win32api.EnumResourceTypes(-3)
 
     def test_enum_resource_names(self):
         self.handle = self._load_library(win32api)
@@ -48,6 +50,10 @@ class TestWin32API(unittest.TestCase):
             mini = self._enum_resource_names(
                 mini_pywin32.win32api, self.handle, resource_type)
             self.assertEqual(mini, original)
+
+        with self.assertRaises(WindowsError):
+            mini_pywin32.win32api.EnumResourceNames(2, 3)
+
 
     def test_enum_resource_languages(self):
         handle = self._load_library(win32api)
@@ -70,6 +76,9 @@ class TestWin32API(unittest.TestCase):
                         resource_language)
                     self.assertEqual(mini, original)
 
+        with self.assertRaises(WindowsError):
+            mini_pywin32.win32api.LoadResource(
+                handle, resource_type, resource_name, 3)
 
     def _load_library(self, module):
         # backward shim for win32api module which does not export
