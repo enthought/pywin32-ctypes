@@ -1,0 +1,15 @@
+language: python
+
+python:
+  - "2.7"
+
+before_install:
+  - sudo apt-get update
+
+install:
+  - sudo apt-get install wine
+  - wget http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi
+  - wine msiexec /i python-2.7.6.msi
+
+script:
+  - echo "ok"
