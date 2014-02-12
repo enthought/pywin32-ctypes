@@ -1,11 +1,12 @@
 import ctypes
 
 from .compat import unicode_str
-from .pywintypes import error
 
-from . import _win32cred, _winerrors
+from ._common import _PyString_FromStringAndSize
+from . import _win32cred
 
-__all__ = ["CredWrite", "CredRead", "CRED_TYPE_GENERIC", "CRED_PERSIST_ENTERPRISE"]
+__all__ = [
+    "CredWrite", "CredRead", "CRED_TYPE_GENERIC", "CRED_PERSIST_ENTERPRISE"]
 
 CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
@@ -36,41 +37,32 @@ def CredWrite(credential, flag):
               binary stream - this function takes care of the encoding).
             - Comment: a string
     """
-    supported_keys = ("Type", "TargetName", "CredentialBlob", "Persist",
-                      "UserName", "Comment")
 
-    for k in credential:
-        if not k in supported_keys:
-            raise ValueError("Unsupported key: {0}".format(k))
+    unsupported = set(credential.keys()) - _win32cred.SUPPORTED_CREDKEYS
+    if len(unsupported):
+        raise ValueError("Unsupported keys: {0}".format(unsupported))
     if flag != 0:
         raise ValueError("flag != 0 not yet supported")
 
     c_creds = _win32cred.CREDENTIAL()
     c_pcreds = ctypes.pointer(c_creds)
 
-    ctypes.memset(c_pcreds, 0, ctypes.sizeof(c_creds))
+    ctypes.memset(c_pcreds, flag, ctypes.sizeof(c_creds))
 
-    if "Type" in credential:
-        c_creds.Type = credential["Type"]
-    if "TargetName" in credential:
-        c_creds.TargetName = credential["TargetName"]
-    if "Persist" in credential:
-        c_creds.Persist = credential["Persist"]
-    if "UserName" in credential:
-        c_creds.UserName = credential["UserName"]
-    if "Comment" in credential:
-        c_creds.Comment = credential["Comment"]
-    if "CredentialBlob" in credential:
-        blob = _encode_password(credential["CredentialBlob"])
-        blob_data = ctypes.create_string_buffer(blob)
-        # FIXME: I don't know what I am doing here...
-        c_creds.CredentialBlobSize = len(blob)
-        c_creds.CredentialBlob = ctypes.cast(blob_data, _win32cred.LPBYTE)
+    for key in _win32cred.SUPPORTED_CREDKEYS:
+        if key in credential:
+            if key != 'CredentialBlob':
+                setattr(c_creds, key, credential[key])
+            else:
+                blob = _encode_password(credential['CredentialBlob'])
+                blob_data = ctypes.create_string_buffer(blob)
+                # FIXME: I don't know what I am doing here...
+                c_creds.CredentialBlobSize = len(blob)
+                c_creds.CredentialBlob = ctypes.cast(
+                    blob_data, _win32cred.LPBYTE)
 
-    res = _win32cred._CredWrite(c_pcreds, 0)
-    if res != 1:
-        last_error = ctypes.GetLastError()
-        raise error(last_error)
+    _win32cred._CredWrite(c_pcreds, 0)
+
 
 def CredRead(TargetName, Type):
     """
@@ -94,28 +86,24 @@ def CredRead(TargetName, Type):
     if not Type == CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported")
 
-    c_target = ctypes.c_wchar_p(TargetName)
-    c_type = Type
-    c_flag = 0
+    flag = 0
     c_pcreds = _win32cred.PCREDENTIAL()
 
-    res = _win32cred._CredRead(c_target, c_type, c_flag, ctypes.byref(c_pcreds))
-    if res != 1:
-        last_error = ctypes.GetLastError()
-        raise error(last_error)
-    else:
-        try:
-            c_creds = c_pcreds.contents
-            res = {}
-            res["UserName"] = c_creds.UserName
-            blob = _win32cred._PyString_FromStringAndSize(c_creds.CredentialBlob,
-                    c_creds.CredentialBlobSize)
-            res["CredentialBlob"] = blob
-            res["Comment"] = c_creds.Comment
-            res["TargetName"] = c_creds.TargetName
-            return res
-        finally:
-            _win32cred.advapi.CredFree(c_pcreds)
+    _win32cred._CredRead(TargetName, Type, flag , ctypes.byref(c_pcreds))
+    try:
+        c_creds = c_pcreds.contents
+        credential = {}
+        for key in _win32cred.SUPPORTED_CREDKEYS:
+            if key != 'CredentialBlob':
+                credential[key] = getattr(c_creds, key)
+            else:
+                blob = _PyString_FromStringAndSize(
+                    c_creds.CredentialBlob, c_creds.CredentialBlobSize)
+                credential['CredentialBlob'] = blob
+        return credential
+    finally:
+        _win32cred.advapi.CredFree(c_pcreds)
+
 
 def CredDelete(TargetName, Type):
     """
@@ -130,11 +118,4 @@ def CredDelete(TargetName, Type):
     """
     if not Type == CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
-
-    c_target = ctypes.c_wchar_p(TargetName)
-    c_type = Type
-
-    res = _win32cred._CredDelete(c_target, c_type, 0)
-    if res != 1:
-        last_error = ctypes.GetLastError()
-        raise error(last_error)
+    _win32cred._CredDelete(TargetName, Type, 0)
