@@ -5,6 +5,8 @@ python:
 
 before_install:
   - sudo apt-get update
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 
 install:
   - sudo apt-get install wine
