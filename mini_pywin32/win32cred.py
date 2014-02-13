@@ -1,17 +1,15 @@
-import ctypes
-
-from ._common import _PyString_FromStringAndSize
-from . import _win32cred
-
 __all__ = [
     "CredWrite", "CredRead", "CRED_TYPE_GENERIC", "CRED_PERSIST_ENTERPRISE"]
 
+import ctypes
+
+from ._common import _PyString_FromStringAndSize, _GetACP
+from . import _win32cred
+
+
+
 CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
-
-
-def _encode_password(password):
-    return unicode(password)
 
 
 def CredWrite(credential, flag):
@@ -54,10 +52,12 @@ def CredWrite(credential, flag):
             if key != 'CredentialBlob':
                 setattr(c_creds, key, credential[key])
             else:
-                blob = _encode_password(credential['CredentialBlob'])
-                blob_data = ctypes.create_string_buffer(blob)
-                # FIXME: I don't know what I am doing here...
-                c_creds.CredentialBlobSize = len(blob)
+                blob = _make_blob(credential['CredentialBlob'])
+                blob_data = ctypes.create_unicode_buffer(blob)
+                # create_unicode_buffer adds a NULL at the end of the string
+                # we do not want that.
+                c_creds.CredentialBlobSize = \
+                    ctypes.sizeof(blob_data) - ctypes.sizeof(ctypes.c_wchar)
                 c_creds.CredentialBlob = ctypes.cast(
                     blob_data, _win32cred.LPBYTE)
 
@@ -119,3 +119,15 @@ def CredDelete(TargetName, Type):
     if not Type == CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
     _win32cred._CredDelete(TargetName, Type, 0)
+
+
+def _make_blob(password):
+    """ Convert the input string password into a unicode blob as required for
+    Credentials.
+
+    """
+    if isinstance(password, unicode):
+        return password
+    else:
+        code_page = _GetACP()
+        return unicode(password, encoding=str(code_page), errors='strict')
