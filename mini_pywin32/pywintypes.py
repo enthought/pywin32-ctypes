@@ -1,7 +1,4 @@
-class error(WindowsError):
-    """ A WindowsError exception compatible with pywin32.
-
-    """
+class error(Exception):
     def __init__(self, *args, **kw):
         nargs = len(args)
         if nargs > 0:
@@ -16,3 +13,4 @@ class error(WindowsError):
             self.strerror = args[2]
         else:
             self.strerror = None
+        Exception.__init__(self, *args, **kw)

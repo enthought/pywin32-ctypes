@@ -3,6 +3,7 @@ import unittest
 
 import mini_pywin32.win32api
 import win32api
+from mini_pywin32.pywintypes import error
 
 
 class TestWin32API(unittest.TestCase):
@@ -19,7 +20,7 @@ class TestWin32API(unittest.TestCase):
         mini = self._load_library(mini_pywin32.win32api)
         self.assertEqual(mini, self.handle)
 
-        with self.assertRaises(WindowsError):
+        with self.assertRaises(error):
             mini_pywin32.win32api.LoadLibraryEx('ttt.dll', 0, 0x2)
 
     def test_free_library(self):
@@ -28,7 +29,7 @@ class TestWin32API(unittest.TestCase):
         self.assertNotEqual(
             self._free_library(mini_pywin32.win32api, self.handle), 0)
 
-        with self.assertRaises(WindowsError):
+        with self.assertRaises(error):
             self._free_library(mini_pywin32.win32api, -3)
 
     def test_enum_resource_types(self):
@@ -37,7 +38,7 @@ class TestWin32API(unittest.TestCase):
         mini = self._enum_resource_types(mini_pywin32.win32api, self.handle)
         self.assertEqual(mini, original)
 
-        with self.assertRaises(WindowsError):
+        with self.assertRaises(error):
             mini_pywin32.win32api.EnumResourceTypes(-3)
 
     def test_enum_resource_names(self):
@@ -51,7 +52,7 @@ class TestWin32API(unittest.TestCase):
                 mini_pywin32.win32api, self.handle, resource_type)
             self.assertEqual(mini, original)
 
-        with self.assertRaises(WindowsError):
+        with self.assertRaises(error):
             mini_pywin32.win32api.EnumResourceNames(2, 3)
 
     def test_enum_resource_languages(self):
@@ -69,7 +70,7 @@ class TestWin32API(unittest.TestCase):
                     resource_name)
                 self.assertEqual(mini, original)
 
-        with self.assertRaises(WindowsError):
+        with self.assertRaises(error):
             mini_pywin32.win32api.EnumResourceLanguages(
                 handle, resource_type, 2235)
 
@@ -95,7 +96,7 @@ class TestWin32API(unittest.TestCase):
                         resource_language)
                     self.assertEqual(mini, original)
 
-        with self.assertRaises(WindowsError):
+        with self.assertRaises(error):
             mini_pywin32.win32api.LoadResource(
                 handle, resource_type, resource_name, 3)
 

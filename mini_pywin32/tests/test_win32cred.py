@@ -5,6 +5,7 @@ import unittest
 import win32cred
 
 from mini_pywin32._winerrors import ERROR_NOT_FOUND
+from mini_pywin32.pywintypes import error
 from mini_pywin32.win32cred import (
     CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE,
     CRED_TYPE_GENERIC)
@@ -66,7 +67,7 @@ class TestCred(unittest.TestCase):
 
     def test_read_doesnt_exists(self):
         target = "Floupi_dont_exists@MiniPyWin"
-        with self.assertRaises(WindowsError) as ctx:
+        with self.assertRaises(error) as ctx:
             CredRead(target, CRED_TYPE_GENERIC)
         self.assertTrue(ctx.exception.winerror, ERROR_NOT_FOUND)
 
@@ -90,13 +91,13 @@ class TestCred(unittest.TestCase):
 
         CredDelete(target, CRED_TYPE_GENERIC)
 
-        with self.assertRaises(WindowsError) as ctx:
+        with self.assertRaises(error) as ctx:
             CredRead(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
 
     def test_delete_doesnt_exists(self):
         target = "Floupi_doesnt_exists@MiniPyWin32"
 
-        with self.assertRaises(WindowsError) as ctx:
+        with self.assertRaises(error) as ctx:
             CredDelete(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
