@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = pikos
+source = mini_pywin32
 omit = mini_pywin32/tests/*
 
 [report]
