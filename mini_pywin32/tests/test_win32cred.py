@@ -46,12 +46,13 @@ class TestCred(unittest.TestCase):
 
         target = "{0}@{1}".format(username, password)
 
-        r_credentials = {"Type": CRED_TYPE_GENERIC,
-                       "TargetName": target,
-                       "UserName": username,
-                       "CredentialBlob": password,
-                       "Comment": comment,
-                       "Persist": CRED_PERSIST_ENTERPRISE}
+        r_credentials = {
+            "Type": CRED_TYPE_GENERIC,
+            "TargetName": target,
+            "UserName": username,
+            "CredentialBlob": password,
+            "Comment": comment,
+            "Persist": CRED_PERSIST_ENTERPRISE}
         win32cred.CredWrite(r_credentials, 0)
 
         credentials = CredRead(target, CRED_TYPE_GENERIC)
@@ -78,12 +79,13 @@ class TestCred(unittest.TestCase):
 
         target = "{0}@{1}".format(username, password)
 
-        r_credentials = {"Type": CRED_TYPE_GENERIC,
-                       "TargetName": target,
-                       "UserName": username,
-                       "CredentialBlob": password,
-                       "Comment": comment,
-                       "Persist": CRED_PERSIST_ENTERPRISE}
+        r_credentials = {
+            "Type": CRED_TYPE_GENERIC,
+            "TargetName": target,
+            "UserName": username,
+            "CredentialBlob": password,
+            "Comment": comment,
+            "Persist": CRED_PERSIST_ENTERPRISE}
         CredWrite(r_credentials, 0)
 
         credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)

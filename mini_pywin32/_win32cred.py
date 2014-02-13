@@ -12,6 +12,7 @@ from ctypes.wintypes import (
 from ._common import LPBYTE
 from ._util import function_factory, check_zero
 
+
 class CREDENTIAL(Structure):
     _fields_ = [
         ("Flags", DWORD),
@@ -50,4 +51,3 @@ _CredDelete = function_factory(
     [LPCWSTR, DWORD, DWORD],
     BOOL,
     check_zero)
-

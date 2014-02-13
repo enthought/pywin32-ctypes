@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 
 import ctypes
-from ctypes import pythonapi, POINTER, c_void_p, py_object
+from ctypes import pythonapi, POINTER, c_void_p
 from ctypes.wintypes import BYTE, UINT
 
 from ._util import function_factory

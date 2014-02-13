@@ -6,8 +6,6 @@ import ctypes
 from ._common import _PyString_FromStringAndSize, _GetACP
 from . import _win32cred
 
-
-
 CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
 
