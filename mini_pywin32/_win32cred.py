@@ -12,11 +12,6 @@ from ctypes.wintypes import (
 from ._common import LPBYTE
 from ._util import function_factory, check_zero
 
-
-def _encode_password(password):
-    return unicode(password)
-
-
 class CREDENTIAL(Structure):
     _fields_ = [
         ("Flags", DWORD),
@@ -49,10 +44,6 @@ _CredRead = function_factory(
     [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
     BOOL,
     check_zero)
-
-_CredFree = function_factory(
-    advapi.CredFree,
-    [c_void_p])
 
 _CredDelete = function_factory(
     advapi.CredDeleteW,
