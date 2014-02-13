@@ -12,11 +12,6 @@ from ctypes.wintypes import (
 from ._common import LPBYTE
 from ._util import function_factory, check_zero
 
-
-def _encode_password(password):
-    return unicode(password).encode("utf-16")
-
-
 class CREDENTIAL(Structure):
     _fields_ = [
         ("Flags", DWORD),
