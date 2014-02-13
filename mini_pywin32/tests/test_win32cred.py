@@ -2,11 +2,13 @@ from __future__ import absolute_import
 
 import unittest
 
-import pywintypes
 import win32cred
 
 from mini_pywin32._winerrors import ERROR_NOT_FOUND
-from mini_pywin32.win32cred import CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC
+from mini_pywin32.win32cred import (
+    CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE,
+    CRED_TYPE_GENERIC)
+
 
 class TestCred(unittest.TestCase):
     def test_write_simple(self):
@@ -62,7 +64,7 @@ class TestCred(unittest.TestCase):
     def test_read_doesnt_exists(self):
         target = "Floupi_dont_exists@MiniPyWin"
         with self.assertRaises(WindowsError) as ctx:
-            credentials = CredRead(target, CRED_TYPE_GENERIC)
+            CredRead(target, CRED_TYPE_GENERIC)
         self.assertTrue(ctx.exception.winerror, ERROR_NOT_FOUND)
 
     def test_delete_simple(self):

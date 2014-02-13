@@ -1,7 +1,5 @@
 import ctypes
 
-from .compat import unicode_str
-
 from ._common import _PyString_FromStringAndSize
 from . import _win32cred
 
@@ -11,8 +9,10 @@ __all__ = [
 CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
 
+
 def _encode_password(password):
-    return unicode_str(password)
+    return unicode(password)
+
 
 def CredWrite(credential, flag):
     """
@@ -89,7 +89,7 @@ def CredRead(TargetName, Type):
     flag = 0
     c_pcreds = _win32cred.PCREDENTIAL()
 
-    _win32cred._CredRead(TargetName, Type, flag , ctypes.byref(c_pcreds))
+    _win32cred._CredRead(TargetName, Type, flag, ctypes.byref(c_pcreds))
     try:
         c_creds = c_pcreds.contents
         credential = {}

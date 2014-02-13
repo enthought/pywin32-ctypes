@@ -14,7 +14,8 @@ from ._util import function_factory, check_zero
 
 
 def _encode_password(password):
-    return unicode_str(password).encode("utf-16")
+    return unicode(password).encode("utf-16")
+
 
 class CREDENTIAL(Structure):
     _fields_ = [
@@ -54,5 +55,4 @@ _CredDelete = function_factory(
     [LPCWSTR, DWORD, DWORD],
     BOOL,
     check_zero)
-
 

@@ -54,7 +54,6 @@ class TestWin32API(unittest.TestCase):
         with self.assertRaises(WindowsError):
             mini_pywin32.win32api.EnumResourceNames(2, 3)
 
-
     def test_enum_resource_languages(self):
         handle = self._load_library(win32api)
         resource_types = self._enum_resource_types(win32api, handle)

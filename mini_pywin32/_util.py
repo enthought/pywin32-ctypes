@@ -18,6 +18,7 @@ def function_factory(
         function.errcheck = error_checking
     return function
 
+
 def check_null(result, func, arguments, *args):
     if result is None:
         code = GetLastError()
@@ -32,4 +33,3 @@ def check_zero(result, func, arguments, *args):
         description = FormatError(code).strip()
         raise error(code, func, description)
     return result
-
