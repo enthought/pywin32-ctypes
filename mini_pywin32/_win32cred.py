@@ -50,6 +50,10 @@ _CredRead = function_factory(
     BOOL,
     check_zero)
 
+_CredFree = function_factory(
+    advapi.CredFree,
+    [c_void_p])
+
 _CredDelete = function_factory(
     advapi.CredDeleteW,
     [LPCWSTR, DWORD, DWORD],

@@ -43,7 +43,7 @@ def CredWrite(credential, flag):
     c_creds = _win32cred.CREDENTIAL()
     c_pcreds = ctypes.pointer(c_creds)
 
-    ctypes.memset(c_pcreds, flag, ctypes.sizeof(c_creds))
+    ctypes.memset(c_pcreds, 0, ctypes.sizeof(c_creds))
 
     for key in _win32cred.SUPPORTED_CREDKEYS:
         if key in credential:
@@ -99,7 +99,7 @@ def CredRead(TargetName, Type):
                 credential['CredentialBlob'] = blob
         return credential
     finally:
-        _win32cred.advapi.CredFree(c_pcreds)
+        _win32cred._CredFree(c_pcreds)
 
 
 def CredDelete(TargetName, Type):
