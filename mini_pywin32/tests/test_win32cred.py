@@ -10,7 +10,6 @@ from mini_pywin32.win32cred import CredDelete, CredRead, CredWrite, CRED_PERSIST
 
 class TestCred(unittest.TestCase):
     def test_write_simple(self):
-        service = "MiniPyWin32Cred"
         username = "john"
         password = "doe"
         comment = "Created by MiniPyWin32Cred test suite"
@@ -35,7 +34,6 @@ class TestCred(unittest.TestCase):
         self.assertEqual(res["Comment"], comment)
 
     def test_read_simple(self):
-        service = "MiniPyWin32Cred"
         username = "john"
         password = "doe"
         comment = "Created by MiniPyWin32Cred test suite"
@@ -68,7 +66,6 @@ class TestCred(unittest.TestCase):
         self.assertTrue(ctx.exception.winerror, ERROR_NOT_FOUND)
 
     def test_delete_simple(self):
-        service = "MiniPyWin32Cred"
         username = "john"
         password = "doe"
         comment = "Created by MiniPyWin32Cred test suite"
