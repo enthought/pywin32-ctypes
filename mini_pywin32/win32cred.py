@@ -10,10 +10,6 @@ CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
 
 
-def _encode_password(password):
-    return unicode(password)
-
-
 def CredWrite(credential, flag):
     """
     Mimic pywin32 win32cred.CredWrite.
@@ -54,7 +50,8 @@ def CredWrite(credential, flag):
             if key != 'CredentialBlob':
                 setattr(c_creds, key, credential[key])
             else:
-                blob = _encode_password(credential['CredentialBlob'])
+                blob = _win32cred._encode_password(credential[
+                    'CredentialBlob'])
                 blob_data = ctypes.create_string_buffer(blob)
                 # FIXME: I don't know what I am doing here...
                 c_creds.CredentialBlobSize = len(blob)

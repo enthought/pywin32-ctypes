@@ -14,7 +14,7 @@ from ._util import function_factory, check_zero
 
 
 def _encode_password(password):
-    return unicode(password).encode("utf-16")
+    return unicode(password)
 
 
 class CREDENTIAL(Structure):
