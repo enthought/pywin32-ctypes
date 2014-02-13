@@ -12,8 +12,7 @@ def function_factory(
         error_checking=None):
     if argument_types is not None:
         function.argtypes = argument_types
-    if return_type is not None:
-        function.restype = return_type
+    function.restype = return_type
     if error_checking is not None:
         function.errcheck = error_checking
     return function
