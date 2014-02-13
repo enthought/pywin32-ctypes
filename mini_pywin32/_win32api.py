@@ -40,7 +40,7 @@ _EnumResourceNames = function_factory(
 
 _EnumResourceLanguages = function_factory(
     kernel32.EnumResourceLanguagesW,
-    [HMODULE, LPCWSTR, LPCWSTR, ENUMRESLANGPROC, LONG_PTR],
+    [HMODULE, DWORD, DWORD, ENUMRESLANGPROC, LONG_PTR],
     BOOL,
     check_zero)
 

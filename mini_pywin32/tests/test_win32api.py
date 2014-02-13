@@ -62,6 +62,21 @@ class TestWin32API(unittest.TestCase):
             resource_names = self._enum_resource_names(
                 win32api, handle, resource_type)
             for resource_name in resource_names:
+                original = self._enum_resource_languages(
+                    win32api, handle, resource_type, resource_name)
+                mini = self._enum_resource_languages(
+                    mini_pywin32.win32api, handle, resource_type,
+                    resource_name)
+                self.assertEqual(mini, original)
+
+    def test_load_resource(self):
+        handle = self._load_library(win32api)
+        resource_types = self._enum_resource_types(win32api, handle)
+
+        for resource_type in resource_types:
+            resource_names = self._enum_resource_names(
+                win32api, handle, resource_type)
+            for resource_name in resource_names:
                 resource_languages = self._enum_resource_languages(
                     win32api, handle, resource_type, resource_name)
                 for resource_language in resource_languages:
