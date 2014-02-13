@@ -11,9 +11,10 @@ from mini_pywin32.win32cred import (
 
 
 class TestCred(unittest.TestCase):
+
     def test_write_simple(self):
         username = "john"
-        password = "doe"
+        password = "doefsajfsakfj"
         comment = "Created by MiniPyWin32Cred test suite"
 
         target = "{0}@{1}".format(username, password)
@@ -30,7 +31,9 @@ class TestCred(unittest.TestCase):
         res = win32cred.CredRead(TargetName=target, Type=CRED_TYPE_GENERIC)
 
         self.assertEqual(res["Type"], CRED_TYPE_GENERIC)
-        self.assertEqual(res["CredentialBlob"], password)
+        self.assertEqual(
+            unicode(res["CredentialBlob"], encoding='utf-16'),
+            password)
         self.assertEqual(res["UserName"], username)
         self.assertEqual(res["TargetName"], target)
         self.assertEqual(res["Comment"], comment)
