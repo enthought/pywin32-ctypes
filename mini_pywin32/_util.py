@@ -2,11 +2,13 @@
 """
 from __future__ import absolute_import
 
-from ctypes import WinError
+from ctypes import GetLastError, FormatError
+
+from .pywintypes import error
 
 
 def function_factory(
-        function, argument_types=None, return_type=None,
+        function,  argument_types=None, return_type=None,
         error_checking=None):
     if argument_types is not None:
         function.argtypes = argument_types
@@ -16,15 +18,18 @@ def function_factory(
         function.errcheck = error_checking
     return function
 
-
 def check_null(result, func, arguments, *args):
     if result is None:
-        raise WinError()
+        code = GetLastError()
+        description = FormatError(code).strip()
+        raise error(code, func, description)
     return result
 
 
 def check_zero(result, func, arguments, *args):
     if result == 0:
-        raise WinError()
+        code = GetLastError()
+        description = FormatError(code).strip()
+        raise error(code, func, description)
     return result
 
