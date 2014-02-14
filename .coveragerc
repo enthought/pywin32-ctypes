@@ -1,7 +1,7 @@
 [run]
 branch = True
-source = mini_pywin32
-omit = mini_pywin32/tests/*
+source = win32ctypes
+omit = win32ctypes/tests/*
 
 [report]
 # Regexes for lines to exclude from consideration
