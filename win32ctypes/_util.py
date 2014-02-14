@@ -1,3 +1,11 @@
+#
+# (C) Copyright 2014 Enthought, Inc., Austin, TX
+# All right reserved.
+#
+# This file is open source software distributed according to the terms in
+# LICENSE.txt
+#
+
 """ Utility functions to help with python wrapping.
 """
 from __future__ import absolute_import
