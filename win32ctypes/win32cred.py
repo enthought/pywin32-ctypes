@@ -52,7 +52,7 @@ def CredWrite(credential, flag):
             else:
                 blob = _make_blob(credential['CredentialBlob'])
                 blob_data = ctypes.create_unicode_buffer(blob)
-                # create_unicode_buffer adds a NULL at the end of the string
+                # Create_unicode_buffer adds a NULL at the end of the string
                 # we do not want that.
                 c_creds.CredentialBlobSize = \
                     ctypes.sizeof(blob_data) - ctypes.sizeof(ctypes.c_wchar)

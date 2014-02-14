@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 
 import ctypes
-from ctypes import pythonapi, POINTER, c_void_p
+from ctypes import pythonapi, POINTER, c_void_p, py_object
 from ctypes.wintypes import BYTE, UINT
 
 from ._util import function_factory
@@ -23,7 +23,7 @@ LPBYTE = POINTER(BYTE)
 
 _PyString_FromStringAndSize = function_factory(
     pythonapi.PyString_FromStringAndSize,
-    return_type=ctypes.py_object)
+    return_type=py_object)
 
 _GetACP = function_factory(
     kernel32.GetACP,
