@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
-from . import _win32api, _win32cred
+from ._common import _PyString_FromStringAndSize
+from . import _win32api
 
 LOAD_LIBRARY_AS_DATAFILE = 0x2
 
@@ -52,7 +53,7 @@ def LoadResource(hModule, type_, name, language):
     size = _win32api._SizeofResource(hModule, hrsrc)
     hglob = _win32api._LoadResource(hModule, hrsrc)
     pointer = _win32api._LockResource(hglob)
-    return _win32cred._PyString_FromStringAndSize(pointer, size)
+    return _PyString_FromStringAndSize(pointer, size)
 
 
 def FreeLibrary(hModule):

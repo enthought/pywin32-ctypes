@@ -2,18 +2,20 @@ from __future__ import absolute_import
 
 import unittest
 
-import pywintypes
 import win32cred
 
 from win32ctypes._winerrors import ERROR_NOT_FOUND
 from win32ctypes.pywintypes import error
-from win32ctypes.win32cred import CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC
+from win32ctypes.win32cred import (
+    CredDelete, CredRead, CredWrite,
+    CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
+
 
 class TestCred(unittest.TestCase):
+
     def test_write_simple(self):
-        service = "MiniPyWin32Cred"
         username = "john"
-        password = "doe"
+        password = "doefsajfsakfj"
         comment = "Created by MiniPyWin32Cred test suite"
 
         target = "{0}@{1}".format(username, password)
@@ -30,25 +32,27 @@ class TestCred(unittest.TestCase):
         res = win32cred.CredRead(TargetName=target, Type=CRED_TYPE_GENERIC)
 
         self.assertEqual(res["Type"], CRED_TYPE_GENERIC)
-        self.assertEqual(res["CredentialBlob"], password)
+        self.assertEqual(
+            unicode(res["CredentialBlob"], encoding='utf-16'),
+            password)
         self.assertEqual(res["UserName"], username)
         self.assertEqual(res["TargetName"], target)
         self.assertEqual(res["Comment"], comment)
 
     def test_read_simple(self):
-        service = "MiniPyWin32Cred"
         username = "john"
         password = "doe"
         comment = "Created by MiniPyWin32Cred test suite"
 
         target = "{0}@{1}".format(username, password)
 
-        r_credentials = {"Type": CRED_TYPE_GENERIC,
-                       "TargetName": target,
-                       "UserName": username,
-                       "CredentialBlob": password,
-                       "Comment": comment,
-                       "Persist": CRED_PERSIST_ENTERPRISE}
+        r_credentials = {
+            "Type": CRED_TYPE_GENERIC,
+            "TargetName": target,
+            "UserName": username,
+            "CredentialBlob": password,
+            "Comment": comment,
+            "Persist": CRED_PERSIST_ENTERPRISE}
         win32cred.CredWrite(r_credentials, 0)
 
         credentials = CredRead(target, CRED_TYPE_GENERIC)
@@ -64,9 +68,9 @@ class TestCred(unittest.TestCase):
 
     def test_read_doesnt_exists(self):
         target = "Floupi_dont_exists@MiniPyWin"
-        with self.assertRaises(error) as e:
-            credentials = CredRead(target, CRED_TYPE_GENERIC)
-        self.assertTrue(e.exception.winerror, ERROR_NOT_FOUND)
+        with self.assertRaises(error) as ctx:
+            CredRead(target, CRED_TYPE_GENERIC)
+        self.assertTrue(ctx.exception.winerror, ERROR_NOT_FOUND)
 
     def test_delete_simple(self):
         service = "MiniPyWin32Cred"
@@ -76,12 +80,13 @@ class TestCred(unittest.TestCase):
 
         target = "{0}@{1}".format(username, password)
 
-        r_credentials = {"Type": CRED_TYPE_GENERIC,
-                       "TargetName": target,
-                       "UserName": username,
-                       "CredentialBlob": password,
-                       "Comment": comment,
-                       "Persist": CRED_PERSIST_ENTERPRISE}
+        r_credentials = {
+            "Type": CRED_TYPE_GENERIC,
+            "TargetName": target,
+            "UserName": username,
+            "CredentialBlob": password,
+            "Comment": comment,
+            "Persist": CRED_PERSIST_ENTERPRISE}
         CredWrite(r_credentials, 0)
 
         credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)
@@ -89,13 +94,13 @@ class TestCred(unittest.TestCase):
 
         CredDelete(target, CRED_TYPE_GENERIC)
 
-        with self.assertRaises(error) as e:
+        with self.assertRaises(error) as ctx:
             CredRead(target, CRED_TYPE_GENERIC)
-        self.assertEqual(e.exception.winerror, ERROR_NOT_FOUND)
+        self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
 
     def test_delete_doesnt_exists(self):
         target = "Floupi_doesnt_exists@MiniPyWin32"
 
-        with self.assertRaises(error) as e:
+        with self.assertRaises(error) as ctx:
             CredDelete(target, CRED_TYPE_GENERIC)
-        self.assertEqual(e.exception.winerror, ERROR_NOT_FOUND)
+        self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)

@@ -5,15 +5,13 @@ keyring.
 from __future__ import absolute_import
 
 import ctypes
+from ctypes import POINTER, Structure
+from ctypes.wintypes import (
+    BOOL, DWORD, FILETIME, c_void_p, c_wchar_p, LPCWSTR)
 
-from ctypes import POINTER, Structure, byref, pointer
-from ctypes.wintypes import (BOOL, BYTE, DWORD, FILETIME, c_char_p, c_void_p,
-    c_wchar_p, c_ssize_t, create_string_buffer, pythonapi, py_object)
+from ._common import LPBYTE
+from ._util import function_factory, check_zero
 
-LPBYTE = POINTER(BYTE)
-
-def _encode_password(password):
-    return unicode_str(password).encode("utf-16")
 
 class CREDENTIAL(Structure):
     _fields_ = [
@@ -29,22 +27,27 @@ class CREDENTIAL(Structure):
         ("__DO_NOT_USE_Attribute", c_void_p),
         ("TargetAlias", c_wchar_p),
         ("UserName", c_wchar_p)]
-
 PCREDENTIAL = POINTER(CREDENTIAL)
+
+SUPPORTED_CREDKEYS = {
+    'Type', 'TargetName', 'Persist', 'UserName', 'Comment', 'CredentialBlob'}
 
 advapi = ctypes.windll.advapi32
 
-_CredWrite = advapi.CredWriteW
-_CredWrite.argtypes = [PCREDENTIAL, DWORD]
-_CredWrite.restype = BOOL
+_CredWrite = function_factory(
+    advapi.CredWriteW,
+    [PCREDENTIAL, DWORD],
+    BOOL,
+    check_zero)
 
-_CredRead = advapi.CredReadW
-_CredRead.argtypes = [c_wchar_p, DWORD, DWORD, POINTER(PCREDENTIAL)]
-_CredRead.restype = BOOL
+_CredRead = function_factory(
+    advapi.CredReadW,
+    [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
+    BOOL,
+    check_zero)
 
-_CredDelete = advapi.CredDeleteW
-_CredDelete.argtypes = [c_wchar_p, DWORD, DWORD]
-_CredDelete.restype = BOOL
-
-_PyString_FromStringAndSize = ctypes.pythonapi.PyString_FromStringAndSize
-_PyString_FromStringAndSize.restype = py_object
+_CredDelete = function_factory(
+    advapi.CredDeleteW,
+    [LPCWSTR, DWORD, DWORD],
+    BOOL,
+    check_zero)
