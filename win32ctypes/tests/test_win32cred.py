@@ -5,9 +5,9 @@ import unittest
 import pywintypes
 import win32cred
 
-from mini_pywin32._winerrors import ERROR_NOT_FOUND
-from mini_pywin32.pywintypes import error
-from mini_pywin32.win32cred import CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC
+from win32ctypes._winerrors import ERROR_NOT_FOUND
+from win32ctypes.pywintypes import error
+from win32ctypes.win32cred import CredDelete, CredRead, CredWrite, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC
 
 class TestCred(unittest.TestCase):
     def test_write_simple(self):
