@@ -5,4 +5,5 @@ setup(
     version='0.0.1.dev1',
     author='Enthought Inc',
     author_email='info@enthought.com',
-    packages=['wine32ctypes', 'wine32ctypes.tests'])
+    packages=['wine32ctypes', 'wine32ctypes.tests'],
+    license="BSD")
