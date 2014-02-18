@@ -26,17 +26,30 @@ def function_factory(
     return function
 
 
-def check_null(result, func, arguments, *args):
-    if result is None:
-        code = GetLastError()
-        description = FormatError(code).strip()
-        raise error(code, func, description)
-    return result
+def check_null_factory(func_name=None):
+    def check_null(result, func, arguments, *args):
+        if result is None:
+            code = GetLastError()
+            description = FormatError(code).strip()
+            if func_name is None:
+                raise error(code, func.__name__, description)
+            else:
+                raise error(code, func_name, description)
+        return result
+    return check_null
 
+check_null = check_null_factory()
 
-def check_zero(result, func, arguments, *args):
-    if result == 0:
-        code = GetLastError()
-        description = FormatError(code).strip()
-        raise error(code, func, description)
-    return result
+def check_zero_factory(func_name=None):
+    def check_zero(result, func, arguments, *args):
+        if result == 0:
+            code = GetLastError()
+            description = FormatError(code).strip()
+            if func_name is None:
+                raise error(code, func.__name__, description)
+            else:
+                raise error(code, func_name, description)
+        return result
+    return check_zero
+
+check_zero = check_zero_factory()

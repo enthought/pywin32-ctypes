@@ -18,7 +18,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, c_void_p, c_wchar_p, LPCWSTR)
 
 from ._common import LPBYTE
-from ._util import function_factory, check_zero
+from ._util import function_factory, check_zero, check_zero_factory
 
 
 class CREDENTIAL(Structure):
@@ -46,16 +46,16 @@ _CredWrite = function_factory(
     advapi.CredWriteW,
     [PCREDENTIAL, DWORD],
     BOOL,
-    check_zero)
+    check_zero_factory("CredWrite"))
 
 _CredRead = function_factory(
     advapi.CredReadW,
     [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
     BOOL,
-    check_zero)
+    check_zero_factory("CredRead"))
 
 _CredDelete = function_factory(
     advapi.CredDeleteW,
     [LPCWSTR, DWORD, DWORD],
     BOOL,
-    check_zero)
+    check_zero_factory("CredDelete"))
