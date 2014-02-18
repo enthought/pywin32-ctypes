@@ -105,6 +105,7 @@ class TestCred(unittest.TestCase):
         with self.assertRaises(error) as ctx:
             CredRead(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
+        self.assertEqual(ctx.exception.funcname, "CredRead")
 
     def test_delete_doesnt_exists(self):
         target = "Floupi_doesnt_exists@MiniPyWin32"
@@ -112,3 +113,4 @@ class TestCred(unittest.TestCase):
         with self.assertRaises(error) as ctx:
             CredDelete(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
+        self.assertEqual(ctx.exception.funcname, "CredDelete")
