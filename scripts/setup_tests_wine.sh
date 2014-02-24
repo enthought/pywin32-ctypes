@@ -3,7 +3,7 @@ set -e
 
 export DISPLAY=:99.0
 
-if [ "${TRAVIS_PYTHON_VERSION}" -eq "2.7" ]; then
+if [ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]; then
     PYTHON_MSI="python-2.7.6.msi"
     PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
     PYTHON="c:/Python27/python.exe"
@@ -11,7 +11,7 @@ if [ "${TRAVIS_PYTHON_VERSION}" -eq "2.7" ]; then
     PIP="c:/Python27/Scripts/pip.exe"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
-    exit -1;
+    exit 1;
 fi
 
 PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
