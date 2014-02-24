@@ -9,6 +9,12 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
     PYTHON="c:/Python27/python.exe"
     EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
     PIP="c:/Python27/Scripts/pip.exe"
+elif [ "{TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
+    PYTHON_MSI="python-3.2.5.msi"
+    PYTHON_URL="http://www.python.org/ftp/python/3.2.5/${PYTHON_MSI}"
+    PYTHON="c:/Python32/python.exe"
+    EASY_INSTALL="c:/Python32/Scripts/easy_install.exe"
+    PIP="c:/Python32/Scripts/pip.exe"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
     exit 1;
