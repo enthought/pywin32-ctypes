@@ -13,9 +13,9 @@ keyring.
 from __future__ import absolute_import
 
 import ctypes
-from ctypes import POINTER, Structure
+from ctypes import POINTER, Structure, c_void_p, c_wchar_p
 from ctypes.wintypes import (
-    BOOL, DWORD, FILETIME, c_void_p, c_wchar_p, LPCWSTR)
+    BOOL, DWORD, FILETIME, LPCWSTR)
 
 from ._common import LPBYTE
 from ._util import function_factory, check_zero, check_zero_factory

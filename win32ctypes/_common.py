@@ -14,6 +14,7 @@ import ctypes
 from ctypes import pythonapi, POINTER, c_void_p, py_object
 from ctypes.wintypes import BYTE, UINT
 
+from .compat import PY3
 from ._util import function_factory
 
 PPy_UNICODE = c_void_p
@@ -29,9 +30,14 @@ elif ctypes.sizeof(ctypes.c_longlong) == ctypes.sizeof(ctypes.c_void_p):
 
 LPBYTE = POINTER(BYTE)
 
-_PyString_FromStringAndSize = function_factory(
-    pythonapi.PyString_FromStringAndSize,
-    return_type=py_object)
+if PY3:
+    _PyBytes_FromStringAndSize = function_factory(
+        pythonapi.PyBytes_FromStringAndSize,
+        return_type=py_object)
+else:
+    _PyBytes_FromStringAndSize = function_factory(
+        pythonapi.PyString_FromStringAndSize,
+        return_type=py_object)
 
 _GetACP = function_factory(
     kernel32.GetACP,
