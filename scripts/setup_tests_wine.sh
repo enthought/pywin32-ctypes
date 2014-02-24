@@ -3,7 +3,7 @@ set -e
 
 export DISPLAY=:99.0
 
-if [ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]; then
+if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
     PYTHON_MSI="python-2.7.6.msi"
     PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
     PYTHON="c:/Python27/python.exe"
