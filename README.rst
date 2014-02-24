@@ -9,3 +9,14 @@ Example of usage::
 
 Note: this implements only a very small subset of pywin32, for internal needs
 at Enthought. We do welcome additional features, though.
+
+Development setup
+=================
+
+The following should be good enough::
+
+	pip install -r dev_requirements.txt
+	python setup.py develop
+
+Note: because of the pywin32 dependency for tests, you most likely want to
+create a virtualenv with --system-site-packages if you use virtualenv.
