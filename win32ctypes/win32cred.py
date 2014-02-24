@@ -11,7 +11,8 @@ __all__ = [
 
 import ctypes
 
-from ._common import _PyString_FromStringAndSize, _GetACP
+from ._common import _PyBytes_FromStringAndSize, _GetACP
+from .compat import is_unicode, unicode
 from . import _win32cred
 
 CRED_TYPE_GENERIC = 0x1
@@ -103,7 +104,7 @@ def CredRead(TargetName, Type):
             if key != 'CredentialBlob':
                 credential[key] = getattr(c_creds, key)
             else:
-                blob = _PyString_FromStringAndSize(
+                blob = _PyBytes_FromStringAndSize(
                     c_creds.CredentialBlob, c_creds.CredentialBlobSize)
                 credential['CredentialBlob'] = blob
         return credential
@@ -132,7 +133,7 @@ def _make_blob(password):
     Credentials.
 
     """
-    if isinstance(password, unicode):
+    if is_unicode(password):
         return password
     else:
         code_page = _GetACP()

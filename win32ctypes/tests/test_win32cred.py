@@ -41,7 +41,7 @@ class TestCred(unittest.TestCase):
 
         self.assertEqual(res["Type"], CRED_TYPE_GENERIC)
         self.assertEqual(
-            unicode(res["CredentialBlob"], encoding='utf-16'),
+            res["CredentialBlob"].decode(encoding='utf-16'),
             password)
         self.assertEqual(res["UserName"], username)
         self.assertEqual(res["TargetName"], target)
