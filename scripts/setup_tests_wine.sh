@@ -15,6 +15,12 @@ elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
     PYTHON="c:/Python32/python.exe"
     EASY_INSTALL="c:/Python32/Scripts/easy_install.exe"
     PIP="c:/Python32/Scripts/pip.exe"
+elif [ "${TRAVIS_PYTHON_VERSION}" = "3.3" ]; then
+    PYTHON_MSI="python-3.3.4.msi"
+    PYTHON_URL="http://www.python.org/ftp/python/3.3.4/${PYTHON_MSI}"
+    PYTHON="c:/Python33/python.exe"
+    EASY_INSTALL="c:/Python33/Scripts/easy_install.exe"
+    PIP="c:/Python33/Scripts/pip.exe"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
     exit 1;
