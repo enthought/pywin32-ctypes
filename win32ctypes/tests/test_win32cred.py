@@ -17,9 +17,9 @@ from win32ctypes.pywintypes import error
 from win32ctypes.win32cred import (
     CredDelete, CredRead, CredWrite,
     CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
+from win32ctypes.tests import compat
 
-
-class TestCred(unittest.TestCase):
+class TestCred(compat.TestCase):
 
     def test_write_simple(self):
         username = "john"
@@ -41,7 +41,7 @@ class TestCred(unittest.TestCase):
 
         self.assertEqual(res["Type"], CRED_TYPE_GENERIC)
         self.assertEqual(
-            res["CredentialBlob"].decode(encoding='utf-16'),
+            res["CredentialBlob"].decode('utf-16'),
             password)
         self.assertEqual(res["UserName"], username)
         self.assertEqual(res["TargetName"], target)
@@ -114,3 +114,7 @@ class TestCred(unittest.TestCase):
             CredDelete(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
         self.assertEqual(ctx.exception.funcname, "CredDelete")
+
+
+if __name__ == '__main__':
+    unittest.main()

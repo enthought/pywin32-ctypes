@@ -40,6 +40,7 @@ def check_null_factory(func_name=None):
 
 check_null = check_null_factory()
 
+
 def check_zero_factory(func_name=None):
     def check_zero(result, func, arguments, *args):
         if result == 0:
