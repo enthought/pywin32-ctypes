@@ -12,9 +12,10 @@ import unittest
 import win32ctypes.win32api
 import win32api
 from win32ctypes.pywintypes import error
+from win32ctypes.tests import compat
 
 
-class TestWin32API(unittest.TestCase):
+class TestWin32API(compat.TestCase):
 
     def setUp(self):
         self.handle = None
@@ -33,7 +34,7 @@ class TestWin32API(unittest.TestCase):
 
     def test_free_library(self):
         self.handle = self._load_library(win32api)
-        self.assertIsNone(self._free_library(win32api, self.handle))
+        self.assertTrue(self._free_library(win32api, self.handle) is None)
         self.assertNotEqual(
             self._free_library(win32ctypes.win32api, self.handle), 0)
 
@@ -132,3 +133,5 @@ class TestWin32API(unittest.TestCase):
             resource_name, resource_language):
         return module.LoadResource(
             handle, resource_type, resource_name, resource_language)
+
+

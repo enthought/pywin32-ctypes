@@ -18,7 +18,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
 from ._common import LPBYTE
-from ._util import function_factory, check_zero, check_zero_factory
+from ._util import function_factory, check_zero_factory
 
 
 class CREDENTIAL(Structure):
@@ -37,8 +37,8 @@ class CREDENTIAL(Structure):
         ("UserName", c_wchar_p)]
 PCREDENTIAL = POINTER(CREDENTIAL)
 
-SUPPORTED_CREDKEYS = {
-    'Type', 'TargetName', 'Persist', 'UserName', 'Comment', 'CredentialBlob'}
+SUPPORTED_CREDKEYS = set((
+    'Type', 'TargetName', 'Persist', 'UserName', 'Comment', 'CredentialBlob'))
 
 advapi = ctypes.windll.advapi32
 
