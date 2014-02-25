@@ -3,18 +3,18 @@ set -e
 
 export DISPLAY=:99.0
 
-if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
-    PYTHON_MSI="python-2.7.6.msi"
-    PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
-    PYTHON="c:/Python27/python.exe"
-    EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
-    PIP="c:/Python27/Scripts/pip.exe"
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     PYTHON_MSI="python-2.6.6.msi"
     PYTHON_URL="http://www.python.org/ftp/python/2.6.6/${PYTHON_MSI}"
     PYTHON="c:/Python26/python.exe"
     EASY_INSTALL="c:/Python26/Scripts/easy_install.exe"
     PIP="c:/Python26/Scripts/pip.exe"
+elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
+    PYTHON_MSI="python-2.7.6.msi"
+    PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
+    PYTHON="c:/Python27/python.exe"
+    EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
+    PIP="c:/Python27/Scripts/pip.exe"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
     PYTHON_MSI="python-3.2.5.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.2.5/${PYTHON_MSI}"
