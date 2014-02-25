@@ -71,7 +71,7 @@ if sys.version_info[:2] == (2, 6):
                 result.errors = []
                 for error in errors:
                     if skip_error in error[1]:
-                        print 'Skipped'
+                        print ('Skipped')
                     else:
                         result.errors.append(error)
             return result
