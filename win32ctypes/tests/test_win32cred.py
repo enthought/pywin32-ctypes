@@ -115,3 +115,6 @@ class TestCred(compat.TestCase):
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
         self.assertEqual(ctx.exception.funcname, "CredDelete")
 
+
+if __name__ == '__main__':
+    unittest.main()

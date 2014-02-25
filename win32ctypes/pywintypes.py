@@ -6,6 +6,7 @@
 # LICENSE.txt
 #
 
+
 class error(Exception):
     def __init__(self, *args, **kw):
         nargs = len(args)

@@ -11,6 +11,7 @@ import unittest
 
 import win32ctypes.win32api
 import win32api
+
 from win32ctypes.pywintypes import error
 from win32ctypes.tests import compat
 
@@ -135,3 +136,5 @@ class TestWin32API(compat.TestCase):
             handle, resource_type, resource_name, resource_language)
 
 
+if __name__ == '__main__':
+    unittest.main()
