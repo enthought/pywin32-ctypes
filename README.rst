@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/enthought/pywin32-ctypes.png
+  :target: https://travis-ci.org/enthought/pywin32-ctypes
+
 A reimplementation of pywin32 that is pure python (uses ctypes).
 
 Example of usage::
