@@ -5,11 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
-"""
-A pure python, ctypes-based replacement for win32cred features required by
-keyring.
-"""
 from __future__ import absolute_import
 
 import ctypes
@@ -18,7 +13,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
 from ._common import LPBYTE
-from ._util import function_factory, check_zero, check_zero_factory
+from ._util import function_factory, check_zero_factory
 
 
 class CREDENTIAL(Structure):
@@ -37,10 +32,10 @@ class CREDENTIAL(Structure):
         ("UserName", c_wchar_p)]
 PCREDENTIAL = POINTER(CREDENTIAL)
 
+advapi = ctypes.windll.advapi32
+
 SUPPORTED_CREDKEYS = {
     'Type', 'TargetName', 'Persist', 'UserName', 'Comment', 'CredentialBlob'}
-
-advapi = ctypes.windll.advapi32
 
 _CredWrite = function_factory(
     advapi.CredWriteW,
@@ -59,3 +54,6 @@ _CredDelete = function_factory(
     [LPCWSTR, DWORD, DWORD],
     BOOL,
     check_zero_factory("CredDelete"))
+
+_CredFree = function_factory(
+    advapi.CredFree, [PCREDENTIAL])
