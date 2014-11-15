@@ -9,6 +9,7 @@ from __future__ import absolute_import
 import contextlib
 
 
+
 class error(Exception):
     def __init__(self, *args, **kw):
         nargs = len(args)

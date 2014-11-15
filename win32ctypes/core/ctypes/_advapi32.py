@@ -34,8 +34,8 @@ PCREDENTIAL = POINTER(CREDENTIAL)
 
 advapi = ctypes.windll.advapi32
 
-SUPPORTED_CREDKEYS = {
-    'Type', 'TargetName', 'Persist', 'UserName', 'Comment', 'CredentialBlob'}
+SUPPORTED_CREDKEYS = set((
+    'Type', 'TargetName', 'Persist', 'UserName', 'Comment', 'CredentialBlob'))
 
 _CredWrite = function_factory(
     advapi.CredWriteW,
