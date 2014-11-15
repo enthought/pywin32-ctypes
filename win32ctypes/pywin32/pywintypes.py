@@ -5,6 +5,9 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
+from __future__ import absolute_import
+import contextlib
+
 
 class error(Exception):
     def __init__(self, *args, **kw):
@@ -22,3 +25,11 @@ class error(Exception):
         else:
             self.strerror = None
         Exception.__init__(self, *args, **kw)
+
+
+@contextlib.contextmanager
+def pywin32error():
+    try:
+        yield
+    except WindowsError as exception:
+        raise error(exception.winerror, exception.function, exception.strerror)

@@ -8,8 +8,8 @@
 
 from __future__ import absolute_import
 
-from ._common import _PyBytes_FromStringAndSize
-from . import _win32api
+from win32ctypes.core import _common, _kernel32
+from win32ctypes.pywin32.pywintypes import pywin32error
 
 LOAD_LIBRARY_AS_DATAFILE = 0x2
 
@@ -17,7 +17,8 @@ LOAD_LIBRARY_AS_DATAFILE = 0x2
 def LoadLibraryEx(FileName, handle, flags):
     if not handle == 0:
         raise ValueError("handle != 0 not supported")
-    return _win32api._LoadLibraryEx(FileName, 0, flags)
+    with pywin32error():
+        return _kernel32._LoadLibraryEx(FileName, 0, flags)
 
 
 def EnumResourceTypes(hModule):
@@ -27,8 +28,9 @@ def EnumResourceTypes(hModule):
         resource_types.append(typeid)
         return True
 
-    _win32api._EnumResourceTypes(
-        hModule, _win32api.ENUMRESTYPEPROC(callback), 0)
+    with pywin32error():
+        _kernel32._EnumResourceTypes(
+            hModule, _kernel32.ENUMRESTYPEPROC(callback), 0)
     return resource_types
 
 
@@ -39,8 +41,9 @@ def EnumResourceNames(hModule, type_):
         resource_names.append(type_name)
         return True
 
-    _win32api._EnumResourceNames(
-        hModule, type_, _win32api.ENUMRESNAMEPROC(callback), 0)
+    with pywin32error():
+        _kernel32._EnumResourceNames(
+            hModule, type_, _kernel32.ENUMRESNAMEPROC(callback), 0)
     return resource_names
 
 
@@ -51,18 +54,21 @@ def EnumResourceLanguages(hModule, type_, name):
         resource_languages.append(language_id)
         return True
 
-    _win32api._EnumResourceLanguages(
-        hModule, type_, name, _win32api.ENUMRESLANGPROC(callback), 0)
+    with pywin32error():
+        _kernel32._EnumResourceLanguages(
+            hModule, type_, name, _kernel32.ENUMRESLANGPROC(callback), 0)
     return resource_languages
 
 
 def LoadResource(hModule, type_, name, language):
-    hrsrc = _win32api._FindResourceEx(hModule, type_, name, language)
-    size = _win32api._SizeofResource(hModule, hrsrc)
-    hglob = _win32api._LoadResource(hModule, hrsrc)
-    pointer = _win32api._LockResource(hglob)
-    return _PyBytes_FromStringAndSize(pointer, size)
+    with pywin32error():
+        hrsrc = _kernel32._FindResourceEx(hModule, type_, name, language)
+        size = _kernel32._SizeofResource(hModule, hrsrc)
+        hglob = _kernel32._LoadResource(hModule, hrsrc)
+        pointer = _kernel32._LockResource(hglob)
+    return _common._PyBytes_FromStringAndSize(pointer, size)
 
 
 def FreeLibrary(hModule):
-    return _win32api._FreeLibrary(hModule)
+    with pywin32error():
+        return _kernel32._FreeLibrary(hModule)
