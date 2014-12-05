@@ -55,5 +55,4 @@ _CredDelete = function_factory(
     BOOL,
     check_zero_factory("CredDelete"))
 
-_CredFree = function_factory(
-    advapi.CredFree, [PCREDENTIAL])
+_CredFree = function_factory(advapi.CredFree, [PCREDENTIAL])
