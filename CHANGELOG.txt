@@ -1,0 +1,21 @@
+Change Log
+==========
+
+Version 0.0.2.dev1
+------------------
+
+- Restructure package layout to split core wrapping modules from pywin32 emulation (#15, #17)
+
+Version 0.0.1
+-----------
+
+7/04/2014
+
+- Python 2.6 support (#13)
+- Python 3 support (#12)
+- Basic maintenance work (#11, #7)
+- Fix error raising to be pywin32 compatible (#8)
+- Package rename mini_pywin32 -> pywin32-ctypes
+- Add travis-ci integration using wine! (#2)
+- Support basic library and resource loading (#1)
+- mini_pywin32 is born

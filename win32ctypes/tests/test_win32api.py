@@ -9,10 +9,9 @@
 import sys
 import unittest
 
-import win32ctypes.win32api
 import win32api
-
-from win32ctypes.pywintypes import error
+from win32ctypes import pywin32
+from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.tests import compat
 
 
@@ -27,29 +26,29 @@ class TestWin32API(compat.TestCase):
 
     def test_load_library_ex(self):
         self.handle = self._load_library(win32api)
-        mini = self._load_library(win32ctypes.win32api)
+        mini = self._load_library(pywin32.win32api)
         self.assertEqual(mini, self.handle)
 
         with self.assertRaises(error):
-            win32ctypes.win32api.LoadLibraryEx('ttt.dll', 0, 0x2)
+            pywin32.win32api.LoadLibraryEx('ttt.dll', 0, 0x2)
 
     def test_free_library(self):
         self.handle = self._load_library(win32api)
         self.assertTrue(self._free_library(win32api, self.handle) is None)
         self.assertNotEqual(
-            self._free_library(win32ctypes.win32api, self.handle), 0)
+            self._free_library(pywin32.win32api, self.handle), 0)
 
         with self.assertRaises(error):
-            self._free_library(win32ctypes.win32api, -3)
+            self._free_library(pywin32.win32api, -3)
 
     def test_enum_resource_types(self):
         self.handle = self._load_library(win32api)
         original = self._enum_resource_types(win32api, self.handle)
-        mini = self._enum_resource_types(win32ctypes.win32api, self.handle)
+        mini = self._enum_resource_types(pywin32.win32api, self.handle)
         self.assertEqual(mini, original)
 
         with self.assertRaises(error):
-            win32ctypes.win32api.EnumResourceTypes(-3)
+            pywin32.win32api.EnumResourceTypes(-3)
 
     def test_enum_resource_names(self):
         self.handle = self._load_library(win32api)
@@ -59,11 +58,11 @@ class TestWin32API(compat.TestCase):
             original = self._enum_resource_names(
                 win32api, self.handle, resource_type)
             mini = self._enum_resource_names(
-                win32ctypes.win32api, self.handle, resource_type)
+                pywin32.win32api, self.handle, resource_type)
             self.assertEqual(mini, original)
 
         with self.assertRaises(error):
-            win32ctypes.win32api.EnumResourceNames(2, 3)
+            pywin32.win32api.EnumResourceNames(2, 3)
 
     def test_enum_resource_languages(self):
         handle = self._load_library(win32api)
@@ -76,12 +75,12 @@ class TestWin32API(compat.TestCase):
                 original = self._enum_resource_languages(
                     win32api, handle, resource_type, resource_name)
                 mini = self._enum_resource_languages(
-                    win32ctypes.win32api, handle, resource_type,
+                    pywin32.win32api, handle, resource_type,
                     resource_name)
                 self.assertEqual(mini, original)
 
         with self.assertRaises(error):
-            win32ctypes.win32api.EnumResourceLanguages(
+            pywin32.win32api.EnumResourceLanguages(
                 handle, resource_type, 2235)
 
     def test_load_resource(self):
@@ -100,13 +99,13 @@ class TestWin32API(compat.TestCase):
                         resource_type, resource_name,
                         resource_language)
                     mini = self._load_resource(
-                        win32ctypes.win32api, handle,
+                        pywin32.win32api, handle,
                         resource_type, resource_name,
                         resource_language)
                     self.assertEqual(mini, original)
 
         with self.assertRaises(error):
-            win32ctypes.win32api.LoadResource(
+            pywin32.win32api.LoadResource(
                 handle, resource_type, resource_name, 12435)
 
     def _load_library(self, module):

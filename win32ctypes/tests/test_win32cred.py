@@ -12,9 +12,9 @@ import unittest
 
 import win32cred
 
-from win32ctypes._winerrors import ERROR_NOT_FOUND
-from win32ctypes.pywintypes import error
-from win32ctypes.win32cred import (
+from win32ctypes.core._winerrors import ERROR_NOT_FOUND
+from win32ctypes.pywin32.pywintypes import error
+from win32ctypes.pywin32.win32cred import (
     CredDelete, CredRead, CredWrite,
     CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
 from win32ctypes.tests import compat
@@ -81,7 +81,6 @@ class TestCred(compat.TestCase):
         self.assertTrue(ctx.exception.winerror, ERROR_NOT_FOUND)
 
     def test_delete_simple(self):
-        service = "MiniPyWin32Cred"
         username = "john"
         password = "doe"
         comment = "Created by MiniPyWin32Cred test suite"

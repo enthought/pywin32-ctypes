@@ -5,12 +5,10 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-__all__ = ['win32api']
+from __future__ import absolute_import
 
-import warnings
+__all__ = ['win32api', 'win32cred', 'pywintypes']
 
-warnings.warn(
-    "Please use 'from win32ctypes.pywin32 import win32api'",
-    DeprecationWarning)
-
+from win32ctypes.pywin32 import pywintypes
 from win32ctypes.pywin32 import win32api
+from win32ctypes.pywin32 import win32cred
