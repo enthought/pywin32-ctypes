@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-Version 0.0.2.dev
+Version 0.0.2.dev1
 ----------------
 
 - Restructure package layout to split core wrapping modules from pywin32 emulation (#15, #17)
