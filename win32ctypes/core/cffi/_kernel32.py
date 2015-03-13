@@ -15,6 +15,7 @@ ffi.cdef("""
 BOOL Beep(DWORD dwFreq, DWORD dwDuration);
 UINT GetACP(void);
 HMODULE LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
+BOOL FreeLibrary(HMODULE hModule);
 
 """)
 
@@ -30,3 +31,7 @@ def _LoadLibraryEx(lpFilename, hFile, dwFlags):
         kernel32.LoadLibraryExW(
             unicode(lpFilename), ffi.NULL, dwFlags))
     return HMODULE(result)
+
+
+def _FreeLibrary(hModule):
+    check_zero(kernel32.FreeLibrary(PVOID(hModule)))
