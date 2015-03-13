@@ -13,7 +13,6 @@ except ImportError:
     from win32ctypes.core.ctypes import _advapi32, _common, _kernel32
 else:
     from win32ctypes.core.cffi import _kernel32
-    from win32ctypes.core.ctypes import _advapi32, _common
 
 from win32ctypes.core import _winerrors
 
