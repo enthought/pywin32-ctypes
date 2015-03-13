@@ -16,13 +16,12 @@ ffi = FFI()
 ffi.set_unicode(True)
 
 
-def function_factory(cfunction, error_check=None):
-    if error_check is None:
-        return cfunction
-    else:
-        def function(*args, **kwrgs):
-            error_check(cfunction(*args, **kwrgs))
-        return function
+def HMODULE(cdata):
+    return int(ffi.cast("intptr_t", cdata))
+
+
+def PVOID(x):
+    return ffi.cast("void *", x)
 
 
 class ErrorWhen(object):
@@ -30,20 +29,20 @@ class ErrorWhen(object):
     def __init__(self, check):
         self._check = check
 
-    def raise_error():
-        code, message = ffi.getwinerror()
-        exception = WindowsError()
-        exception.errno = ffi.errno
-        exception.winerror = code
-        exception.strerror = message
-        raise exception
-
     def __call__(self, value):
         if value == self._check:
             self._raise_error()
         else:
             return value
 
+    def _raise_error(self):
+        code, message = ffi.getwinerror()
+        exception = WindowsError()
+        exception.errno = ffi.errno
+        exception.winerror = code
+        exception.strerror = message
+        exception.function = ''
+        raise exception
 
-check_null = ErrorWhen(None)
+check_null = ErrorWhen(ffi.NULL)
 check_zero = ErrorWhen(0)

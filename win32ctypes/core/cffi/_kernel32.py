@@ -7,7 +7,8 @@
 #
 from __future__ import absolute_import
 
-from ._util import ffi, function_factory, check_null
+from ._util import (
+    ffi, check_null, check_zero, HMODULE, PVOID)
 
 ffi.cdef("""
 
@@ -23,8 +24,9 @@ kernel32 = ffi.dlopen('kernel32.dll')
 def _GetACP():
     return kernel32.GetACP()
 
+
 def _LoadLibraryEx(lpFilename, hFile, dwFlags):
-    filename = ffi.new('LPCTSTR', lpFilename)
-    return check_null(
+    result = check_null(
         kernel32.LoadLibraryExW(
-            filename, hFile, dwFlags))
+            unicode(lpFilename), ffi.NULL, dwFlags))
+    return HMODULE(result)
