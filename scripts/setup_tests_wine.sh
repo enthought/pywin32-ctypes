@@ -45,7 +45,7 @@ tar xf setuptools-2.2.tar.gz
 wine ${EASY_INSTALL} nose coverage
 
 if [ "${CFFI}" = "true" ]; then
-    wine ${PIP__INSTALL} cffi
+    wine ${EASY_INSTALL} cffi
 fi
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
