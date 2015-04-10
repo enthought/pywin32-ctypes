@@ -40,9 +40,6 @@ PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
 PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
 CFFI_WHEEL_URL="https://pypi.python.org/packages/cp26/c/cffi/cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
 
-# set msvcrt to native
-winetricks vcrun6
-
 wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
 
