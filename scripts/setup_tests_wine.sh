@@ -9,28 +9,28 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     PYTHON="c:/Python26/python.exe"
     EASY_INSTALL="c:/Python26/Scripts/easy_install.exe"
     PIP="c:/Python26/Scripts/pip.exe"
-    PYVERION="cp26"
+    PYVERSION="cp26"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
     PYTHON_MSI="python-2.7.6.msi"
     PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
     PYTHON="c:/Python27/python.exe"
     EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
     PIP="c:/Python27/Scripts/pip.exe"
-    PYVERION="cp27"
+    PYVERSION="cp27"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
     PYTHON_MSI="python-3.2.5.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.2.5/${PYTHON_MSI}"
     PYTHON="c:/Python32/python.exe"
     EASY_INSTALL="c:/Python32/Scripts/easy_install.exe"
     PIP="c:/Python32/Scripts/pip.exe"
-    PYVERION="cp32"
+    PYVERSION="cp32"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.3" ]; then
     PYTHON_MSI="python-3.3.4.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.3.4/${PYTHON_MSI}"
     PYTHON="c:/Python33/python.exe"
     EASY_INSTALL="c:/Python33/Scripts/easy_install.exe"
     PIP="c:/Python33/Scripts/pip.exe"
-    PYVERION="cp33"
+    PYVERSION="cp33"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
     exit 1;
