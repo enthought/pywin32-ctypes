@@ -9,24 +9,28 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     PYTHON="c:/Python26/python.exe"
     EASY_INSTALL="c:/Python26/Scripts/easy_install.exe"
     PIP="c:/Python26/Scripts/pip.exe"
+    PYVERSION="cp26"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
     PYTHON_MSI="python-2.7.6.msi"
     PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
     PYTHON="c:/Python27/python.exe"
     EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
     PIP="c:/Python27/Scripts/pip.exe"
+    PYVERSION="cp27"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
     PYTHON_MSI="python-3.2.5.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.2.5/${PYTHON_MSI}"
     PYTHON="c:/Python32/python.exe"
     EASY_INSTALL="c:/Python32/Scripts/easy_install.exe"
     PIP="c:/Python32/Scripts/pip.exe"
+    PYVERSION="cp32"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.3" ]; then
     PYTHON_MSI="python-3.3.4.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.3.4/${PYTHON_MSI}"
     PYTHON="c:/Python33/python.exe"
     EASY_INSTALL="c:/Python33/Scripts/easy_install.exe"
     PIP="c:/Python33/Scripts/pip.exe"
+    PYVERSION="cp33"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
     exit 1;
@@ -34,6 +38,7 @@ fi
 
 PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
 PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
+CFFI_WHEEL_URL="cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
 
 wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
@@ -43,6 +48,10 @@ tar xf setuptools-2.2.tar.gz
 (cd setuptools-2.2 && wine ${PYTHON} setup.py install)
 
 wine ${EASY_INSTALL} nose coverage
+
+if [ "${CFFI}" = "true" ]; then
+    wine ${PIP__INSTALL} ${CFFI_WHEEL_URL}
+fi
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 
