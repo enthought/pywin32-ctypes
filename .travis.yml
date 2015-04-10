@@ -18,6 +18,6 @@ before_install:
 
 install:
   - sudo apt-get install wine
-  - sh scripts/setup_tests_wine.sh | grep -v 'fixme:msvcrt'
+  - sh scripts/setup_tests_wine.sh | grep -v ^fixme:msvcrt
 script:
-  - sh scripts/run_tests_wine.sh
+  - sh scripts/run_tests_wine.sh | grep -v ^fixme:msvcrt
