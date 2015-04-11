@@ -124,7 +124,7 @@ class TestWin32API(compat.TestCase):
         if hasattr(type_id, 'index'):
             return type_id
         else:
-            return u'#{}'.format(type_id)
+            return u'#{0}'.format(type_id)
 
 
 if __name__ == '__main__':
