@@ -49,9 +49,10 @@ tar xf setuptools-2.2.tar.gz
 (cd setuptools-2.2 && wine ${PYTHON} setup.py install)
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
-unzip ${PYWIN32_EXE} -d ${TEMP_DIR} &> /dev/null;
+zip -FFv ${PYWIN32_EXE} --out fixed.zip
+unzip -o -qq fixed.zip -d ${TEMP_DIR}
 wine xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
 wine ${PYTHON}  ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
 
-wine ${EASY_INSTALL} coverage nose
+wine ${EASY_INSTALL} coverage
 wine ${PYTHON} setup.py install
