@@ -18,7 +18,7 @@ fi
 wine ${COVERAGE} erase
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     wine ${COVERAGE} run -m unittest2 discover -v
-else:
+else
     wine ${COVERAGE} run -m unittest discover -v
 fi
 wine ${COVERAGE} report
