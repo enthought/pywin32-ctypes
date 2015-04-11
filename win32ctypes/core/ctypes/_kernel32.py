@@ -15,23 +15,38 @@ from ctypes.wintypes import (
 from ._common import LONG_PTR
 from ._util import check_null, check_zero, function_factory
 
-ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LONG, LONG_PTR)
 ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
     BOOL, HMODULE, WCHAR, WCHAR, WORD, LONG_PTR)
 _ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LONG_PTR)
+_ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LPVOID, LONG_PTR)
 
 kernel32 = ctypes.windll.kernel32
 
 
 def ENUMRESTYPEPROC(callback):
-    def wrapped(hModule, typename, param):
-        if typename >> 16 == 0:
-            return callback(hModule, int(typename), param)
+    def wrapped(handle, type_, param):
+        if type_ >> 16 == 0:
+            type_ = int(type_)
         else:
-            name = ctypes.cast(typename, LPCWSTR)
-            return callback(hModule, name.value, param)
+            type_ = ctypes.cast(type_, LPCWSTR).value
+        return callback(handle, type_, param)
 
     return _ENUMRESTYPEPROC(wrapped)
+
+
+def ENUMRESNAMEPROC(callback):
+    def wrapped(handle, type_, name, param):
+        if type_ >> 16 == 0:
+            type_ = int(type_)
+        else:
+            type_ = ctypes.cast(type_, LPCWSTR).value
+        if name >> 16 == 0:
+            name = int(name)
+        else:
+            name = ctypes.cast(name, LPCWSTR).value
+        return callback(handle, type_, name, param)
+
+    return _ENUMRESNAMEPROC(wrapped)
 
 _GetACP = function_factory(kernel32.GetACP, None, UINT)
 
@@ -72,7 +87,7 @@ _SizeofResource = function_factory(
 
 _BaseEnumResourceNames = function_factory(
     kernel32.EnumResourceNamesW,
-    [HMODULE, LPCWSTR, ENUMRESNAMEPROC, LONG_PTR],
+    [HMODULE, LPCWSTR, _ENUMRESNAMEPROC, LONG_PTR],
     BOOL,
     check_zero)
 
