@@ -1,7 +1,7 @@
 [run]
 branch = True
 source = win32ctypes
-omit = win32ctypes/tests/*
+omit = */tests/*
 
 [report]
 # Regexes for lines to exclude from consideration

@@ -15,6 +15,14 @@ else
     exit 1;
 fi
 
+mkdir -p testing
+cp .coveragerc testing/
+cd testing
 wine ${COVERAGE} erase
-wine ${COVERAGE} run -m nose.core win32ctypes
-wine ${COVERAGE} report --include=win32ctypes*
+if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
+    wine ${COVERAGE} run -m unittest2 discover win32ctypes -v
+else
+    wine ${COVERAGE} run -m unittest discover win32ctypes -v
+fi
+dir
+wine ${COVERAGE} report

@@ -30,3 +30,5 @@ else:
     _PyBytes_FromStringAndSize = function_factory(
         pythonapi.PyString_FromStringAndSize,
         return_type=py_object)
+
+IS_INTRESOURCE = lambda x: x >> 16 == 0
