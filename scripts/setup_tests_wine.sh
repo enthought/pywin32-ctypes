@@ -40,15 +40,12 @@ PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
 
-wget https://bootstrap.pypa.io/ez_setup.py
-wine ${PYTHON} ez_setup.py
-
-wine ${EASY_INSTALL} coverage unittest2
-
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 unzip ${PYWIN32_EXE} -d temp &> /dev/null;
-
 wine xcopy /R /E /Y /I temp/PLATLIB ${PYTHON_SITE_PACKAGES}
 wine ${PYTHON} temp/SCRIPTS/pywin32_postinstall.py -install
 
+wget https://bootstrap.pypa.io/ez_setup.py
+wine ${PYTHON} ez_setup.py
+wine ${EASY_INSTALL} coverage unittest2
 wine ${PYTHON} setup.py install
