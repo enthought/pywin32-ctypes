@@ -12,7 +12,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, WCHAR, WORD, HRSRC,
     HGLOBAL, LPVOID, UINT)
 
-from ._common import LONG_PTR
+from ._common import LONG_PTR, IS_INTRESOURCE
 from ._util import check_null, check_zero, function_factory
 
 _ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LONG_PTR)
@@ -25,7 +25,7 @@ kernel32 = ctypes.windll.kernel32
 
 def ENUMRESTYPEPROC(callback):
     def wrapped(handle, type_, param):
-        if type_ >> 16 == 0:
+        if IS_INTRESOURCE(type_):
             type_ = int(type_)
         else:
             type_ = ctypes.cast(type_, LPCWSTR).value
@@ -36,11 +36,11 @@ def ENUMRESTYPEPROC(callback):
 
 def ENUMRESNAMEPROC(callback):
     def wrapped(handle, type_, name, param):
-        if type_ >> 16 == 0:
+        if IS_INTRESOURCE(name):
             type_ = int(type_)
         else:
             type_ = ctypes.cast(type_, LPCWSTR).value
-        if name >> 16 == 0:
+        if IS_INTRESOURCE(type_):
             name = int(name)
         else:
             name = ctypes.cast(name, LPCWSTR).value
@@ -51,11 +51,11 @@ def ENUMRESNAMEPROC(callback):
 
 def ENUMRESLANGPROC(callback):
     def wrapped(handle, type_, name, language, param):
-        if type_ >> 16 == 0:
+        if IS_INTRESOURCE(type_):
             type_ = int(type_)
         else:
             type_ = ctypes.cast(type_, LPCWSTR).value
-        if name >> 16 == 0:
+        if IS_INTRESOURCE(name):
             name = int(name)
         else:
             name = ctypes.cast(name, LPCWSTR).value
