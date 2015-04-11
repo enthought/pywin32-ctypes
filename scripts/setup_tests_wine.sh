@@ -9,24 +9,28 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     PYTHON_DIR="c:/Python26/"
     EASY_INSTALL="c:/Python26/Scripts/easy_install.exe"
     PIP="c:/Python26/Scripts/pip.exe"
+    TEMP_DIR="temp26"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
     PYTHON_MSI="python-2.7.6.msi"
     PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python27/"
     EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
     PIP="c:/Python27/Scripts/pip.exe"
+    TEMP_DIR="temp27"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
     PYTHON_MSI="python-3.2.5.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.2.5/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python32/"
     EASY_INSTALL="c:/Python32/Scripts/easy_install.exe"
     PIP="c:/Python32/Scripts/pip.exe"
+    TEMP_DIR="temp32"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.3" ]; then
     PYTHON_MSI="python-3.3.4.msi"
     PYTHON_URL="http://www.python.org/ftp/python/3.3.4/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python33/"
     EASY_INSTALL="c:/Python33/Scripts/easy_install.exe"
     PIP="c:/Python33/Scripts/pip.exe"
+    TEMP_DIR="temp33"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
     exit 1;
@@ -41,9 +45,9 @@ wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
-unzip ${PYWIN32_EXE} -d temp &> /dev/null;
-wine xcopy /R /E /Y /I temp/PLATLIB ${PYTHON_SITE_PACKAGES}
-wine ${PYTHON} temp/SCRIPTS/pywin32_postinstall.py -install
+unzip ${PYWIN32_EXE} -d ${TEMP_DIR} &> /dev/null;
+wine xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
+wine ${PYTHON}  ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
 
 wget https://bootstrap.pypa.io/ez_setup.py
 wine ${PYTHON} ez_setup.py
