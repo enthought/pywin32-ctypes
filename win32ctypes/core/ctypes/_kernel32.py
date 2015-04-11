@@ -12,15 +12,26 @@ from ctypes.wintypes import (
     BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, WCHAR, WORD, HRSRC,
     HGLOBAL, LPVOID, UINT)
 
-from ._common import LONG_PTR
+from ._common import LONG_PTR, LPTSTR
 from ._util import check_null, check_zero, function_factory
 
-ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LONG_PTR)
+# While the lpszType is a LPTSTR we need to treat it as pointer
+_ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LONG_PTR)
 ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LONG, LONG, LONG_PTR)
 ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
     BOOL, HMODULE, WCHAR, WCHAR, WORD, LONG_PTR)
 
 kernel32 = ctypes.windll.kernel32
+
+
+def ENUMRESTYPEPROC(callback):
+    def wrapped(hModule, typename, param):
+        if typename >> 16 == 0:
+            return callback(hModule, int(typename), param)
+        else:
+            return True
+
+    return _ENUMRESTYPEPROC(wrapped)
 
 _GetACP = function_factory(kernel32.GetACP, None, UINT)
 
@@ -37,7 +48,7 @@ _FreeLibrary = function_factory(
 
 _EnumResourceTypes = function_factory(
     kernel32.EnumResourceTypesW,
-    [HMODULE, ENUMRESTYPEPROC, LONG_PTR],
+    [HMODULE, _ENUMRESTYPEPROC, LONG_PTR],
     BOOL,
     check_zero)
 
