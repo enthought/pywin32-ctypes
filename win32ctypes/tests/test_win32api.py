@@ -45,10 +45,10 @@ class TestWin32API(compat.TestCase):
             self.module.FreeLibrary(-3)
 
     def test_enum_resource_types(self):
-        with self.load_library(win32api, 'explorer.exe') as handle:
+        with self.load_library(win32api, 'shell32.dll') as handle:
             expected = win32api.EnumResourceTypes(handle)
 
-        with self.load_library(pywin32.win32api, 'explorer.exe') as handle:
+        with self.load_library(pywin32.win32api, 'shell32.dll') as handle:
             resource_types = self.module.EnumResourceTypes(handle)
 
         self.assertEqual(resource_types, expected)
@@ -57,7 +57,7 @@ class TestWin32API(compat.TestCase):
             self.module.EnumResourceTypes(-3)
 
     def test_enum_resource_names(self):
-        with self.load_library(win32api, 'explorer.exe') as handle:
+        with self.load_library(win32api, 'shell32.dll') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
                 expected = win32api.EnumResourceNames(handle, resource_type)
