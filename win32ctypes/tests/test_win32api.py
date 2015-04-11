@@ -45,10 +45,10 @@ class TestWin32API(compat.TestCase):
             self.module.FreeLibrary(-3)
 
     def test_enum_resource_types(self):
-        with self.load_library(win32api, 'shell32.dll') as handle:
+        with self.load_library(win32api, u'shell32.dll') as handle:
             expected = win32api.EnumResourceTypes(handle)
 
-        with self.load_library(pywin32.win32api, 'shell32.dll') as handle:
+        with self.load_library(pywin32.win32api, u'shell32.dll') as handle:
             resource_types = self.module.EnumResourceTypes(handle)
 
         self.assertEqual(resource_types, expected)
@@ -57,19 +57,23 @@ class TestWin32API(compat.TestCase):
             self.module.EnumResourceTypes(-3)
 
     def test_enum_resource_names(self):
-        with self.load_library(win32api, 'shell32.dll') as handle:
+        with self.load_library(win32api, u'shell32.dll') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
                 expected = win32api.EnumResourceNames(handle, resource_type)
                 resource_names = self.module.EnumResourceNames(
                     handle, resource_type)
-            self.assertEqual(resource_names, expected)
+                self.assertEqual(resource_names, expected)
+                # check that the #<index> format works
+                resource_names = self.module.EnumResourceNames(
+                    handle, self._id2str(resource_type))
+                self.assertEqual(resource_names, expected)
 
         with self.assertRaises(error):
             self.module.EnumResourceNames(2, 3)
 
     def test_enum_resource_languages(self):
-        with self.load_library(win32api, 'explorer.exe') as handle:
+        with self.load_library(win32api, u'shell32.dll') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
                 resource_names = win32api.EnumResourceNames(
@@ -80,12 +84,17 @@ class TestWin32API(compat.TestCase):
                     resource_languages = self.module.EnumResourceLanguages(
                         handle, resource_type, resource_name)
                     self.assertEqual(resource_languages, expected)
+                    # check that the #<index> format works
+                    resource_languages = self.module.EnumResourceLanguages(
+                        handle, self._id2str(resource_type),
+                        self._id2str(resource_name))
+                    self.assertEqual(resource_languages, expected)
 
         with self.assertRaises(error):
             self.module.EnumResourceLanguages(handle, resource_type, 2235)
 
     def test_load_resource(self):
-        with self.load_library(win32api, 'explorer.exe') as handle:
+        with self.load_library(win32api, u'explorer.exe') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
                 resource_names = win32api.EnumResourceNames(
@@ -100,11 +109,22 @@ class TestWin32API(compat.TestCase):
                         resource = self.module.LoadResource(
                             handle, resource_type, resource_name,
                             resource_language)
+                        # check that the #<index> format works
+                        resource = self.module.LoadResource(
+                            handle, self._id2str(resource_type),
+                            self._id2str(resource_name),
+                            resource_language)
                         self.assertEqual(resource, expected)
 
         with self.assertRaises(error):
             self.module.LoadResource(
                 handle, resource_type, resource_name, 12435)
+
+    def _id2str(self, type_id):
+        if hasattr(type_id, 'index'):
+            return type_id
+        else:
+            return u'#{}'.format(type_id)
 
 
 if __name__ == '__main__':
