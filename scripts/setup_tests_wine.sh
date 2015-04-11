@@ -44,12 +44,14 @@ PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
 
+wget https://pypi.python.org/packages/source/s/setuptools/setuptools-2.2.tar.gz
+tar xf setuptools-2.2.tar.gz
+(cd setuptools-2.2 && wine ${PYTHON} setup.py install)
+
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 unzip ${PYWIN32_EXE} -d ${TEMP_DIR} &> /dev/null;
 wine xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
 wine ${PYTHON}  ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
 
-wget https://bootstrap.pypa.io/ez_setup.py
-wine ${PYTHON} ez_setup.py
-wine ${EASY_INSTALL} coverage unittest2
+wine ${EASY_INSTALL} coverage nose
 wine ${PYTHON} setup.py install
