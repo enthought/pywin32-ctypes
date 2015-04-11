@@ -24,8 +24,8 @@ def LoadLibraryEx(FileName, handle, flags):
 def EnumResourceTypes(hModule):
     resource_types = []
 
-    def callback(hModule, typeid, param):
-        resource_types.append(typeid)
+    def callback(hModule, type_, param):
+        resource_types.append(type_)
         return True
 
     with pywin32error():
