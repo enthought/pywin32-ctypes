@@ -15,10 +15,10 @@ from ctypes.wintypes import (
 from ._common import LONG_PTR
 from ._util import check_null, check_zero, function_factory
 
-ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
-    BOOL, HMODULE, WCHAR, WCHAR, WORD, LONG_PTR)
 _ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LONG_PTR)
 _ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LPVOID, LONG_PTR)
+_ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
+    BOOL, HMODULE, LPVOID, LPVOID, WORD, LONG_PTR)
 
 kernel32 = ctypes.windll.kernel32
 
@@ -47,6 +47,21 @@ def ENUMRESNAMEPROC(callback):
         return callback(handle, type_, name, param)
 
     return _ENUMRESNAMEPROC(wrapped)
+
+
+def ENUMRESLANGPROC(callback):
+    def wrapped(handle, type_, name, language, param):
+        if type_ >> 16 == 0:
+            type_ = int(type_)
+        else:
+            type_ = ctypes.cast(type_, LPCWSTR).value
+        if name >> 16 == 0:
+            name = int(name)
+        else:
+            name = ctypes.cast(name, LPCWSTR).value
+        return callback(handle, type_, name, language, param)
+
+    return _ENUMRESLANGPROC(wrapped)
 
 _GetACP = function_factory(kernel32.GetACP, None, UINT)
 
@@ -93,7 +108,7 @@ _BaseEnumResourceNames = function_factory(
 
 _BaseEnumResourceLanguages = function_factory(
     kernel32.EnumResourceLanguagesW,
-    [HMODULE, LPCWSTR, LPCWSTR, ENUMRESLANGPROC, LONG_PTR],
+    [HMODULE, LPCWSTR, LPCWSTR, _ENUMRESLANGPROC, LONG_PTR],
     BOOL,
     check_zero)
 
