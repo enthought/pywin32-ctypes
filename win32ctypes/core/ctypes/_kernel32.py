@@ -36,11 +36,11 @@ def ENUMRESTYPEPROC(callback):
 
 def ENUMRESNAMEPROC(callback):
     def wrapped(handle, type_, name, param):
-        if IS_INTRESOURCE(name):
+        if IS_INTRESOURCE(type_):
             type_ = int(type_)
         else:
             type_ = ctypes.cast(type_, LPCWSTR).value
-        if IS_INTRESOURCE(type_):
+        if IS_INTRESOURCE(name):
             name = int(name)
         else:
             name = ctypes.cast(name, LPCWSTR).value
