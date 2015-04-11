@@ -3,8 +3,14 @@ set -e
 
 export DISPLAY=:99.0
 
+if [ "${BITS}" = "64" ]; then
+    MSI_END=".amd64.msi"
+else
+    MSI_END=".msi"
+fi
+
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
-    PYTHON_MSI="python-2.6.6.msi"
+    PYTHON_MSI="python-2.6.6${MSI_END}"
     PYTHON_URL="http://www.python.org/ftp/python/2.6.6/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python26/"
     EASY_INSTALL="c:/Python26/Scripts/easy_install.exe"
@@ -12,7 +18,7 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     PYVERSION="cp26"
     TEMP_DIR="temp26"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
-    PYTHON_MSI="python-2.7.6.msi"
+    PYTHON_MSI="python-2.7.6${MSI_END}"
     PYTHON_URL="http://www.python.org/ftp/python/2.7.6/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python27/"
     EASY_INSTALL="c:/Python27/Scripts/easy_install.exe"
@@ -20,7 +26,7 @@ elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
     PYVERSION="cp27"
     TEMP_DIR="temp27"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
-    PYTHON_MSI="python-3.2.5.msi"
+    PYTHON_MSI="python-3.2.5${MSI_END}"
     PYTHON_URL="http://www.python.org/ftp/python/3.2.5/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python32/"
     EASY_INSTALL="c:/Python32/Scripts/easy_install.exe"
@@ -28,7 +34,7 @@ elif [ "${TRAVIS_PYTHON_VERSION}" = "3.2" ]; then
     PYVERSION="cp32"
     TEMP_DIR="temp32"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "3.3" ]; then
-    PYTHON_MSI="python-3.3.4.msi"
+    PYTHON_MSI="python-3.3.4${MSI_END}"
     PYTHON_URL="http://www.python.org/ftp/python/3.3.4/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python33/"
     EASY_INSTALL="c:/Python33/Scripts/easy_install.exe"
@@ -40,11 +46,20 @@ else
     exit 1;
 fi
 
-PYTHON="${PYTHON_DIR}python.exe"
-PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
-PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
-CFFI_WHEEL_URL="cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
-PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
+if [ "${ARCH}" = "64" ]; then
+    PYTHON="${PYTHON_DIR}python.exe"
+    PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
+    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
+    CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
+    PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
+else
+    PYTHON="${PYTHON_DIR}python.exe"
+    PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
+    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
+    CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win32.whl"
+    PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
+fi
+
 
 wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
