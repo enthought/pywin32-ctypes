@@ -1,11 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='pywin32-ctypes',
     version='0.0.2.dev1',
     author='Enthought Inc',
     author_email='info@enthought.com',
-    packages=['win32ctypes', 'win32ctypes.tests'],
+    packages=find_packages(),
     license="BSD",
     classifiers=[
         "Programming Language :: Python :: 2.6",
