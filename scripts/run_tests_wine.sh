@@ -3,7 +3,7 @@ set -e
 
 export DISPLAY=:99.0
 
-if [ "${BITS}" = "64" ]; then
+if [ "${MODE}" == *"64" ]; then
     WINE="wine64"
 else
     WINE="wine"

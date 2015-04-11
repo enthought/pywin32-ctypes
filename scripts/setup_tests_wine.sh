@@ -3,7 +3,7 @@ set -e
 
 export DISPLAY=:99.0
 
-if [ "${BITS}" = "64" ]; then
+if [ "${MODE}" == *"64" ]; then
     MSI_END=".amd64.msi"
     WINE="wine64"
 else
@@ -48,7 +48,7 @@ else
     exit 1;
 fi
 
-if [ "${BITS}" = "64" ]; then
+if [ "${MODE}" == *"64" ]; then
     PYTHON="${PYTHON_DIR}python.exe"
     PYWIN32_EXE="pywin32-218.win-amd64-py${TRAVIS_PYTHON_VERSION}.exe"
     PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/${PYWIN32_EXE}/download"
@@ -84,7 +84,7 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     (cd unittest2-1.0.1 && ${WINE} ${PYTHON} setup.py install)
 fi
 
-if [ "${CFFI}" = "true" ]; then
+if [ "${MODE}" == "cffi"* ]; then
     ${WINE} ${EASY_INSTALL} pip
     ${WINE} ${PIP} install ${CFFI_WHEEL_URL}
 fi
