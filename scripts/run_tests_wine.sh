@@ -16,5 +16,5 @@ else
 fi
 
 wine ${COVERAGE} erase
-wine ${COVERAGE} run -m nose.core win32ctypes
-wine ${COVERAGE} report --include=win32ctypes*
+wine ${COVERAGE} run -m haas -v
+wine ${COVERAGE} report

@@ -44,7 +44,7 @@ wget https://pypi.python.org/packages/source/s/setuptools/setuptools-2.2.tar.gz
 tar xf setuptools-2.2.tar.gz
 (cd setuptools-2.2 && wine ${PYTHON} setup.py install)
 
-wine ${EASY_INSTALL} nose coverage
+wine ${EASY_INSTALL} coverage haas
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 unzip ${PYWIN32_EXE} -d temp &> /dev/null;
