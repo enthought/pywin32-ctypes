@@ -40,11 +40,10 @@ PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 wget ${PYTHON_URL}
 wine msiexec /i ${PYTHON_MSI} /qn
 
-wget https://pypi.python.org/packages/source/s/setuptools/setuptools-2.2.tar.gz
-tar xf setuptools-2.2.tar.gz
-(cd setuptools-2.2 && wine ${PYTHON} setup.py install)
+wget https://bootstrap.pypa.io/ez_setup.py
+wine ${PYTHON} ez_setup.py
 
-wine ${PIP} coverage haas
+wine ${EASY_INSTALL} coverage haas
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 unzip ${PYWIN32_EXE} -d temp &> /dev/null;
