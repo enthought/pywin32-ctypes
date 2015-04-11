@@ -6,3 +6,8 @@
 # LICENSE.txt
 #
 from __future__ import absolute_import
+from ._util import ffi
+
+
+def IS_INTRESOURCE(x):
+    return int(ffi.cast("uintptr_t", x)) >> 16 == 0
