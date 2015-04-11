@@ -16,5 +16,5 @@ else
 fi
 
 wine ${COVERAGE} erase
-wine ${COVERAGE} run -m haas -v
+wine ${COVERAGE} run -m unittest discover -v
 wine ${COVERAGE} report

@@ -43,7 +43,7 @@ wine msiexec /i ${PYTHON_MSI} /qn
 wget https://bootstrap.pypa.io/ez_setup.py
 wine ${PYTHON} ez_setup.py
 
-wine ${EASY_INSTALL} coverage haas
+wine ${EASY_INSTALL} coverage unittest2
 
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 unzip ${PYWIN32_EXE} -d temp &> /dev/null;
