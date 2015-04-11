@@ -24,5 +24,5 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
 else
     wine ${COVERAGE} run -m unittest discover win32ctypes -v
 fi
-dir
+
 wine ${COVERAGE} report
