@@ -12,7 +12,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, WCHAR, WORD, HRSRC,
     HGLOBAL, LPVOID, UINT)
 
-from ._common import LONG_PTR, LPTSTR
+from ._common import LONG_PTR
 from ._util import check_null, check_zero, function_factory
 
 # While the lpszType is a LPTSTR we need to treat it as pointer
@@ -29,7 +29,8 @@ def ENUMRESTYPEPROC(callback):
         if typename >> 16 == 0:
             return callback(hModule, int(typename), param)
         else:
-            return True
+            name = ctypes.cast(typename, LPCWSTR)
+            return callback(hModule, name.value, param)
 
     return _ENUMRESTYPEPROC(wrapped)
 
