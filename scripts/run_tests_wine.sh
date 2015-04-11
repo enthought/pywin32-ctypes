@@ -16,5 +16,9 @@ else
 fi
 
 wine ${COVERAGE} erase
-wine ${COVERAGE} run -m nose.core win32ctypes
-wine ${COVERAGE} report --include=win32ctypes*
+if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
+    wine ${COVERAGE} run -m unittest2 discover -v
+else
+    wine ${COVERAGE} run -m unittest discover -v
+fi
+wine ${COVERAGE} report
