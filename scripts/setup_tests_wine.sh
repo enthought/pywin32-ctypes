@@ -5,8 +5,10 @@ export DISPLAY=:99.0
 
 if [ "${BITS}" = "64" ]; then
     MSI_END=".amd64.msi"
+    WINE="wine64"
 else
     MSI_END=".msi"
+    WINE="wine"
 fi
 
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
@@ -46,23 +48,23 @@ else
     exit 1;
 fi
 
-if [ "${ARCH}" = "64" ]; then
+if [ "${BITS}" = "64" ]; then
     PYTHON="${PYTHON_DIR}python.exe"
-    PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
-    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
+    PYWIN32_EXE="pywin32-218.win-amd64-py${TRAVIS_PYTHON_VERSION}.exe"
+    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/${PYWIN32_EXE}/download"
     CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
     PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 else
     PYTHON="${PYTHON_DIR}python.exe"
     PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
-    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe/download"
+    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/${PYWIN32_EXE}/download"
     CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win32.whl"
     PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 fi
 
 
 wget ${PYTHON_URL}
-wine msiexec /i ${PYTHON_MSI} /qn
+${WINE} msiexec /i ${PYTHON_MSI} /qn
 
 wget https://pypi.python.org/packages/source/s/setuptools/setuptools-2.2.tar.gz
 tar xf setuptools-2.2.tar.gz
@@ -71,20 +73,20 @@ tar xf setuptools-2.2.tar.gz
 wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 zip -FFv ${PYWIN32_EXE} --out fixed.zip
 unzip -o -qq fixed.zip -d ${TEMP_DIR}
-wine xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
-wine ${PYTHON} ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
+${WINE} xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
+${WINE} ${PYTHON} ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
 
-wine ${EASY_INSTALL} coverage
+${WINE} ${EASY_INSTALL} coverage
 
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     wget https://pypi.python.org/packages/source/u/unittest2/unittest2-1.0.1.tar.gz#md5=6614a229aa3619e0d11542dd8f2fd8b8
     tar -xvf unittest2-1.0.1.tar.gz
-    (cd unittest2-1.0.1 && wine ${PYTHON} setup.py install)
+    (cd unittest2-1.0.1 && ${WINE} ${PYTHON} setup.py install)
 fi
 
 if [ "${CFFI}" = "true" ]; then
-    wine ${EASY_INSTALL} pip
-    wine ${PIP} install ${CFFI_WHEEL_URL}
+    ${WINE} ${EASY_INSTALL} pip
+    ${WINE} ${PIP} install ${CFFI_WHEEL_URL}
 fi
 
-wine ${PYTHON} setup.py install
+${WINE} ${PYTHON} setup.py install
