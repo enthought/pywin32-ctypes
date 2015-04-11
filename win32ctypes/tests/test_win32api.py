@@ -42,7 +42,7 @@ class TestWin32API(compat.TestCase):
             self._free_library(pywin32.win32api, -3)
 
     def test_enum_resource_types(self):
-        self.handle = self._load_library(win32api)
+        self.handle = self._load_library(win32api, 'explorer.exe')
         original = self._enum_resource_types(win32api, self.handle)
         mini = self._enum_resource_types(pywin32.win32api, self.handle)
         self.assertEqual(mini, original)
@@ -108,13 +108,13 @@ class TestWin32API(compat.TestCase):
             pywin32.win32api.LoadResource(
                 handle, resource_type, resource_name, 12435)
 
-    def _load_library(self, module):
+    def _load_library(self, module, library=sys.executable):
         # backward shim for win32api module which does not export
         # LOAD_LIBRARY_AS_DATAFILE
         LOAD_LIBRARY_AS_DATAFILE = getattr(
             module, "LOAD_LIBRARY_AS_DATAFILE", 0x2)
         return module.LoadLibraryEx(
-            'explorer.exe', 0, LOAD_LIBRARY_AS_DATAFILE)
+            library, 0, LOAD_LIBRARY_AS_DATAFILE)
 
     def _free_library(self, module, handle):
         return module.FreeLibrary(handle)
