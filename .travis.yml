@@ -18,6 +18,11 @@ before_install:
 
 install:
   - sudo apt-get install wine
-  - sh scripts/setup_tests_wine.sh | grep -v ^fixme:msvcrt
+  - pip install coveralls
+  - sh scripts/setup_tests_wine.sh
+
 script:
-  - sh scripts/run_tests_wine.sh | grep -v ^fixme:msvcrt
+  - sh scripts/run_tests_wine.sh
+
+after_success:
+  coveralls
