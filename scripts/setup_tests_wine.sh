@@ -57,17 +57,19 @@ wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
 zip -FFv ${PYWIN32_EXE} --out fixed.zip
 unzip -o -qq fixed.zip -d ${TEMP_DIR}
 wine xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
-wine ${PYTHON}  ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
+wine ${PYTHON} ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
+
+wine ${EASY_INSTALL} coverage
 
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     wget https://pypi.python.org/packages/source/u/unittest2/unittest2-1.0.1.tar.gz#md5=6614a229aa3619e0d11542dd8f2fd8b8
     tar -xvf unittest2-1.0.1.tar.gz
     (cd unittest2-1.0.1 && wine ${PYTHON} setup.py install)
-
 fi
-wine ${EASY_INSTALL} coverage
+
 if [ "${CFFI}" = "true" ]; then
-    wine ${EASY_INSTALL} ${CFFI_WHEEL_URL}
+    wine ${EASY_INSTALL} pip
+    wine ${PIP} install ${CFFI_WHEEL_URL}
 fi
 
 wine ${PYTHON} setup.py install
