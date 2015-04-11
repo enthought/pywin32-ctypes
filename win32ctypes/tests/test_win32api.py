@@ -49,7 +49,7 @@ class TestWin32API(compat.TestCase):
             expected = win32api.EnumResourceTypes(handle)
 
         with self.load_library(pywin32.win32api, 'explorer.exe') as handle:
-            resource_types = pywin32.win32api.EnumResourceTypes(handle)
+            resource_types = self.module.EnumResourceTypes(handle)
 
         self.assertEqual(resource_types, expected)
 
