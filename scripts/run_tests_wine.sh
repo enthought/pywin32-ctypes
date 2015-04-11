@@ -15,10 +15,14 @@ else
     exit 1;
 fi
 
+mkdir -p testing
+cp .coveragerc testing/
+cd testing
 wine ${COVERAGE} erase
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
-    wine ${COVERAGE} run -m unittest2 discover -v
+    wine ${COVERAGE} run -m unittest2 discover win32ctypes -v
 else
-    wine ${COVERAGE} run -m unittest discover -v
+    wine ${COVERAGE} run -m unittest discover win32ctypes -v
 fi
+dir
 wine ${COVERAGE} report
