@@ -114,7 +114,7 @@ class TestWin32API(compat.TestCase):
         LOAD_LIBRARY_AS_DATAFILE = getattr(
             module, "LOAD_LIBRARY_AS_DATAFILE", 0x2)
         return module.LoadLibraryEx(
-            sys.executable, 0, LOAD_LIBRARY_AS_DATAFILE)
+            'explorer.exe', 0, LOAD_LIBRARY_AS_DATAFILE)
 
     def _free_library(self, module, handle):
         return module.FreeLibrary(handle)
