@@ -3,6 +3,14 @@ set -e
 
 export DISPLAY=:99.0
 
+if [ "${MODE}" == *"64" ]; then
+    WINE="wine64"
+else
+    WINE="wine"
+fi
+
+
+
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     COVERAGE="c:/Python26/Scripts/coverage.exe"
 elif [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then
@@ -18,11 +26,11 @@ fi
 mkdir -p testing
 cp .coveragerc testing/
 cd testing
-wine ${COVERAGE} erase
+${WINE} ${COVERAGE} erase
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
-    wine ${COVERAGE} run -m unittest2 discover win32ctypes -v
+    ${WINE} ${COVERAGE} run -m unittest2 discover win32ctypes -v
 else
-    wine ${COVERAGE} run -m unittest discover win32ctypes -v
+    ${WINE} ${COVERAGE} run -m unittest discover win32ctypes -v
 fi
-dir
-wine ${COVERAGE} report
+
+${WINE} ${COVERAGE} report

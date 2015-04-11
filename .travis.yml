@@ -6,6 +6,12 @@ python:
   - "3.2"
   - "3.3"
 
+ env:
+  - CFFI=true
+    BITS=64
+  - CFFI=false
+    BITS=64
+
 before_install:
   - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
   - sudo apt-get update
