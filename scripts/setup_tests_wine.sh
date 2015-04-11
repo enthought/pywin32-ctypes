@@ -51,3 +51,5 @@ unzip ${PYWIN32_EXE} -d temp &> /dev/null;
 
 wine xcopy /R /E /Y /I temp/PLATLIB ${PYTHON_SITE_PACKAGES}
 wine ${PYTHON} temp/SCRIPTS/pywin32_postinstall.py -install
+
+wine ${PYTHON} setup.py install
