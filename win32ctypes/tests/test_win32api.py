@@ -34,7 +34,7 @@ class TestWin32API(compat.TestCase):
                 self.assertEqual(handle, expected)
 
         with self.assertRaises(error):
-            self.module.LoadLibraryEx('ttt.dll', 0, 0x2)
+            self.module.LoadLibraryEx(u'ttt.dll', 0, 0x2)
 
     def test_free_library(self):
         with self.load_library(win32api) as handle:
