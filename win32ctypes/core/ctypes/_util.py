@@ -6,7 +6,7 @@
 # LICENSE.txt
 #
 
-""" Utility functions to help with python wrapping.
+""" Utility functions to help with ctypes wrapping.
 """
 from __future__ import absolute_import
 

@@ -9,7 +9,7 @@ A reimplementation of pywin32 that is pure python (uses ctypes).
 Example of usage::
 
     # Equivalent to 'import win32api' from pywin32.
-    from win32ctypes import win32api
+    from win32ctypes.pywin32 import win32api
 
     win32api.LoadLibraryEx(sys.executable, 0, win32api.LOAD_LIBRARY_AS_DATAFILE)
 
