@@ -30,7 +30,7 @@ BOOL EnumResourceNamesW(
 BOOL EnumResourceLanguagesW(
     HMODULE hModule, LPCTSTR lpType,
     LPCTSTR lpName, ENUMRESLANGPROC lpEnumFunc, LONG_PTR lParam);
-HRSRC FindResourceEx(
+HRSRC FindResourceExW(
     HMODULE hModule, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage);
 
 """)
@@ -95,4 +95,7 @@ def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
 
 
 def _FindResourceEx(hModule, lpType, lpName, wLanguage):
-    pass
+    return check_null(
+        kernel32.FindResourceExW(
+            PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), wLanguage))
+
