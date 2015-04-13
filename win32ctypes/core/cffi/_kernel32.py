@@ -34,6 +34,7 @@ HRSRC FindResourceExW(
     HMODULE hModule, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage);
 DWORD SizeofResource(HMODULE hModule, HRSRC hResInfo);
 HGLOBAL LoadResource(HMODULE hModule, HRSRC hResInfo);
+LPVOID LockResource(HGLOBAL hResData);
 
 """)
 
@@ -109,3 +110,6 @@ def _SizeofResource(hModule, hResInfo):
 def _LoadResource(hModule, hResInfo):
     return check_null(kernel32.LoadResource(PVOID(hModule), hResInfo))
 
+
+def _LockResource(hResData):
+    return check_null(kernel32.LockResource(hResData))
