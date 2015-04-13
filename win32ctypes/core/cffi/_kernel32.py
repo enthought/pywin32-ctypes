@@ -32,6 +32,7 @@ BOOL EnumResourceLanguagesW(
     LPCTSTR lpName, ENUMRESLANGPROC lpEnumFunc, LONG_PTR lParam);
 HRSRC FindResourceExW(
     HMODULE hModule, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage);
+DWORD SizeofResource(HMODULE hModule, HRSRC hResInfo);
 
 """)
 
@@ -98,4 +99,8 @@ def _FindResourceEx(hModule, lpType, lpName, wLanguage):
     return check_null(
         kernel32.FindResourceExW(
             PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), wLanguage))
+
+
+def _SizeofResource(hModule, hResInfo):
+    return check_zero(kernel32.SizeofResource(PVOID(hModule), hResInfo))
 
