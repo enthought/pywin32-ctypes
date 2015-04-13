@@ -7,8 +7,8 @@
 #
 from __future__ import absolute_import
 
-from ._util import ffi, check_null, check_zero, HMODULE, PVOID
-from ._common import RESOURCE, resource
+from ._util import (
+    ffi, check_null, check_zero, HMODULE, PVOID, RESOURCE, resource)
 
 ffi.cdef("""
 
