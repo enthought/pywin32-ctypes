@@ -7,5 +7,9 @@
 #
 from __future__ import absolute_import
 
+from ._util import ffi
 
 
+def _PyBytes_FromStringAndSize(pointer, size):
+    buffer = ffi.buffer(pointer, size)
+    return buffer[:]
