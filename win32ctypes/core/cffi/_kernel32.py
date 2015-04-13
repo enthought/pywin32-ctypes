@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 
 from ._util import ffi, check_null, check_zero, HMODULE, PVOID
-from ._common import IS_INTRESOURCE
+from ._common import RESOURCE, resource
 
 ffi.cdef("""
 
@@ -30,6 +30,8 @@ BOOL EnumResourceNamesW(
 BOOL EnumResourceLanguagesW(
     HMODULE hModule, LPCTSTR lpType,
     LPCTSTR lpName, ENUMRESLANGPROC lpEnumFunc, LONG_PTR lParam);
+HRSRC FindResourceEx(
+    HMODULE hModule, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage);
 
 """)
 
@@ -38,40 +40,22 @@ kernel32 = ffi.dlopen('kernel32.dll')
 
 def ENUMRESTYPEPROC(callback):
     def wrapped(hModule, lpszType, lParam):
-        if IS_INTRESOURCE(lpszType):
-            resource_type = int(ffi.cast("uintptr_t", lpszType))
-        else:
-            resource_type = ffi.string(lpszType)
-        return callback(hModule, resource_type, lParam)
+        return callback(hModule, resource(lpszType), lParam)
     return wrapped
 
 
 def ENUMRESNAMEPROC(callback):
     def wrapped(hModule, lpszType, lpszName, lParam):
-        if IS_INTRESOURCE(lpszType):
-            resource_type = int(ffi.cast("uintptr_t", lpszType))
-        else:
-            resource_type = ffi.string(lpszType)
-        if IS_INTRESOURCE(lpszName):
-            resource_name = int(ffi.cast("uintptr_t", lpszName))
-        else:
-            resource_name = ffi.string(lpszName)
-        return callback(hModule, resource_type, resource_name, lParam)
+        return callback(
+            hModule, resource(lpszType), resource(lpszName), lParam)
     return wrapped
 
 
 def ENUMRESLANGPROC(callback):
     def wrapped(hModule, lpszType, lpszName, wIDLanguage, lParam):
-        if IS_INTRESOURCE(lpszType):
-            resource_type = int(ffi.cast("uintptr_t", lpszType))
-        else:
-            resource_type = ffi.string(lpszType)
-        if IS_INTRESOURCE(lpszName):
-            resource_name = int(ffi.cast("uintptr_t", lpszName))
-        else:
-            resource_name = ffi.string(lpszName)
         return callback(
-            hModule, resource_type, resource_name, wIDLanguage, lParam)
+            hModule, resource(lpszType), resource(lpszName),
+            wIDLanguage, lParam)
     return wrapped
 
 
@@ -98,21 +82,17 @@ def _EnumResourceTypes(hModule, lpEnumFunc, lParam):
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESNAMEPROC', lpEnumFunc)
-    if isinstance(lpszType, (int, long)):
-        lpszType = ffi.cast('wchar_t *', lpszType)
     check_zero(
         kernel32.EnumResourceNamesW(
-            PVOID(hModule), lpszType, callback, lParam))
+            PVOID(hModule), RESOURCE(lpszType), callback, lParam))
 
 
 def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESLANGPROC', lpEnumFunc)
-    if isinstance(lpType, (int, long)):
-        lpType = ffi.cast('wchar_t *', lpType)
-    if isinstance(lpName, (int, long)):
-        lpName = ffi.cast('wchar_t *', lpName)
-    elif isinstance(lpName, str):
-        lpName = unicode(lpName)
     check_zero(
         kernel32.EnumResourceLanguagesW(
-            PVOID(hModule), lpType, lpName, callback, lParam))
+            PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), callback, lParam))
+
+
+def _FindResourceEx(hModule, lpType, lpName, wLanguage):
+    pass
