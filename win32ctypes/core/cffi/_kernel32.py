@@ -94,7 +94,8 @@ def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESLANGPROC', lpEnumFunc)
     check_zero(
         kernel32.EnumResourceLanguagesW(
-            PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), callback, lParam))
+            PVOID(hModule), RESOURCE(lpType),
+            RESOURCE(lpName), callback, lParam))
 
 
 def _FindResourceEx(hModule, lpType, lpName, wLanguage):
