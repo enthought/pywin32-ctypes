@@ -23,6 +23,7 @@ def HMODULE(cdata):
 def PVOID(x):
     return ffi.cast("void *", x)
 
+
 def IS_INTRESOURCE(x):
     """ Check if x is an index into the id list.
 
@@ -56,19 +57,19 @@ class ErrorWhen(object):
     def __init__(self, check):
         self._check = check
 
-    def __call__(self, value):
+    def __call__(self, value, function_name=''):
         if value == self._check:
-            self._raise_error()
+            self._raise_error(function_name)
         else:
             return value
 
-    def _raise_error(self):
+    def _raise_error(self, function_name=''):
         code, message = ffi.getwinerror()
         exception = WindowsError()
         exception.errno = ffi.errno
         exception.winerror = code
         exception.strerror = message
-        exception.function = ''
+        exception.function = function_name
         raise exception
 
 check_null = ErrorWhen(ffi.NULL)
