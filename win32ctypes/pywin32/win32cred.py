@@ -7,10 +7,7 @@
 #
 from __future__ import absolute_import
 
-import ctypes
-
-from win32ctypes.core import _kernel32, _advapi32, _common
-from win32ctypes.core.compat import is_unicode, unicode
+from win32ctypes.core import _advapi32, _common
 from win32ctypes.pywin32.pywintypes import pywin32error
 
 CRED_TYPE_GENERIC = 0x1
@@ -40,31 +37,8 @@ def CredWrite(credential, flag):
               binary stream - this function takes care of the encoding).
             - Comment: a string
     """
-
-    unsupported = set(credential.keys()) - _advapi32.SUPPORTED_CREDKEYS
-    if len(unsupported):
-        raise ValueError("Unsupported keys: {0}".format(unsupported))
-    if flag != 0:
-        raise ValueError("flag != 0 not yet supported")
-
-    c_creds = _advapi32.CREDENTIAL()
-    c_pcreds = ctypes.pointer(c_creds)
-
-    ctypes.memset(c_pcreds, flag, ctypes.sizeof(c_creds))
-
-    for key in _advapi32.SUPPORTED_CREDKEYS:
-        if key in credential:
-            if key != 'CredentialBlob':
-                setattr(c_creds, key, credential[key])
-            else:
-                blob = _make_blob(credential['CredentialBlob'])
-                blob_data = ctypes.create_unicode_buffer(blob)
-                # Create_unicode_buffer adds a NULL at the end of the string
-                # we do not want that.
-                c_creds.CredentialBlobSize = \
-                    ctypes.sizeof(blob_data) - ctypes.sizeof(ctypes.c_wchar)
-                c_creds.CredentialBlob = ctypes.cast(
-                    blob_data, _common.LPBYTE)
+    c_creds = _advapi32.CREDENTIAL.fromdict(credential, flag)
+    c_pcreds = _advapi32.PCREDENTIAL(c_creds)
     with pywin32error():
         _advapi32._CredWrite(c_pcreds, 0)
 
@@ -92,23 +66,14 @@ def CredRead(TargetName, Type):
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported")
 
     flag = 0
-    c_pcreds = _advapi32.PCREDENTIAL()
-
+    ppcreds = _advapi32.PPCREDENTIAL()
     with pywin32error():
-        _advapi32._CredRead(TargetName, Type, flag, ctypes.byref(c_pcreds))
+        _advapi32._CredRead(
+            TargetName, Type, flag, ppcreds)
     try:
-        c_creds = c_pcreds.contents
-        credential = {}
-        for key in _advapi32.SUPPORTED_CREDKEYS:
-            if key != 'CredentialBlob':
-                credential[key] = getattr(c_creds, key)
-            else:
-                blob = _common._PyBytes_FromStringAndSize(
-                    c_creds.CredentialBlob, c_creds.CredentialBlobSize)
-                credential['CredentialBlob'] = blob
-        return credential
+        return _advapi32.pcredential2dict(_common.dereference(ppcreds))
     finally:
-        _advapi32._CredFree(c_pcreds)
+        _advapi32._CredFree(ppcreds)
 
 
 def CredDelete(TargetName, Type):
@@ -126,15 +91,3 @@ def CredDelete(TargetName, Type):
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
     with pywin32error():
         _advapi32._CredDelete(TargetName, Type, 0)
-
-
-def _make_blob(password):
-    """ Convert the input string password into a unicode blob as required for
-    Credentials.
-
-    """
-    if is_unicode(password):
-        return password
-    else:
-        code_page = _kernel32._GetACP()
-        return unicode(password, encoding=str(code_page), errors='strict')
