@@ -71,6 +71,8 @@ class CREDENTIAL(Structure):
 
 PCREDENTIAL = POINTER(CREDENTIAL)
 
+PPCREDENTIAL = POINTER(PCREDENTIAL)
+
 
 def make_unicode(password):
     """ Convert the input string to unicode.
@@ -106,7 +108,7 @@ _CredWrite = function_factory(
 
 _CredRead = function_factory(
     advapi.CredReadW,
-    [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
+    [LPCWSTR, DWORD, DWORD, PPCREDENTIAL],
     BOOL,
     check_zero_factory("CredRead"))
 
