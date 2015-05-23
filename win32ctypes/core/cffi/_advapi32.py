@@ -121,13 +121,6 @@ def PCREDENTIAL(value=None):
         return ffi.new("PCREDENTIAL", value)
 
 
-def PPCREDENTIAL(value=None):
-    if value is None:
-        return ffi.new("PCREDENTIAL*")
-    else:
-        return ffi.new("PCREDENTIAL*", value)
-
-
 def credential2dict(pc_creds):
     credentials = {}
     for key in SUPPORTED_CREDKEYS:
@@ -145,14 +138,15 @@ def credential2dict(pc_creds):
         credentials[key] = data
     return credentials
 
-pcredential2dict = credential2dict
-
 
 def _CredRead(TargetName, Type, Flags, ppCredential):
+    pointer = ffi.new("PCREDENTIAL*")
     target = make_unicode(TargetName)
-    return check_zero(
-        advapi32.CredReadW(target, Type, Flags, ppCredential),
+    value = check_zero(
+        advapi32.CredReadW(target, Type, Flags, pointer),
         u'CredRead')
+    ppCredential[0][0] = pointer[0][0]
+    return value
 
 
 def _CredWrite(Credential, Flags):
