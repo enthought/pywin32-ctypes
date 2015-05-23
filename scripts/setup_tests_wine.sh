@@ -84,13 +84,15 @@ unzip -o -qq fixed.zip -d ${TEMP_DIR}
 ${WINE} xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
 ${WINE} ${PYTHON} ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
 
-${WINE} ${EASY_INSTALL} coverage
-
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     wget https://pypi.python.org/packages/source/u/unittest2/unittest2-1.0.1.tar.gz#md5=6614a229aa3619e0d11542dd8f2fd8b8
     tar -xvf unittest2-1.0.1.tar.gz
     (cd unittest2-1.0.1 && ${WINE} ${PYTHON} setup.py install)
 fi
+
+wget https://pypi.python.org/packages/source/c/coverage/coverage-4.0a5.zip#md5=8a59799b1c1740d211346d6e88990815
+unzip coverage-4.0a5.zip
+(cd coverage-4.0a5 && wine ${PYTHON} setup.py install)
 
 if [ "${CFFI}" = "true" ]; then
     ${WINE} ${EASY_INSTALL} pip
