@@ -17,13 +17,13 @@ env:
 matrix:
   exclude:
     - python: 2.6
-      env: BITS=64 CFFI=false
+      env: CFFI=false BITS=64
     - python: 3.2
-      env: BITS=64 CFFI=true
+      env: CFFI=true BITS=64
     - python: 2.6
-      env: BITS=32 CFFI=false
+      env: CFFI=false BITS=32
     - python: 3.2
-      env: BITS=32 CFFI=true
+      env: CFFI=true BITS=32
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
