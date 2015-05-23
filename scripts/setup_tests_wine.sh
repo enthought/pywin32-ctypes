@@ -48,7 +48,7 @@ elif [ "${TRAVIS_PYTHON_VERSION}" = "3.4" ]; then
     PYTHON_URL="http://www.python.org/ftp/python/3.4.3/${PYTHON_MSI}"
     PYTHON_DIR="c:/Python34/"
     EASY_INSTALL="c:/Python34/Scripts/easy_install.exe"
-    PIP="c:/Python33/Scripts/pip.exe"
+    PIP="c:/Python34/Scripts/pip.exe"
     PYVERSION="cp34"
     TEMP_DIR="temp34"
 else
