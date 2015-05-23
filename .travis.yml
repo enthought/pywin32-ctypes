@@ -16,9 +16,9 @@ env:
 # The pywin32-219 installers for python 2.6 and 3.2 64bit are missing a files.
 matrix:
   exclude:
-    - python: 2.6
+    - python: "2.6"
       env: BITS=64
-    - python: 3.2
+    - python: "3.2"
       env: BITS=64
 
 before_install:
