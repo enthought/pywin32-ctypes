@@ -20,7 +20,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 install:
-  - sudo apt-get install wine
+  - sudo apt-get install -y --force-yes wine
   - pip install coveralls
   - sh scripts/setup_tests_wine.sh
 
