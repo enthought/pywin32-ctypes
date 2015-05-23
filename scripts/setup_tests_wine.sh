@@ -50,14 +50,14 @@ fi
 
 if [ "${BITS}" = "64" ]; then
     PYTHON="${PYTHON_DIR}python.exe"
-    PYWIN32_EXE="pywin32-218.win-amd64-py${TRAVIS_PYTHON_VERSION}.exe"
-    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/${PYWIN32_EXE}/download"
+    PYWIN32_EXE="pywin32-219.win-amd64-py${TRAVIS_PYTHON_VERSION}.exe"
+    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/${PYWIN32_EXE}/download"
     CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
     PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 else
     PYTHON="${PYTHON_DIR}python.exe"
-    PYWIN32_EXE="pywin32-218.win32-py${TRAVIS_PYTHON_VERSION}.exe"
-    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/${PYWIN32_EXE}/download"
+    PYWIN32_EXE="pywin32-219.win32-py${TRAVIS_PYTHON_VERSION}.exe"
+    PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/${PYWIN32_EXE}/download"
     CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win32.whl"
     PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
 fi
