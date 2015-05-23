@@ -49,8 +49,8 @@ elif [ "${TRAVIS_PYTHON_VERSION}" = "3.4" ]; then
     PYTHON_DIR="c:/Python34/"
     EASY_INSTALL="c:/Python34/Scripts/easy_install.exe"
     PIP="c:/Python33/Scripts/pip.exe"
-    PYVERSION="cp33"
-    TEMP_DIR="temp33"
+    PYVERSION="cp34"
+    TEMP_DIR="temp34"
 else
     echo "Python ${TRAVIS_PYTHON_VERSION} not supported."
     exit 1;
