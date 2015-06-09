@@ -85,8 +85,9 @@ wget https://pypi.python.org/packages/source/c/coverage/coverage-4.0a5.zip#md5=8
 unzip coverage-4.0a5.zip
 (cd coverage-4.0a5 && wine ${PYTHON} setup.py install)
 
+${WINE} ${EASY_INSTALL} pip
+
 if [ "${CFFI}" = "true" ]; then
-    ${WINE} ${EASY_INSTALL} pip
     ${WINE} ${PIP} install ${CFFI_WHEEL_URL}
 fi
 
