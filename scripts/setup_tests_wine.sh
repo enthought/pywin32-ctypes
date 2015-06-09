@@ -56,16 +56,7 @@ else
     exit 1;
 fi
 
-if [ "${BITS}" = "64" ]; then
-    PYTHON="${PYTHON_DIR}python.exe"
-    CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win_amd64.whl"
-    PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
-else
-    PYTHON="${PYTHON_DIR}python.exe"
-    CFFI_WHEEL_URL="https://pypi.python.org/packages/${PYVERSION}/c/cffi/cffi-0.9.2-${PYVERSION}-none-win32.whl"
-    PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
-fi
-
+PYTHON="${PYTHON_DIR}python.exe"
 
 wget ${PYTHON_URL}
 ${WINE} msiexec /i ${PYTHON_MSI} /qn
@@ -88,9 +79,25 @@ unzip coverage-4.0a5.zip
 ${WINE} ${EASY_INSTALL} pip
 
 if [ "${CFFI}" = "true" ]; then
-    ${WINE} ${PIP} install ${CFFI_WHEEL_URL}
+    ${WINE} ${PIP} install --only-binary cffi cffi
 fi
 
-${WINE} ${PIP} install pypiwin32
+if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
+    PYTHON_SITE_PACKAGES="${PYTHON_DIR}/lib/site-packages"
+    if [ "${BITS}" = "64" ]; then
+	PYWIN32_EXE="pywin32-219.win-amd64-py${TRAVIS_PYTHON_VERSION}.exe"
+	PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/${PYWIN32_EXE}/download"
+    else
+	PYWIN32_EXE="pywin32-219.win32-py${TRAVIS_PYTHON_VERSION}.exe"
+	PYWIN32_URL="http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/${PYWIN32_EXE}/download"
+    fi
+    wget ${PYWIN32_URL} -O ${PYWIN32_EXE}
+    zip -FFv ${PYWIN32_EXE} --out fixed.zip
+    unzip -o -qq fixed.zip -d ${TEMP_DIR}
+    ${WINE} xcopy /R /E /Y /I  ${TEMP_DIR}/PLATLIB ${PYTHON_SITE_PACKAGES}
+    ${WINE} ${PYTHON} ${TEMP_DIR}/SCRIPTS/pywin32_postinstall.py -install
+else
+    ${WINE} ${PIP} install --only-binary pypiwin32 pypiwin32
+fi
 
 ${WINE} ${PYTHON} setup.py install
