@@ -69,11 +69,6 @@ if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
     ${WINE} ${PIP} install unittest2
 fi
 
-# install cffi (if necessary)
-if [ "${CFFI}" = "true" ]; then
-    ${WINE} ${PIP} install --only-binary cffi cffi
-fi
-
 # install pywin32
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
 

@@ -8,22 +8,16 @@ python:
   - "3.4"
 
 env:
-  - CFFI=true BITS=32
-  - CFFI=false BITS=32
-  - CFFI=true BITS=64
-  - CFFI=false BITS=64
+  - BITS=32
+  - BITS=64
 
 # The pywin32-219 installers for python 2.6 and 3.2 64bit are missing a files.
 matrix:
   exclude:
     - python: "2.6"
-      env: CFFI=false BITS=64
+      env: BITS=64
     - python: "3.2"
-      env: CFFI=false BITS=64
-    - python: "2.6"
-      env: CFFI=true BITS=64
-    - python: "3.2"
-      env: CFFI=true BITS=64
+      env: BITS=64
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
