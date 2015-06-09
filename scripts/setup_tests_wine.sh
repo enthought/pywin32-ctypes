@@ -49,11 +49,11 @@ fi
 # install python
 wget ${PYTHON_URL}
 ${WINE} msiexec /i ${PYTHON_MSI} /qn
+PYTHON="${PYTHON_DIR}python.exe"
 
 # bootstrap pip
 wget https://bootstrap.pypa.io/get-pip.py
 ${WINE} ${PYTHON} get-pip.py
-PYTHON="${PYTHON_DIR}python.exe"
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
    PIP="${PYTHON} -m pip.__main__"
 else
