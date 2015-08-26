@@ -34,4 +34,5 @@ script:
   - sh scripts/run_tests_wine.sh
 
 after_success:
-  coveralls
+  - pip install codecov
+  - codecov
