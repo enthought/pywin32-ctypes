@@ -5,6 +5,19 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+  - "3.4"
+
+env:
+  - BITS=32
+  - BITS=64
+
+# The pywin32-219 installers for python 2.6 and 3.2 64bit are missing a files.
+matrix:
+  exclude:
+    - python: "2.6"
+      env: BITS=64
+    - python: "3.2"
+      env: BITS=64
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
@@ -13,7 +26,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 install:
-  - sudo apt-get install wine
+  - sudo apt-get install -y --force-yes wine
   - pip install coveralls
   - sh scripts/setup_tests_wine.sh
 
@@ -21,4 +34,5 @@ script:
   - sh scripts/run_tests_wine.sh
 
 after_success:
-  coveralls
+  - pip install codecov
+  - codecov

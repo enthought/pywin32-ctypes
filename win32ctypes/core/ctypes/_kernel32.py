@@ -9,7 +9,7 @@ from __future__ import absolute_import
 
 import ctypes
 from ctypes.wintypes import (
-    BOOL, DWORD, HANDLE, HMODULE, LONG, LPCWSTR, WCHAR, WORD, HRSRC,
+    BOOL, DWORD, HANDLE, HMODULE, LPCWSTR, WORD, HRSRC,
     HGLOBAL, LPVOID, UINT)
 
 from ._common import LONG_PTR, IS_INTRESOURCE

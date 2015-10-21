@@ -32,3 +32,9 @@ else:
         return_type=py_object)
 
 IS_INTRESOURCE = lambda x: x >> 16 == 0
+
+byreference = ctypes.byref
+
+
+def dereference(x):
+    return x.contents

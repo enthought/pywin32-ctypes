@@ -4,7 +4,7 @@
 .. image:: https://coveralls.io/repos/enthought/pywin32-ctypes/badge.svg
    :target: https://coveralls.io/r/enthought/pywin32-ctypes
 
-A reimplementation of pywin32 that is pure python (uses ctypes).
+A reimplementation of pywin32 that is pure python. The default behaviour will try to use cffi if available and fall back to using ctypes. Please note that there is no need to have a compiler available on installation or at runtime.
 
 Example of usage::
 
@@ -14,7 +14,7 @@ Example of usage::
     win32api.LoadLibraryEx(sys.executable, 0, win32api.LOAD_LIBRARY_AS_DATAFILE)
 
 Note: this implements only a very small subset of pywin32, for internal needs
-at Enthought. We do welcome additional features, though.
+at Enthought. We do welcome additional features and prs, though.
 
 Development setup
 =================

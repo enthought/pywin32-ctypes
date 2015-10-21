@@ -4,7 +4,6 @@ __all__ = ['TestCase']
 
 if sys.version_info[:2] == (2, 6):
     import contextlib
-    import collections
     from unittest import TestCase as BaseTestCase
 
     class SkipException(Exception):
