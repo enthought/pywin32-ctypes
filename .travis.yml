@@ -3,7 +3,6 @@ language: python
 python:
   - "2.6"
   - "2.7"
-  - "3.2"
   - "3.3"
   - "3.4"
 
@@ -11,12 +10,10 @@ env:
   - BITS=32
   - BITS=64
 
-# The pywin32-219 installers for python 2.6 and 3.2 64bit are missing a files.
+# The pywin32-219 installers for python 2.6 64bit are missing files.
 matrix:
   exclude:
     - python: "2.6"
-      env: BITS=64
-    - python: "3.2"
       env: BITS=64
 
 before_install:
