@@ -24,7 +24,6 @@ before_install:
 
 install:
   - sudo apt-get install -y --force-yes wine
-  - pip install coveralls
   - sh scripts/setup_tests_wine.sh
 
 script:
