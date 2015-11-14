@@ -6,7 +6,10 @@
 
 A reimplementation of pywin32 that is pure python. The default behaviour will try to use cffi if available and fall back to using ctypes. Please note that there is no need to have a compiler available on installation or at runtime.
 
-Example of usage::
+Usage
+=====
+
+Example::
 
   # Equivalent to 'import win32api' from pywin32.
   from win32ctypes.pywin32 import win32api
