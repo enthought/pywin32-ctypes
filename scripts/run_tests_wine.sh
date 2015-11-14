@@ -56,4 +56,3 @@ else
 fi
 
 ${WINE} ${COVERAGE} report
-cp ./testing/.coverage .
