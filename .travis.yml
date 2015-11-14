@@ -30,5 +30,7 @@ script:
   - sh scripts/run_tests_wine.sh
 
 after_success:
+  - ls
+  - cp testing/.coverage ./
   - pip install codecov
   - codecov
