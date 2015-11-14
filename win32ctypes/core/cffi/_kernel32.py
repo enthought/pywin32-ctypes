@@ -17,8 +17,8 @@ typedef WINBOOL (*ENUMRESTYPEPROC) (HANDLE, LPTSTR, LONG_PTR);
 typedef WINBOOL (*ENUMRESNAMEPROC) (HANDLE, LPCTSTR, LPTSTR, LONG_PTR);
 typedef WINBOOL (*ENUMRESLANGPROC) (HANDLE, LPCTSTR, LPCTSTR, WORD, LONG_PTR);
 
-
 BOOL Beep(DWORD dwFreq, DWORD dwDuration);
+DWORD GetTickCount(void);
 UINT GetACP(void);
 HMODULE LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
 BOOL FreeLibrary(HMODULE hModule);
@@ -64,6 +64,10 @@ def ENUMRESLANGPROC(callback):
 
 def _GetACP():
     return kernel32.GetACP()
+
+
+def _GetTickCount():
+    return kernel32.GetTickCount()
 
 
 def _LoadLibraryEx(lpFilename, hFile, dwFlags):
