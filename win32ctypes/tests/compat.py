@@ -46,6 +46,9 @@ if sys.version_info[:2] == (2, 6):
         def assertMultiLineEqual(self, a, b, msg=None):
             return self.assertEqual(a, b, msg=msg)
 
+        def assertGreater(self, a, b, msg=None):
+            return self.assertTrue(a > b, msg=msg)
+
         @contextlib.contextmanager
         def failUnlessRaises(self, error, *args):
             context = ExceptionContext()
