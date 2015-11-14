@@ -8,24 +8,29 @@ A reimplementation of pywin32 that is pure python. The default behaviour will tr
 
 Example of usage::
 
-    # Equivalent to 'import win32api' from pywin32.
-    from win32ctypes.pywin32 import win32api
+  # Equivalent to 'import win32api' from pywin32.
+  from win32ctypes.pywin32 import win32api
 
-    win32api.LoadLibraryEx(sys.executable, 0, win32api.LOAD_LIBRARY_AS_DATAFILE)
+  win32api.LoadLibraryEx(sys.executable, 0, win32api.LOAD_LIBRARY_AS_DATAFILE)
 
-Note: this implements only a very small subset of pywin32, for internal needs
-at Enthought. We do welcome additional features and prs, though.
+.. note::
+
+   Currently pywin32ctypes implements only a very small subset
+   of pywin32, for internal needs at Enthought. We do welcome
+   additional features and prs, though.
 
 Development setup
 =================
 
 The following should be good enough::
 
-	pip install -r dev_requirements.txt
-	python setup.py develop
+  pip install -r dev_requirements.txt
+  python setup.py develop
 
-Note: because of the pywin32 dependency for tests, you most likely want to
-create a virtualenv with --system-site-packages if you use virtualenv.
+.. note::
 
-While pywin32-ctypes should regularly be tested on windows, you can also
-develop/test on unix by using wine (see travis-ci configuration to set it up).
+   - Because of the pywin32 dependency for tests, you most likely want to
+     create a virtualenv with --system-site-packages if you use virtualenv.
+
+   - While pywin32-ctypes should regularly be tested on windows, you can also
+     develop/test on unix by using wine (see travis-ci configuration to set it up).
