@@ -1,2 +1,5 @@
 python*.msi*
 *.pyc
+/docs/build
+build
+*.egg-info/
