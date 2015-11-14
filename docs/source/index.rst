@@ -3,6 +3,13 @@
 .. include:: ../../README.rst
 
 
+.. include:: ../../CHANGELOG.txt
+
+LICENSE
+=======
+
+.. include:: ../../LICENSE.txt
+
 
 Indices and tables
 ==================
