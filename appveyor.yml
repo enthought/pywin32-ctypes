@@ -8,15 +8,14 @@ environment:
   matrix:
     - python: "C:/Python27-x64"
       sdkver: "v7.0"
-      pywin32: pywin32-219.win-amd64-py27.exe
+      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win-amd64-py27.exe/download"
 
     - python: "C:/Python33-x64"
       sdkver: "v7.1"
-      pywin32: pywin32-219.win-amd64-py33.exe
-
+      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win-amd64-py32.exe/download"
     - python: "C:/Python34-x64"
       sdkver: "v7.1"
-      pywin32: pywin32-219.win-amd64-py34.exe
+      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win-amd64-py34.exe/download"
 
 cache:
   - c:\egg_cache
@@ -30,7 +29,7 @@ install:
   - ps: (new-object net.webclient).DownloadFile('https://raw.github.com/pypa/pip/master/contrib/get-pip.py', 'c:/get-pip.py')
   - ps: python c:/get-pip.py
   - ps: pip --version
-  - ps: (new-object net.webclient).DownloadFile('http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/$Env:pywin32/download', 'c:/get-pip.py')
+  - ps: (new-object net.webclient).DownloadFile($Env:pywin32, 'pywin32.exe')
   - cmd /v:on /e:on /c ".\scripts\appveyor-install.cmd"
 test_script:
   - ps: ls
