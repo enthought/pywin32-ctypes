@@ -13,28 +13,27 @@ from ._util import (
 ffi.cdef("""
 
 typedef int WINBOOL;
-typedef WINBOOL (*ENUMRESTYPEPROC) (HANDLE, LPTSTR, LONG_PTR);
-typedef WINBOOL (*ENUMRESNAMEPROC) (HANDLE, LPCTSTR, LPTSTR, LONG_PTR);
-typedef WINBOOL (*ENUMRESLANGPROC) (HANDLE, LPCTSTR, LPCTSTR, WORD, LONG_PTR);
+typedef WINBOOL __stdcall (*ENUMRESTYPEPROC) (HANDLE, LPTSTR, LONG_PTR);
+typedef WINBOOL __stdcall (*ENUMRESNAMEPROC) (HANDLE, LPCTSTR, LPTSTR, LONG_PTR);
+typedef WINBOOL __stdcall (*ENUMRESLANGPROC) (HANDLE, LPCTSTR, LPCTSTR, WORD, LONG_PTR);
 
-
-BOOL Beep(DWORD dwFreq, DWORD dwDuration);
-UINT GetACP(void);
-HMODULE LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
-BOOL FreeLibrary(HMODULE hModule);
-BOOL EnumResourceTypesW(
+BOOL WINAPI Beep(DWORD dwFreq, DWORD dwDuration);
+UINT WINAPI GetACP(void);
+HMODULE WINAPI LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
+BOOL WINAPI FreeLibrary(HMODULE hModule);
+BOOL WINAPI EnumResourceTypesW(
     HMODULE hModule, ENUMRESTYPEPROC lpEnumFunc, LONG_PTR lParam);
-BOOL EnumResourceNamesW(
+BOOL WINAPI EnumResourceNamesW(
     HMODULE hModule, LPCTSTR lpszType,
     ENUMRESNAMEPROC lpEnumFunc, LONG_PTR lParam);
-BOOL EnumResourceLanguagesW(
+BOOL WINAPI EnumResourceLanguagesW(
     HMODULE hModule, LPCTSTR lpType,
     LPCTSTR lpName, ENUMRESLANGPROC lpEnumFunc, LONG_PTR lParam);
-HRSRC FindResourceExW(
+HRSRC WINAPI FindResourceExW(
     HMODULE hModule, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage);
-DWORD SizeofResource(HMODULE hModule, HRSRC hResInfo);
-HGLOBAL LoadResource(HMODULE hModule, HRSRC hResInfo);
-LPVOID LockResource(HGLOBAL hResData);
+DWORD WINAPI SizeofResource(HMODULE hModule, HRSRC hResInfo);
+HGLOBAL WINAPI LoadResource(HMODULE hModule, HRSRC hResInfo);
+LPVOID WINAPI LockResource(HGLOBAL hResData);
 
 """)
 
