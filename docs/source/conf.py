@@ -31,11 +31,15 @@ import shlex
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'sectiondoc.styles.legacy',
 ]
+
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -53,7 +57,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'PyWin32ctypes'
-copyright = u'2015, David Cournapeau, Ioannis Tziakos'
+copyright = u'2015, Enthought Ltd'
 author = u'David Cournapeau, Ioannis Tziakos'
 
 # The version info for the project you're documenting, acts as replacement for

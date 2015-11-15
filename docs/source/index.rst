@@ -1,13 +1,20 @@
 .. pywin32-ctypes master documentation file.
 
-==============
-PyWin32-ctypes
-==============
+===========
+win32ctypes
+===========
 
 .. include:: ../../README.rst
 
+Reference
+=========
+
+.. toctree::
+
+   pywin32
 
 .. include:: ../../CHANGELOG.txt
+
 
 LICENSE
 =======
