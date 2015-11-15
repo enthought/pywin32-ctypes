@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 
 try:
-    import cffi  # noqa
+    import cffi
 except ImportError:
     from win32ctypes.core.ctypes import _advapi32, _common, _kernel32
     _backend = 'ctypes'
