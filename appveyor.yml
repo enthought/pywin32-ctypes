@@ -30,3 +30,7 @@ install:
   - cmd /v:on /e:on /c ".\scripts\appveyor-install.cmd"
 test_script:
   - cmd /v:on /e:on /c ".\scripts\appveyor-test.cmd"
+on_success:
+  - cd testrun
+  - pip install codecov
+  - codecov
