@@ -8,14 +8,14 @@ environment:
   matrix:
     - python: "C:/Python27-x64"
       sdkver: "v7.0"
-      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build+219/pywin32-219.win-amd64-py27.exe/download"
+      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win-amd64-py2.7.exe/download"
 
     - python: "C:/Python33-x64"
       sdkver: "v7.1"
-      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build+219/pywin32-219.win-amd64-py32.exe/download"
+      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win-amd64-py3.2.exe/download"
     - python: "C:/Python34-x64"
       sdkver: "v7.1"
-      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build+219/pywin32-219.win-amd64-py34.exe/download"
+      pywin32: "http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win-amd64-py3.4.exe/download"
 
 cache:
   - c:\egg_cache
