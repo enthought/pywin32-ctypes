@@ -1,5 +1,6 @@
 python*.msi*
 *.pyc
 /docs/build
+/docs/source/api
 build
 *.egg-info/
