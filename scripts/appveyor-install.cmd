@@ -6,4 +6,4 @@ pip install --cache-dir C:/egg_cache coverage
 pip install --cache-dir C:/egg_cache --only-binary pypiwin32 pypiwin32
 
 rem install package
-python setup.py develop
+python setup.py install
