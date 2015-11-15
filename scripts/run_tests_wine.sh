@@ -46,7 +46,7 @@ else
 fi
 
 # install cffi
-${WINE} ${PIP} install --only-binary cffi cffi
+${WINE} ${PIP} install --only-binary cffi 'cffi>=1.3.0'
 
 echo "TESTING CFFI"
 if [ "${TRAVIS_PYTHON_VERSION}" = "2.6" ]; then
