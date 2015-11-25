@@ -45,11 +45,11 @@ typedef struct _CREDENTIAL {
 } CREDENTIAL, *PCREDENTIAL;
 
 
-BOOL CredReadW(
+BOOL WINAPI CredReadW(
     LPCWSTR TargetName, DWORD Type, DWORD Flags, PCREDENTIAL *Credential);
-BOOL CredWriteW(PCREDENTIAL Credential, DWORD);
-VOID CredFree(PVOID Buffer);
-BOOL CredDeleteW(LPCWSTR TargetName, DWORD Type, DWORD Flags);
+BOOL WINAPI CredWriteW(PCREDENTIAL Credential, DWORD);
+VOID WINAPI CredFree(PVOID Buffer);
+BOOL WINAPI CredDeleteW(LPCWSTR TargetName, DWORD Type, DWORD Flags);
 
 """)
 
