@@ -71,7 +71,7 @@ author = u'David Cournapeau, Ioannis Tziakos'
 release = open(
     os.path.join(
         os.path.dirname(__file__),
-        '..', '..', 'win32ctypes', 'VERSION')).read().strip()
+        '..', '..', 'VERSION')).read().strip()
 # The short X.Y version.
 version = '.'.join(release.split('.')[:2])
 
