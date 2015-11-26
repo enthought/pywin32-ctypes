@@ -8,7 +8,7 @@ version = open(
 
 filename = os.path.join(HERE, 'win32ctypes', 'version.py')
 with open(filename, 'w') as handle:
-    handle.write('__version__={}', version)
+    handle.write('__version__={}\n'.format(version))
 
 setup(
     name='pywin32-ctypes',
