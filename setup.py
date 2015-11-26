@@ -1,10 +1,15 @@
 import os
 from setuptools import setup, find_packages
 
+
+HERE = os.path.dirname(__file__)
 version = open(
-    os.path.join(
-        os.path.dirname(__file__),
-        'win32ctypes', 'VERSION')).read().strip()
+    os.path.join(HERE, 'VERSION')).read().strip()
+
+filename = os.path.join(HERE, 'win32ctypes', 'version.py')
+with open(filename, 'w') as handle:
+    handle.write('__version__={}', version)
+
 setup(
     name='pywin32-ctypes',
     version=version,
