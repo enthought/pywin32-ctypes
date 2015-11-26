@@ -118,6 +118,11 @@ _BaseFindResourceEx = function_factory(
     HRSRC,
     check_null)
 
+_GetTickCount = function_factory(
+    kernel32.GetTickCount,
+    None,
+    DWORD)
+
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
     resource_type = LPCWSTR(lpszType)

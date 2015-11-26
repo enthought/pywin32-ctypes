@@ -19,6 +19,7 @@ typedef WINBOOL (__stdcall *ENUMRESLANGPROC) (HANDLE, LPCTSTR, LPCTSTR, WORD, LO
 
 BOOL WINAPI Beep(DWORD dwFreq, DWORD dwDuration);
 UINT WINAPI GetACP(void);
+DWORD WINAPI GetTickCount(void);
 HMODULE WINAPI LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
 BOOL WINAPI FreeLibrary(HMODULE hModule);
 BOOL WINAPI EnumResourceTypesW(
@@ -63,6 +64,10 @@ def ENUMRESLANGPROC(callback):
 
 def _GetACP():
     return kernel32.GetACP()
+
+
+def _GetTickCount():
+    return kernel32.GetTickCount()
 
 
 def _LoadLibraryEx(lpFilename, hFile, dwFlags):
