@@ -32,7 +32,7 @@ Development setup
 The following should be good enough::
 
   pip install -r dev_requirements.txt
-  python setup.py develop
+  python install -e
 
 .. note::
 
