@@ -16,7 +16,7 @@ environment:
       sdkver: "v7.1"
 
 cache:
-  - c:\egg_cache
+  - c:\egg_cache -> scripts\cleanup-cache.txt
 
 init:
   - ps: $Env:sdkbin = "C:\Program Files\Microsoft SDKs\Windows\" + $Env:sdkver + "\Bin"
