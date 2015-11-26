@@ -24,7 +24,7 @@ Example::
 
    Currently pywin32ctypes implements only a very small subset
    of pywin32, for internal needs at Enthought. We do welcome
-   additional features and prs, though.
+   additional features and PRs, though.
 
 Development setup
 =================
