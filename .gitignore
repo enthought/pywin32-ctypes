@@ -1,2 +1,4 @@
 python*.msi*
 *.pyc
+build/
+dist/
