@@ -11,9 +11,16 @@ env:
   - BITS=64
 
 # The pywin32-219 installers for python 2.6 64bit are missing files.
+# 64-bit for 2.7, 3.3 and 3.4 are testing with appveyor.
 matrix:
   exclude:
     - python: "2.6"
+      env: BITS=64
+    - python: "2.7"
+      env: BITS=64
+    - python: "3.3"
+      env: BITS=64
+    - python: "3.4"
       env: BITS=64
 
 before_install:
