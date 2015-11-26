@@ -4,7 +4,10 @@
 .. image:: https://codecov.io/github/enthought/pywin32-ctypes/coverage.svg?branch=master
    :target: https://codecov.io/github/enthought/pywin32-ctypes?branch=master
 
-A reimplementation of pywin32 that is pure python. The default behaviour will try to use cffi if available and fall back to using ctypes. Please note that there is no need to have a compiler available on installation or at runtime.
+A reimplementation of pywin32 that is pure python. The default
+behaviour will try to use cffi (>= 1.3.0), if available, and fall back
+to using ctypes. Please note that there is no need to have a compiler
+available on installation or at runtime.
 
 Example of usage::
 

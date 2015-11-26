@@ -72,3 +72,7 @@ def LoadResource(hModule, type_, name, language):
 def FreeLibrary(hModule):
     with pywin32error():
         return _kernel32._FreeLibrary(hModule)
+
+
+def GetTickCount():
+    return _kernel32._GetTickCount()
