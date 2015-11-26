@@ -24,7 +24,7 @@ Example::
 
    Currently pywin32ctypes implements only a very small subset
    of pywin32, for internal needs at Enthought. We do welcome
-   additional features and prs, though.
+   additional features and PRs, though.
 
 Development setup
 =================
@@ -32,12 +32,9 @@ Development setup
 The following should be good enough::
 
   pip install -r dev_requirements.txt
-  python setup.py develop
+  python install -e
 
 .. note::
-
-   - Because of the pywin32 dependency for tests, you most likely want to
-     create a virtualenv with --system-site-packages if you use virtualenv.
 
    - While pywin32-ctypes should regularly be tested on windows, you can also
      develop/test on unix by using wine (see travis-ci configuration to set it up).
