@@ -7,7 +7,7 @@
 #
 from __future__ import absolute_import
 
-from win32ctypes.core import _advapi32, _common
+from win32ctypes.core import _advapi32, _common, _backend
 from win32ctypes.pywin32.pywintypes import pywin32error
 
 CRED_TYPE_GENERIC = 0x1
@@ -66,10 +66,15 @@ def CredRead(TargetName, Type):
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported")
 
     flag = 0
-    pcreds = _advapi32.PCREDENTIAL()
     with pywin32error():
-        _advapi32._CredRead(
-            TargetName, Type, flag, _common.byreference(pcreds))
+        if _backend == 'cffi':
+            ppcreds = _advapi32.PPCREDENTIAL()
+            _advapi32._CredRead(TargetName, Type, flag, ppcreds)
+            pcreds = _common.dereference(ppcreds)
+        else:
+            pcreds = _advapi32.PCREDENTIAL()
+            _advapi32._CredRead(
+                TargetName, Type, flag, _common.byreference(pcreds))
     try:
         return _advapi32.credential2dict(_common.dereference(pcreds))
     finally:
