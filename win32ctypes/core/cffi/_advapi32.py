@@ -115,9 +115,7 @@ CREDENTIAL = _CREDENTIAL()
 
 
 def PCREDENTIAL(value=None):
-    if value is None:
-        value = ffi.NULL
-    return ffi.new("PCREDENTIAL", value)
+    return ffi.new("PCREDENTIAL", ffi.NULL if value is None else value)
 
 
 def PPCREDENTIAL(value=None):
