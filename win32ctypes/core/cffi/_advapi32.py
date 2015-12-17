@@ -119,10 +119,7 @@ def PCREDENTIAL(value=None):
 
 
 def PPCREDENTIAL(value=None):
-    if value is None:
-        return ffi.new("PCREDENTIAL*")
-    else:
-        return ffi.new("PCREDENTIAL*", value)
+    return ffi.new("PCREDENTIAL*", ffi.NULL if value is None else value)
 
 
 def credential2dict(pc_creds):
