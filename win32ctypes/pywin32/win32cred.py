@@ -9,8 +9,8 @@
 
 from __future__ import absolute_import
 
-from win32ctypes.core import _advapi32, _common
-from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
+from win32ctypes.core import _advapi32, _common, _backend
+from win32ctypes.pywin32.pywintypes import pywin32error
 
 CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
@@ -43,7 +43,7 @@ def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
     """
     c_creds = _advapi32.CREDENTIAL.fromdict(Credential, Flags)
     c_pcreds = _advapi32.PCREDENTIAL(c_creds)
-    with _pywin32error():
+    with pywin32error():
         _advapi32._CredWrite(c_pcreds, 0)
 
 
@@ -73,10 +73,16 @@ def CredRead(TargetName, Type, Flags=0):
     if Type != CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported")
 
-    pcreds = _advapi32.PCREDENTIAL()
-    with _pywin32error():
-        _advapi32._CredRead(
-            TargetName, Type, Flags, _common.byreference(pcreds))
+    flag = 0
+    with pywin32error():
+        if _backend == 'cffi':
+            ppcreds = _advapi32.PPCREDENTIAL()
+            _advapi32._CredRead(TargetName, Type, flag, ppcreds)
+            pcreds = _common.dereference(ppcreds)
+        else:
+            pcreds = _advapi32.PCREDENTIAL()
+            _advapi32._CredRead(
+                TargetName, Type, flag, _common.byreference(pcreds))
     try:
         return _advapi32.credential2dict(_common.dereference(pcreds))
     finally:
@@ -98,5 +104,5 @@ def CredDelete(TargetName, Type, Flags=0):
     """
     if not Type == CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
-    with _pywin32error():
+    with pywin32error():
         _advapi32._CredDelete(TargetName, Type, 0)

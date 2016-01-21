@@ -121,6 +121,9 @@ class TestWin32API(compat.TestCase):
             self.module.LoadResource(
                 handle, resource_type, resource_name, 12435)
 
+    def test_get_tick_count(self):
+        self.assertGreater(self.module.GetTickCount(), 0.0)
+
     def _id2str(self, type_id):
         if hasattr(type_id, 'index'):
             return type_id

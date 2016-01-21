@@ -1,14 +1,17 @@
 .. image:: https://travis-ci.org/enthought/pywin32-ctypes.png
   :target: https://travis-ci.org/enthought/pywin32-ctypes
 
-.. image:: https://coveralls.io/repos/enthought/pywin32-ctypes/badge.svg
-   :target: https://coveralls.io/r/enthought/pywin32-ctypes
+.. image:: https://codecov.io/github/enthought/pywin32-ctypes/coverage.svg?branch=master
+   :target: https://codecov.io/github/enthought/pywin32-ctypes?branch=master
 
 .. image:: https://readthedocs.org/projects/pywin32-ctypes/badge/?version=master
    :target: http://pywin32-ctypes.readthedocs.org/en/latest/?badge=master
    :alt: Documentation Status
 
-A reimplementation of pywin32 that is pure python. The default behaviour will try to use cffi if available and fall back to using ctypes. Please note that there is no need to have a compiler available on installation or at runtime.
+A reimplementation of pywin32 that is pure python. The default
+behaviour will try to use cffi (>= 1.3.0), if available, and fall back
+to using ctypes. Please note that there is no need to have a compiler
+available on installation or at runtime.
 
 Usage
 =====

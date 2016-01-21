@@ -202,3 +202,7 @@ def FreeLibrary(hModule):
     """
     with _pywin32error():
         return _kernel32._FreeLibrary(hModule)
+
+
+def GetTickCount():
+    return _kernel32._GetTickCount()

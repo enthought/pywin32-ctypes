@@ -1,6 +1,7 @@
 python*.msi*
 *.pyc
+*.egg-info/
+build/
+dist/
 /docs/build
 /docs/source/api
-build
-*.egg-info/
