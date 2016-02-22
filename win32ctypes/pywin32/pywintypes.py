@@ -5,6 +5,8 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
+""" A module which supports common Windows types. """
+
 from __future__ import absolute_import
 import contextlib
 

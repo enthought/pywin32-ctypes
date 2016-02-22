@@ -41,11 +41,11 @@ class CREDENTIAL(Structure):
         ("UserName", c_wchar_p)]
 
     @classmethod
-    def fromdict(cls, credential, flag=0):
+    def fromdict(cls, credential, flags=0):
         unsupported = set(credential.keys()) - SUPPORTED_CREDKEYS
         if len(unsupported):
             raise ValueError("Unsupported keys: {0}".format(unsupported))
-        if flag != 0:
+        if flags != 0:
             raise ValueError("flag != 0 not yet supported")
 
         c_creds = cls()

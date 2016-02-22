@@ -5,3 +5,4 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
+from .version import __version__

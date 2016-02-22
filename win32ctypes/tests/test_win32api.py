@@ -11,6 +11,7 @@ import unittest
 import contextlib
 
 import win32api
+
 from win32ctypes import pywin32
 from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.tests import compat

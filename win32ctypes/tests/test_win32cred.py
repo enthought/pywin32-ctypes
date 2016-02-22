@@ -36,9 +36,10 @@ class TestCred(compat.TestCase):
                        "Comment": comment,
                        "Persist": CRED_PERSIST_ENTERPRISE}
 
-        CredWrite(credentials, 0)
+        CredWrite(credentials)
 
-        res = win32cred.CredRead(TargetName=target, Type=CRED_TYPE_GENERIC)
+        res = win32cred.CredRead(
+            TargetName=target, Type=CRED_TYPE_GENERIC)
 
         self.assertEqual(res["Type"], CRED_TYPE_GENERIC)
         self.assertEqual(res["UserName"], username)
@@ -61,7 +62,7 @@ class TestCred(compat.TestCase):
             u"CredentialBlob": password,
             u"Comment": comment,
             u"Persist": CRED_PERSIST_ENTERPRISE}
-        win32cred.CredWrite(r_credentials, 0)
+        win32cred.CredWrite(r_credentials)
 
         credentials = CredRead(target, CRED_TYPE_GENERIC)
 
