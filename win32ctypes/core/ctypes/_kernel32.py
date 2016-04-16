@@ -20,7 +20,8 @@ _ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LPVOID, LONG_PTR)
 _ENUMRESLANGPROC = ctypes.WINFUNCTYPE(
     BOOL, HMODULE, LPVOID, LPVOID, WORD, LONG_PTR)
 
-kernel32 = ctypes.windll.kernel32
+# Use a local copy of the kernel32 dll.
+kernel32 = ctypes.WinDLL('kernel32')
 
 
 def ENUMRESTYPEPROC(callback):
