@@ -22,7 +22,8 @@ SUPPORTED_CREDKEYS = set((
     u'Type', u'TargetName', u'Persist',
     u'UserName', u'Comment', u'CredentialBlob'))
 
-advapi = ctypes.windll.advapi32
+# Use a local copy of the advapi32 dll.
+advapi = ctypes.WinDLL('advapi32')
 
 
 class CREDENTIAL(Structure):
