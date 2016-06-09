@@ -13,6 +13,7 @@ with open(filename, 'w') as handle:
 setup(
     name='pywin32-ctypes',
     version=version,
+    url='https://github.com/enthought/pywin32-ctypes',
     author='Enthought Inc',
     author_email='info@enthought.com',
     packages=find_packages(),
