@@ -206,3 +206,28 @@ def FreeLibrary(hModule):
 
 def GetTickCount():
     return _kernel32._GetTickCount()
+
+
+def BeginUpdateResource(pFileName, bDeleteExistingResources):
+    with _pywin32error():
+        return _kernel32._BeginUpdateResource(pFileName, bDeleteExistingResources)
+
+
+def EndUpdateResource(hUpdate, fDiscard):
+    with _pywin32error():
+        return _kernel32._EndUpdateResource(hUpdate, fDiscard)
+
+
+def UpdateResource(hUpdate, lpType, lpName, lpData, wLanguage):
+    with _pywin32error():
+        return _kernel32._UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
+
+
+def GetWindowsDirectory():
+    with _pywin32error():
+        return _kernel32._GetWindowsDirectory()
+
+
+def GetSystemDirectory():
+    with _pywin32error():
+        return _kernel32._GetSystemDirectory()
