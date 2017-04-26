@@ -130,6 +130,13 @@ class TestWin32API(compat.TestCase):
         else:
             return u'#{0}'.format(type_id)
 
+    def test_get_windows_directory(self):
+        self.assertEqual(self.module.GetWindowsDirectory().lower(), r"c:\windows")
+        
+    def test_get_system_directory(self):
+        self.assertEqual(self.module.GetSystemDirectory().lower(),
+                         r"c:\windows\system32")
+
 
 if __name__ == '__main__':
     unittest.main()
