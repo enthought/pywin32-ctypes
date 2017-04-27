@@ -10,6 +10,10 @@ from __future__ import absolute_import
 from ._util import (
     ffi, check_null, check_zero, HMODULE, PVOID, RESOURCE, resource)
 
+# TODO: retrieve this value using ffi
+MAX_PATH = 260
+MAX_PATH_BUF = 'wchar_t[%s]' % MAX_PATH
+
 ffi.cdef("""
 
 typedef int WINBOOL;
@@ -73,14 +77,14 @@ def _GetACP():
 
 
 def _GetWindowsDirectory():
-    buffer = ffi.new('wchar_t[256]')
-    l = kernel32.GetWindowsDirectoryW(buffer, 256)
+    buffer = ffi.new(MAX_PATH_BUF)
+    l = kernel32.GetWindowsDirectoryW(buffer, MAX_PATH)
     return ffi.unpack(buffer, l)
 
 
 def _GetSystemDirectory():
-    buffer = ffi.new('wchar_t[256]')
-    l = kernel32.GetSystemDirectoryW(buffer, 256)
+    buffer = ffi.new(MAX_PATH_BUF)
+    l = kernel32.GetSystemDirectoryW(buffer, MAX_PATH)
     return ffi.unpack(buffer, l)
 
 
