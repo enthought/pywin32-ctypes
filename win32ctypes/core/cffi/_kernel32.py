@@ -10,6 +10,10 @@ from __future__ import absolute_import
 from ._util import (
     ffi, check_null, check_zero, HMODULE, PVOID, RESOURCE, resource)
 
+# TODO: retrieve this value using ffi
+MAX_PATH = 260
+MAX_PATH_BUF = 'wchar_t[%s]' % MAX_PATH
+
 ffi.cdef("""
 
 typedef int WINBOOL;
@@ -35,6 +39,12 @@ HRSRC WINAPI FindResourceExW(
 DWORD WINAPI SizeofResource(HMODULE hModule, HRSRC hResInfo);
 HGLOBAL WINAPI LoadResource(HMODULE hModule, HRSRC hResInfo);
 LPVOID WINAPI LockResource(HGLOBAL hResData);
+
+HANDLE WINAPI BeginUpdateResourceW(LPCTSTR pFileName, BOOL bDeleteExistingResources);
+BOOL WINAPI EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard);
+BOOL WINAPI UpdateResourceW(HANDLE  hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
+UINT WINAPI GetWindowsDirectoryW(LPTSTR lpBuffer, UINT uSize);
+UINT WINAPI GetSystemDirectoryW(LPTSTR lpBuffer, UINT uSize);
 
 """)
 
@@ -64,6 +74,18 @@ def ENUMRESLANGPROC(callback):
 
 def _GetACP():
     return kernel32.GetACP()
+
+
+def _GetWindowsDirectory():
+    buffer = ffi.new(MAX_PATH_BUF)
+    l = kernel32.GetWindowsDirectoryW(buffer, MAX_PATH)
+    return ffi.unpack(buffer, l)
+
+
+def _GetSystemDirectory():
+    buffer = ffi.new(MAX_PATH_BUF)
+    l = kernel32.GetSystemDirectoryW(buffer, MAX_PATH)
+    return ffi.unpack(buffer, l)
 
 
 def _GetTickCount():
@@ -118,3 +140,22 @@ def _LoadResource(hModule, hResInfo):
 
 def _LockResource(hResData):
     return check_null(kernel32.LockResource(hResData))
+
+
+def _BeginUpdateResource(pFileName, bDeleteExistingResources):
+    return check_null(
+        kernel32.BeginUpdateResourceW(unicode(pFileName),
+                                      bDeleteExistingResources))
+
+
+def _EndUpdateResource(hUpdate, fDiscard):
+    check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
+
+
+def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
+    return check_null(
+        kernel32.UpdateResourceW(PVOID(hUpdate), unicode(lpType),
+                                 unicode(lpName), wLanguage, PVOID(lpData),
+                                 cbData))
+
+

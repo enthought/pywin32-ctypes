@@ -10,7 +10,7 @@ from __future__ import absolute_import
 import ctypes
 from ctypes.wintypes import (
     BOOL, DWORD, HANDLE, HMODULE, LPCWSTR, WORD, HRSRC,
-    HGLOBAL, LPVOID, UINT)
+    HGLOBAL, LPVOID, UINT, LPWSTR, MAX_PATH)
 
 from ._common import LONG_PTR, IS_INTRESOURCE
 from ._util import check_null, check_zero, function_factory
@@ -123,6 +123,54 @@ _GetTickCount = function_factory(
     kernel32.GetTickCount,
     None,
     DWORD)
+
+_BeginUpdateResource = function_factory(
+    kernel32.BeginUpdateResourceW,
+    [LPCWSTR, BOOL],
+    HANDLE,
+    check_null)
+
+_EndUpdateResource = function_factory(
+    kernel32.EndUpdateResourceW,
+    [HANDLE, BOOL],
+    BOOL,
+    check_zero)
+
+_BaseUpdateResource = function_factory(
+    kernel32.UpdateResourceW,
+    [HANDLE, LPCWSTR, LPCWSTR, WORD, LPVOID, DWORD],
+    BOOL,
+    check_zero)
+
+_BaseGetWindowsDirectory = function_factory(
+    kernel32.GetWindowsDirectoryW,
+    [LPWSTR, UINT],
+    UINT,
+    check_zero)
+
+_BaseGetSystemDirectory = function_factory(
+    kernel32.GetSystemDirectoryW,
+    [LPWSTR, UINT],
+    UINT,
+    check_zero)
+
+
+def _GetWindowsDirectory():
+    buffer = ctypes.create_unicode_buffer(MAX_PATH)
+    _BaseGetWindowsDirectory(buffer, MAX_PATH)
+    return ctypes.cast(buffer, LPCWSTR).value
+
+
+def _GetSystemDirectory():
+    buffer = ctypes.create_unicode_buffer(MAX_PATH)
+    _BaseGetSystemDirectory(buffer, MAX_PATH)
+    return ctypes.cast(buffer, LPCWSTR).value
+
+
+def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
+    lp_type = LPCWSTR(lpType)
+    lp_name = LPCWSTR(lpName)
+    return _BaseUpdateResource(hUpdate, lp_type, lp_name, wLanguage, lpData, cbData)
 
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
