@@ -24,7 +24,7 @@ install:
   - ps: pip install --upgrade pip wheel
   - ps: pip --version
   - ps: pip install coverage
-  - ps: pip --only-binary pypiwin32 pypiwin32
+  - ps: pip install --only-binary pypiwin32 pypiwin32
   - ps: pip install -e .
 test_script:
   - cmd: ./scripts/appveyor-test.cmd
