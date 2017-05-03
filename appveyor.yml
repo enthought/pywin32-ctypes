@@ -27,7 +27,7 @@ install:
   - ps: pip --only-binary pypiwin32 pypiwin32
   - ps: pip install -e .
 test_script:
-  - cmd: ".\scripts\appveyor-test.cmd"
+  - cmd: ./scripts/appveyor-test.cmd
 on_success:
   - cd testrun
   - pip install codecov
