@@ -29,6 +29,5 @@ install:
 test_script:
   - cmd: ./scripts/appveyor-test.cmd
 on_success:
-  - cd testrun
   - pip install codecov
   - codecov
