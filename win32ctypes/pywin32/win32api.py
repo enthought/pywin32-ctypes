@@ -82,9 +82,9 @@ def EnumResourceNames(hModule, resType):
     hModule : handle
         The handle to the module.
     resType : str : int
-        The type of resource to enumerate. If ``resType`` is a string starting with
-        '#' is should be followed by the decimal number that define the integer
-        resource type identifier.
+        The type of resource to enumerate. If ``resType`` is a string
+        starting with '#' is should be followed by the decimal number
+        that define the integer resource type identifier.
 
     Returns
     -------
@@ -118,13 +118,13 @@ def EnumResourceLanguages(hModule, lpType, lpName):
     hModule : handle
         Handle to the resource module.
     lpType : str : int
-        The type of resource to enumerate. If ``lpType`` is a string starting with
-        '#' is should be followed by the decimal number that define the integer
-        resource type identifier.
+        The type of resource to enumerate. If ``lpType`` is a string
+        starting with '#', it should be followed by the decimal number
+        that define the integer resource type identifier.
     lpName : str : int
-        The name of resource to enumerate. If ``lpType`` is a string starting with
-        '#' is should be followed by the decimal number that define the integer
-        resource type identifier.
+        The name of resource to enumerate. If ``lpType`` is a string
+        starting with '#', it should be followed by the decimal number
+        that define the integer resource type identifier.
 
     Returns
     -------
@@ -158,7 +158,7 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
     ----------
     handle :
         The handle of the module containing the resource.
-        Use None for currrent process executable.
+        Use None for current process executable.
     type : str : int
         The type of resource to load.
     name :
@@ -214,7 +214,8 @@ def GetTickCount():
 
 def BeginUpdateResource(pFileName, bDeleteExistingResources):
     with _pywin32error():
-        return _kernel32._BeginUpdateResource(pFileName, bDeleteExistingResources)
+        return _kernel32._BeginUpdateResource(
+            pFileName, bDeleteExistingResources)
 
 
 def EndUpdateResource(hUpdate, fDiscard):
