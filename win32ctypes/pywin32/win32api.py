@@ -9,7 +9,7 @@
 
 from __future__ import absolute_import
 
-from win32ctypes.core import _common, _kernel32
+from win32ctypes.core import _common, _kernel32, _backend
 from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
 
 LOAD_LIBRARY_AS_DATAFILE = 0x2
@@ -185,8 +185,12 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
         hrsrc = _kernel32._FindResourceEx(hModule, type, name, language)
         size = _kernel32._SizeofResource(hModule, hrsrc)
         hglob = _kernel32._LoadResource(hModule, hrsrc)
-        pointer = _kernel32._LockResource(hglob)
-    return _common._PyBytes_FromStringAndSize(pointer, size)
+        if _backend == 'ctypes':
+            pointer = _common.cast(
+                _kernel32._LockResource(hglob), _common.c_char_p)
+        else:
+            pointer = _kernel32._LockResource(hglob)
+        return _common._PyBytes_FromStringAndSize(pointer, size)
 
 
 def FreeLibrary(hModule):
@@ -220,7 +224,8 @@ def EndUpdateResource(hUpdate, fDiscard):
 
 def UpdateResource(hUpdate, lpType, lpName, lpData, wLanguage):
     with _pywin32error():
-        return _kernel32._UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
+        return _kernel32._UpdateResource(
+            hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
 
 
 def GetWindowsDirectory():
