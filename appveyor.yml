@@ -4,6 +4,9 @@ skip_branch_with_pr: true
 
 environment:
 
+  global:
+    PYTHONUNBUFFERED: "1"
+
   matrix:
     - python: "C:/Python27-x64"
     - python: "C:/Python27"
@@ -12,10 +15,8 @@ environment:
     - python: "C:/Python36-x64"
     - python: "C:/Python36"
 
-
 cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache
-
 
 init:
   - ps: $Env:path = $Env:python + ";" + $Env:python + "\scripts;" + $Env:path
