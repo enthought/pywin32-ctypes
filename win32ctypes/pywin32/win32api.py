@@ -9,7 +9,7 @@
 
 from __future__ import absolute_import
 
-from win32ctypes.core import _common, _kernel32
+from win32ctypes.core import _common, _kernel32, _backend
 from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
 
 LOAD_LIBRARY_AS_DATAFILE = 0x2
@@ -82,9 +82,9 @@ def EnumResourceNames(hModule, resType):
     hModule : handle
         The handle to the module.
     resType : str : int
-        The type of resource to enumerate. If ``resType`` is a string starting with
-        '#' is should be followed by the decimal number that define the integer
-        resource type identifier.
+        The type of resource to enumerate. If ``resType`` is a string
+        starting with '#' is should be followed by the decimal number
+        that define the integer resource type identifier.
 
     Returns
     -------
@@ -118,13 +118,13 @@ def EnumResourceLanguages(hModule, lpType, lpName):
     hModule : handle
         Handle to the resource module.
     lpType : str : int
-        The type of resource to enumerate. If ``lpType`` is a string starting with
-        '#' is should be followed by the decimal number that define the integer
-        resource type identifier.
+        The type of resource to enumerate. If ``lpType`` is a string
+        starting with '#', it should be followed by the decimal number
+        that define the integer resource type identifier.
     lpName : str : int
-        The name of resource to enumerate. If ``lpType`` is a string starting with
-        '#' is should be followed by the decimal number that define the integer
-        resource type identifier.
+        The name of resource to enumerate. If ``lpType`` is a string
+        starting with '#', it should be followed by the decimal number
+        that define the integer resource type identifier.
 
     Returns
     -------
@@ -158,7 +158,7 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
     ----------
     handle :
         The handle of the module containing the resource.
-        Use None for currrent process executable.
+        Use None for current process executable.
     type : str : int
         The type of resource to load.
     name :
@@ -185,8 +185,12 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
         hrsrc = _kernel32._FindResourceEx(hModule, type, name, language)
         size = _kernel32._SizeofResource(hModule, hrsrc)
         hglob = _kernel32._LoadResource(hModule, hrsrc)
-        pointer = _kernel32._LockResource(hglob)
-    return _common._PyBytes_FromStringAndSize(pointer, size)
+        if _backend == 'ctypes':
+            pointer = _common.cast(
+                _kernel32._LockResource(hglob), _common.c_char_p)
+        else:
+            pointer = _kernel32._LockResource(hglob)
+        return _common._PyBytes_FromStringAndSize(pointer, size)
 
 
 def FreeLibrary(hModule):
@@ -210,7 +214,8 @@ def GetTickCount():
 
 def BeginUpdateResource(pFileName, bDeleteExistingResources):
     with _pywin32error():
-        return _kernel32._BeginUpdateResource(pFileName, bDeleteExistingResources)
+        return _kernel32._BeginUpdateResource(
+            pFileName, bDeleteExistingResources)
 
 
 def EndUpdateResource(hUpdate, fDiscard):
@@ -220,7 +225,8 @@ def EndUpdateResource(hUpdate, fDiscard):
 
 def UpdateResource(hUpdate, lpType, lpName, lpData, wLanguage):
     with _pywin32error():
-        return _kernel32._UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
+        return _kernel32._UpdateResource(
+            hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
 
 
 def GetWindowsDirectory():

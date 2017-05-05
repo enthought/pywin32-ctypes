@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 
 import ctypes
-from ctypes import POINTER, Structure, c_void_p, c_wchar_p
+from ctypes import POINTER, Structure, c_void_p, c_wchar_p, c_char_p, cast
 from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
@@ -91,7 +91,8 @@ def credential2dict(creds):
             credential[key] = getattr(creds, key)
         else:
             blob = _PyBytes_FromStringAndSize(
-                creds.CredentialBlob, creds.CredentialBlobSize)
+                cast(creds.CredentialBlob, c_char_p),
+                creds.CredentialBlobSize)
             credential[u'CredentialBlob'] = blob
     return credential
 
