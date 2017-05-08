@@ -12,7 +12,7 @@ from ._util import (
 
 # TODO: retrieve this value using ffi
 MAX_PATH = 260
-MAX_PATH_BUF = 'wchar_t[{}]'.format(MAX_PATH)
+MAX_PATH_BUF = u'wchar_t[{0}]'.format(MAX_PATH)
 
 ffi.cdef("""
 
