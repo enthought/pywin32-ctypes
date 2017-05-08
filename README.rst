@@ -40,7 +40,7 @@ The following should be good enough::
   pip install -r dev_requirements.txt
   python install -e
 
-The package uses lib2to3 so running the tests should happen on a separate directory to make
+The package setup.py uses lib2to3 so running the tests should happen on a separate directory to make
 sure that the converted code is used::
 
   mkdir testdir
