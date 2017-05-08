@@ -10,7 +10,7 @@ from __future__ import absolute_import
 import ctypes
 import sys
 from ctypes import pythonapi, POINTER, c_void_p, py_object, c_char_p
-from ctype import cast  # noqa imported here for convenience
+from ctypes import cast  # noqa imported here for convenience
 from ctypes.wintypes import BYTE
 
 from win32ctypes.core.compat import PY3
