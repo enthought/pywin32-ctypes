@@ -12,7 +12,7 @@ from ._util import (
 
 # TODO: retrieve this value using ffi
 MAX_PATH = 260
-MAX_PATH_BUF = 'wchar_t[%s]' % MAX_PATH
+MAX_PATH_BUF = 'wchar_t[{}]'.format(MAX_PATH)
 
 ffi.cdef("""
 
@@ -144,8 +144,8 @@ def _LockResource(hResData):
 
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
     return check_null(
-        kernel32.BeginUpdateResourceW(unicode(pFileName),
-                                      bDeleteExistingResources))
+        kernel32.BeginUpdateResourceW(
+            unicode(pFileName), bDeleteExistingResources))
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
@@ -154,8 +154,6 @@ def _EndUpdateResource(hUpdate, fDiscard):
 
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
     return check_null(
-        kernel32.UpdateResourceW(PVOID(hUpdate), unicode(lpType),
-                                 unicode(lpName), wLanguage, PVOID(lpData),
-                                 cbData))
-
-
+        kernel32.UpdateResourceW(
+            PVOID(hUpdate), unicode(lpType), unicode(lpName),
+            wLanguage, PVOID(lpData), cbData))
