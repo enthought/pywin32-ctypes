@@ -47,6 +47,12 @@ sure that the converted code is used::
   cd testdir
   python -um unittest discover -v win32ctypes
 
+To build the documentation a recent version of sphinx is needed::
+
+  pip install -r doc-requirements.txt
+  python setup.py build_sphinx
+
+
 .. note::
 
    - While pywin32-ctypes should regularly be tested on windows, you can also
