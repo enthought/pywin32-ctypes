@@ -212,21 +212,20 @@ def GetTickCount():
     return _kernel32._GetTickCount()
 
 
-def BeginUpdateResource(pFileName, bDeleteExistingResources):
+def BeginUpdateResource(filename, delete):
     with _pywin32error():
-        return _kernel32._BeginUpdateResource(
-            pFileName, bDeleteExistingResources)
+        return _kernel32._BeginUpdateResource(filename, delete)
 
 
-def EndUpdateResource(hUpdate, fDiscard):
+def EndUpdateResource(handle, discard):
     with _pywin32error():
-        return _kernel32._EndUpdateResource(hUpdate, fDiscard)
+        return _kernel32._EndUpdateResource(handle, discard)
 
 
-def UpdateResource(hUpdate, lpType, lpName, lpData, wLanguage):
+def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
     with _pywin32error():
         return _kernel32._UpdateResource(
-            hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
+            handle, type, name, language, data, len(data))
 
 
 def GetWindowsDirectory():
