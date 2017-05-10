@@ -161,7 +161,7 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
         Use None for current process executable.
     type : str : int
         The type of resource to load.
-    name :
+    name : str : int
         The name or Id of the resource to load.
     language : int
         Language to use, default is LANG_NEUTRAL.
@@ -169,7 +169,7 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
     Returns
     -------
     hModule :
-        Handle of the loaded source.
+        Handle of the loaded resource.
 
     See also
     --------
@@ -209,30 +209,120 @@ def FreeLibrary(hModule):
 
 
 def GetTickCount():
+    """ The number of milliseconds that have elapsed since startup
+
+    Returns
+    -------
+    int:
+        The millisecond counts since system startup. Can count up
+        to 49.7 days.
+
+    See also
+    --------
+    - `GetTickCount MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724408%28v=vs.85%29.aspx>`_
+
+    """
     return _kernel32._GetTickCount()
 
 
 def BeginUpdateResource(filename, delete):
+    """ Get a handle that can be used by the :func:`UpdateResource`.
+
+    Parameters
+    ----------
+    fileName : unicode
+        The filename of the module to load.
+    delete : bool
+        When true all existing resources are deleted
+
+    Returns
+    -------
+    hModule :
+        Handle of the resource.
+
+    See also
+    --------
+    - `BeginUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648030(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         return _kernel32._BeginUpdateResource(filename, delete)
 
 
 def EndUpdateResource(handle, discard):
+    """ End the update resource of the handle.
+
+    Parameters
+    ----------
+    handle : hModule
+        The handle of the resource as it is returned
+        by :func:`BeginUpdateResource`
+    discard : bool
+        When True all writes are discarded.
+
+    See also
+    --------
+    - `EndUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648032(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         return _kernel32._EndUpdateResource(handle, discard)
 
 
 def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
+    """ Update a resource.
+
+    Parameters
+    ----------
+    handle :
+        The handle of the resource file as returned by
+        :func:`BeginUpdateResource`.
+    type : str : int
+        The type of resource to update.
+    name : str : int
+        The name or Id of the resource to update.
+    language : int
+        Language to use, default is LANG_NEUTRAL.
+
+    See also
+    --------
+    - `UpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         return _kernel32._UpdateResource(
             handle, type, name, language, data, len(data))
 
 
 def GetWindowsDirectory():
+    """ Get the ``Windows`` directory.
+
+    Returns
+    -------
+    str :
+        The path to the ``Windows`` directory.
+
+    See also
+    --------
+    - `GetWindowsDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         return _kernel32._GetWindowsDirectory()
 
 
 def GetSystemDirectory():
+    """ Get the ``System`` directory.
+
+    Returns
+    -------
+    str :
+        The path to the ``System`` directory.
+
+    See also
+    --------
+    - `GetSystemDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724373(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         return _kernel32._GetSystemDirectory()
