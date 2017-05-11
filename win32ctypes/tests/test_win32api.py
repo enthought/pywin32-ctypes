@@ -25,7 +25,9 @@ class TestWin32API(compat.TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
         shutil.copy(sys.executable, self.tempdir)
-        self.addCleanup(shutil.rmtree, self.tempdir)
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
 
     module = pywin32.win32api
 
