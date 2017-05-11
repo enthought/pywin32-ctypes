@@ -9,6 +9,9 @@
 import sys
 import unittest
 import contextlib
+import tempfile
+import shutil
+import os
 
 import win32api
 
@@ -18,6 +21,11 @@ from win32ctypes.tests import compat
 
 
 class TestWin32API(compat.TestCase):
+
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        shutil.copy(sys.executable, self.tempdir)
+        self.addCleanup(shutil.rmtree, self.tempdir)
 
     module = pywin32.win32api
 
@@ -123,6 +131,40 @@ class TestWin32API(compat.TestCase):
 
     def test_get_tick_count(self):
         self.assertGreater(self.module.GetTickCount(), 0.0)
+
+
+    def test_begin_and_end_update_resource(self):
+        filename = os.path.join(self.tempdir, 'python.exe')
+        handle = self.module.BeginUpdateResource(filename, False)
+        self.module.EndUpdateResource(handle, False)
+
+    def test_update_resource(self):
+        # given
+        module = self.module
+        filename = os.path.join(self.tempdir, 'python.exe')
+        with self.load_library(self.module, filename) as handle:
+            resource_type = module.EnumResourceTypes(handle)[-1]
+            resource_name = module.EnumResourceNames(handle, resource_type)[-1]
+            resource_language = module.EnumResourceLanguages(
+                handle, resource_type, resource_name)[-1]
+            resource = module.LoadResource(
+                handle, resource_type, resource_name, resource_language)
+
+        # when
+        handle = module.BeginUpdateResource(filename, False)
+        try:
+            module.UpdateResource(
+                handle, resource_type, resource_name, resource[:-2],
+                resource_language)
+        finally:
+            module.EndUpdateResource(handle, False)
+
+        # then
+        with self.load_library(self.module, filename) as handle:
+            updated = module.LoadResource(
+                handle, resource_type, resource_name, resource_language)
+        self.assertEqual(len(updated), len(resource) - 2)
+        self.assertEqual(updated, resource[:-2])
 
     def _id2str(self, type_id):
         if hasattr(type_id, 'index'):
