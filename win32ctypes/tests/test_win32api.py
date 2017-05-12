@@ -186,7 +186,7 @@ class TestWin32API(compat.TestCase):
 
     def test_get_system_directory(self):
         # given
-        r = self.module.GetSystemDirectory()
+        expected = win32api.GetSystemDirectory()
 
         # when
         result = self.module.GetSystemDirectory()
