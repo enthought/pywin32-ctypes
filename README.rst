@@ -1,7 +1,7 @@
 .. image:: https://travis-ci.org/enthought/pywin32-ctypes.png
   :target: https://travis-ci.org/enthought/pywin32-ctypes
   
-.. image:: https://ci.appveyor.com/api/projects/status/q3es9rvhgj88r0f1/branch/master?svg=true
+.. image:: https://ci.appveyor.com/api/projects/status/62xqtrro26gw3l4x/branch/master?svg=true
   :target: https://ci.appveyor.com/project/EnthoughtOSS/pywin32-ctypes
 
 .. image:: https://codecov.io/github/enthought/pywin32-ctypes/coverage.svg?branch=master
