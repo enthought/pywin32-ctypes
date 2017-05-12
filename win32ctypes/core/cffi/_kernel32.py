@@ -42,7 +42,7 @@ LPVOID WINAPI LockResource(HGLOBAL hResData);
 
 HANDLE WINAPI BeginUpdateResourceW(LPCTSTR pFileName, BOOL bDeleteExistingResources);
 BOOL WINAPI EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard);
-BOOL WINAPI UpdateResourceW(HANDLE  hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
+BOOL WINAPI UpdateResourceW(HANDLE hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
 UINT WINAPI GetWindowsDirectoryW(LPTSTR lpBuffer, UINT uSize);
 UINT WINAPI GetSystemDirectoryW(LPTSTR lpBuffer, UINT uSize);
 
@@ -149,11 +149,11 @@ def _BeginUpdateResource(pFileName, bDeleteExistingResources):
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
-    check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
+    return check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
 
 
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
-    return check_null(
+    return check_zero(
         kernel32.UpdateResourceW(
-            PVOID(hUpdate), unicode(lpType), unicode(lpName),
-            wLanguage, PVOID(lpData), cbData))
+            PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
+            wLanguage, lpData, cbData))
