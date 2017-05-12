@@ -172,17 +172,29 @@ class TestWin32API(compat.TestCase):
         else:
             return u'#{0}'.format(type_id)
 
-    # note: pywin32 returns str on py27, unicode (which is str) on py3
-
     def test_get_windows_directory(self):
-        r = self.module.GetWindowsDirectory()
-        self.assertTrue(isinstance(r, str))
-        self.assertEqual(r.lower(), r"c:\windows")
-        
+        # given
+        expected = win32api.GetWindowsDirectory()
+
+        # when
+        result = self.module.GetWindowsDirectory()
+
+        # then
+        self.assertTrue(isinstance(result, str))
+        self.assertEqual(result.lower(), r"c:\windows")
+        self.assertEqual(result.lower(), expected)
+
     def test_get_system_directory(self):
+        # given
         r = self.module.GetSystemDirectory()
-        self.assertTrue(isinstance(r, str))
-        self.assertEqual(r.lower(), r"c:\windows\system32")
+
+        # when
+        result = self.module.GetSystemDirectory()
+
+        # then
+        self.assertTrue(isinstance(result, str))
+        self.assertEqual(result.lower(), r"c:\windows\system32")
+        self.assertEqual(result.lower(), expected)
 
 
 if __name__ == '__main__':
