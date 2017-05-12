@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 
 from ._util import (
-    ffi, check_null, check_zero, HMODULE, PVOID, RESOURCE, resource)
+    ffi, check_null, check_zero, check_false, HMODULE, PVOID, RESOURCE, resource)
 
 # TODO: retrieve this value using ffi
 MAX_PATH = 260
@@ -149,11 +149,11 @@ def _BeginUpdateResource(pFileName, bDeleteExistingResources):
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
-    return check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
+    return check_false(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
 
 
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
-    return check_zero(
+    return check_false(
         kernel32.UpdateResourceW(
             PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
             wLanguage, PVOID(lpData), cbData))

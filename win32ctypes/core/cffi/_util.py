@@ -74,3 +74,4 @@ class ErrorWhen(object):
 
 check_null = ErrorWhen(ffi.NULL)
 check_zero = ErrorWhen(0)
+check_false = ErrorWhen(False)

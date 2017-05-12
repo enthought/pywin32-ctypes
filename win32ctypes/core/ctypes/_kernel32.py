@@ -13,7 +13,7 @@ from ctypes.wintypes import (
     HGLOBAL, LPVOID, UINT, LPWSTR, MAX_PATH)
 
 from ._common import LONG_PTR, IS_INTRESOURCE
-from ._util import check_null, check_zero, function_factory
+from ._util import check_null, check_zero, check_false, function_factory
 
 _ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LONG_PTR)
 _ENUMRESNAMEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LPVOID, LONG_PTR)
@@ -134,13 +134,13 @@ _EndUpdateResource = function_factory(
     kernel32.EndUpdateResourceW,
     [HANDLE, BOOL],
     BOOL,
-    check_zero)
+    check_false)
 
 _BaseUpdateResource = function_factory(
     kernel32.UpdateResourceW,
     [HANDLE, LPCWSTR, LPCWSTR, WORD, LPVOID, DWORD],
     BOOL,
-    check_zero)
+    check_false)
 
 _BaseGetWindowsDirectory = function_factory(
     kernel32.GetWindowsDirectoryW,
