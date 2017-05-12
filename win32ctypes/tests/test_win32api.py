@@ -182,7 +182,7 @@ class TestWin32API(compat.TestCase):
         # then
         self.assertTrue(isinstance(result, str))
         self.assertEqual(result.lower(), r"c:\windows")
-        self.assertEqual(result.lower(), expected)
+        self.assertEqual(result, expected)
 
     def test_get_system_directory(self):
         # given
@@ -194,7 +194,7 @@ class TestWin32API(compat.TestCase):
         # then
         self.assertTrue(isinstance(result, str))
         self.assertEqual(result.lower(), r"c:\windows\system32")
-        self.assertEqual(result.lower(), expected)
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':
