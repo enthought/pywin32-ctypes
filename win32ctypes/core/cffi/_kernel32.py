@@ -144,18 +144,16 @@ def _LockResource(hResData):
 
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
     return check_null(
-        kernel32.BeginUpdateResourceW(unicode(pFileName),
-                                      bDeleteExistingResources))
+        kernel32.BeginUpdateResourceW(
+            unicode(pFileName), bDeleteExistingResources))
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
-    check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
+    return check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
 
 
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
-    return check_null(
-        kernel32.UpdateResourceW(PVOID(hUpdate), unicode(lpType),
-                                 unicode(lpName), wLanguage, PVOID(lpData),
-                                 cbData))
-
-
+    return check_zero(
+        kernel32.UpdateResourceW(
+            PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
+            wLanguage, PVOID(lpData), cbData))
