@@ -166,12 +166,6 @@ class TestWin32API(compat.TestCase):
         self.assertEqual(len(updated), len(resource) - 2)
         self.assertEqual(updated, resource[:-2])
 
-    def _id2str(self, type_id):
-        if hasattr(type_id, 'index'):
-            return type_id
-        else:
-            return u'#{0}'.format(type_id)
-
     def test_get_windows_directory(self):
         # given
         expected = win32api.GetWindowsDirectory()
@@ -180,7 +174,7 @@ class TestWin32API(compat.TestCase):
         result = self.module.GetWindowsDirectory()
 
         # then
-        self.assertTrue(isinstance(result, str))
+        self.assertIsInstance(result, str)
         self.assertEqual(result.lower(), r"c:\windows")
         self.assertEqual(result, expected)
 
@@ -192,9 +186,15 @@ class TestWin32API(compat.TestCase):
         result = self.module.GetSystemDirectory()
 
         # then
-        self.assertTrue(isinstance(result, str))
+        self.assertIsInstance(result, str)
         self.assertEqual(result.lower(), r"c:\windows\system32")
         self.assertEqual(result, expected)
+
+    def _id2str(self, type_id):
+        if hasattr(type_id, 'index'):
+            return type_id
+        else:
+            return u'#{0}'.format(type_id)
 
 
 if __name__ == '__main__':
