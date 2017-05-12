@@ -87,7 +87,7 @@ _LoadResource = function_factory(
     kernel32.LoadResource,
     [HMODULE, HRSRC],
     HGLOBAL,
-    check_zero)
+    check_null)
 
 _LockResource = function_factory(
     kernel32.LockResource,
