@@ -162,11 +162,11 @@ class TestWin32API(compat.TestCase):
         # when
         handle = module.BeginUpdateResource(filename, False)
         try:
-            module.UpdateResource(
+            self.assertEqual(module.UpdateResource(
                 handle, resource_type, resource_name, resource[:-2],
-                resource_language)
+                language=resource_language), 1)
         finally:
-            module.EndUpdateResource(handle, False)
+             self.assertEqual(module.EndUpdateResource(handle, False), 1)
 
         # then
         with self.load_library(self.module, filename) as handle:
