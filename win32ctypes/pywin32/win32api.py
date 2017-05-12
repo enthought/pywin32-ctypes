@@ -231,9 +231,11 @@ def UpdateResource(hUpdate, lpType, lpName, lpData, wLanguage):
 
 def GetWindowsDirectory():
     with _pywin32error():
-        return _kernel32._GetWindowsDirectory()
+        # Note: pywin32 returns str on py27, unicode (which is str) on py3
+        return str(_kernel32._GetWindowsDirectory())
 
 
 def GetSystemDirectory():
     with _pywin32error():
-        return _kernel32._GetSystemDirectory()
+        # Note: pywin32 returns str on py27, unicode (which is str) on py3
+        return str(_kernel32._GetSystemDirectory())
