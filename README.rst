@@ -1,7 +1,7 @@
 .. image:: https://travis-ci.org/enthought/pywin32-ctypes.png
   :target: https://travis-ci.org/enthought/pywin32-ctypes
-
-.. image:: https://ci.appveyor.com/api/projects/status/q3es9rvhgj88r0f1/branch/master?svg=true
+  
+.. image:: https://ci.appveyor.com/api/projects/status/62xqtrro26gw3l4x/branch/master?svg=true
   :target: https://ci.appveyor.com/project/EnthoughtOSS/pywin32-ctypes
 
 .. image:: https://codecov.io/github/enthought/pywin32-ctypes/coverage.svg?branch=master
@@ -39,19 +39,6 @@ The following should be good enough::
 
   pip install -r dev_requirements.txt
   python install -e
-
-The package setup.py uses lib2to3 so running the tests should happen on a separate directory to make
-sure that the converted code is used::
-
-  mkdir testdir
-  cd testdir
-  python -um unittest discover -v win32ctypes
-
-To build the documentation a recent version of sphinx is needed::
-
-  pip install -r doc-requirements.txt
-  python setup.py build_sphinx
-
 
 .. note::
 

@@ -9,9 +9,6 @@
 import sys
 import unittest
 import contextlib
-import tempfile
-import shutil
-import os
 
 import win32api
 
@@ -21,13 +18,6 @@ from win32ctypes.tests import compat
 
 
 class TestWin32API(compat.TestCase):
-
-    def setUp(self):
-        self.tempdir = tempfile.mkdtemp()
-        shutil.copy(sys.executable, self.tempdir)
-
-    def tearDown(self):
-        shutil.rmtree(self.tempdir)
 
     module = pywin32.win32api
 
@@ -134,13 +124,6 @@ class TestWin32API(compat.TestCase):
     def test_get_tick_count(self):
         self.assertGreater(self.module.GetTickCount(), 0.0)
 
-    def test_get_windows_directory(self):
-        self.assertEqual(
-            self.module.GetWindowsDirectory().lower(), r"c:\windows")
-
-    def test_get_system_directory(self):
-        self.assertEqual(
-            self.module.GetSystemDirectory().lower(), r"c:\windows\system32")
 
     def test_begin_and_end_update_resource(self):
         filename = os.path.join(self.tempdir, 'python.exe')
@@ -180,6 +163,18 @@ class TestWin32API(compat.TestCase):
             return type_id
         else:
             return u'#{0}'.format(type_id)
+
+    # note: pywin32 returns str on py27, unicode (which is str) on py3
+
+    def test_get_windows_directory(self):
+        r = self.module.GetWindowsDirectory()
+        self.assertTrue(isinstance(r, str))
+        self.assertEqual(r.lower(), r"c:\windows")
+        
+    def test_get_system_directory(self):
+        r = self.module.GetSystemDirectory()
+        self.assertTrue(isinstance(r, str))
+        self.assertEqual(r.lower(), r"c:\windows\system32")
 
 
 if __name__ == '__main__':
