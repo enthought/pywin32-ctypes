@@ -136,7 +136,7 @@ class TestWin32API(compat.TestCase):
     def test_begin_and_end_update_resource(self):
         filename = os.path.join(self.tempdir, 'python.exe')
         handle = self.module.BeginUpdateResource(filename, False)
-        self.module.EndUpdateResource(handle, False)
+        self.assertTrue(self.module.EndUpdateResource(handle, False))
 
     def test_update_resource(self):
         # given
@@ -153,11 +153,12 @@ class TestWin32API(compat.TestCase):
         # when
         handle = module.BeginUpdateResource(filename, False)
         try:
-            module.UpdateResource(
-                handle, resource_type, resource_name, resource[:-2],
-                resource_language)
+            self.assertTrue(
+                module.UpdateResource(
+                    handle, resource_type, resource_name, resource[:-2],
+                    resource_language))
         finally:
-            module.EndUpdateResource(handle, False)
+            self.assertTrue(module.EndUpdateResource(handle, False))
 
         # then
         with self.load_library(self.module, filename) as handle:
