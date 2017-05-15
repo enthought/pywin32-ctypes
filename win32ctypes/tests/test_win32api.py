@@ -22,14 +22,14 @@ from win32ctypes.tests import compat
 
 class TestWin32API(compat.TestCase):
 
+    module = pywin32.win32api
+
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
         shutil.copy(sys.executable, self.tempdir)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
-
-    module = pywin32.win32api
 
     @contextlib.contextmanager
     def load_library(self, module, library=sys.executable, flags=0x2):

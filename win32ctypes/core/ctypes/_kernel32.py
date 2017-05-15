@@ -64,7 +64,9 @@ def ENUMRESLANGPROC(callback):
 
     return _ENUMRESLANGPROC(wrapped)
 
+
 _GetACP = function_factory(kernel32.GetACP, None, UINT)
+
 
 _LoadLibraryEx = function_factory(
     kernel32.LoadLibraryExW,
