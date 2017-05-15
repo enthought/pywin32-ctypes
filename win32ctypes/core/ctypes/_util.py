@@ -57,8 +57,7 @@ check_zero = check_zero_factory()
 
 def check_false_factory(function_name=None):
     def check_false(result, function, arguments, *args):
-        # This is intentional
-        if not result == True:
+        if not bool(result):
             raise make_error(function, function_name)
         else:
             return True
