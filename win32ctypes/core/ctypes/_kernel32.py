@@ -75,13 +75,13 @@ _FreeLibrary = function_factory(
     kernel32.FreeLibrary,
     [HMODULE],
     BOOL,
-    check_zero)
+    check_false)
 
 _EnumResourceTypes = function_factory(
     kernel32.EnumResourceTypesW,
     [HMODULE, _ENUMRESTYPEPROC, LONG_PTR],
     BOOL,
-    check_zero)
+    check_false)
 
 _LoadResource = function_factory(
     kernel32.LoadResource,
@@ -111,7 +111,7 @@ _BaseEnumResourceLanguages = function_factory(
     kernel32.EnumResourceLanguagesW,
     [HMODULE, LPCWSTR, LPCWSTR, _ENUMRESLANGPROC, LONG_PTR],
     BOOL,
-    check_zero)
+    check_false)
 
 _BaseFindResourceEx = function_factory(
     kernel32.FindResourceExW,
