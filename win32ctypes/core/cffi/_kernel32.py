@@ -100,25 +100,25 @@ def _LoadLibraryEx(lpFilename, hFile, dwFlags):
 
 
 def _FreeLibrary(hModule):
-    check_zero(kernel32.FreeLibrary(PVOID(hModule)))
+    return check_false(kernel32.FreeLibrary(PVOID(hModule)))
 
 
 def _EnumResourceTypes(hModule, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESTYPEPROC', lpEnumFunc)
-    check_zero(
+    return check_false(
         kernel32.EnumResourceTypesW(PVOID(hModule), callback, lParam))
 
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESNAMEPROC', lpEnumFunc)
-    check_zero(
+    return check_false(
         kernel32.EnumResourceNamesW(
             PVOID(hModule), RESOURCE(lpszType), callback, lParam))
 
 
 def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESLANGPROC', lpEnumFunc)
-    check_zero(
+    return check_false(
         kernel32.EnumResourceLanguagesW(
             PVOID(hModule), RESOURCE(lpType),
             RESOURCE(lpName), callback, lParam))
