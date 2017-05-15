@@ -43,6 +43,7 @@ def check_null_factory(function_name=None):
         return result
     return check_null
 
+
 check_null = check_null_factory()
 
 
@@ -53,7 +54,9 @@ def check_zero_factory(function_name=None):
         return result
     return check_zero
 
+
 check_zero = check_zero_factory()
+
 
 def check_false_factory(function_name=None):
     def check_false(result, function, arguments, *args):
@@ -62,5 +65,6 @@ def check_false_factory(function_name=None):
         else:
             return True
     return check_false
+
 
 check_false = check_false_factory()
