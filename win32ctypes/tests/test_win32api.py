@@ -136,9 +136,35 @@ class TestWin32API(compat.TestCase):
 
 
     def test_begin_and_end_update_resource(self):
+        # given
+        module = self.module
         filename = os.path.join(self.tempdir, 'python.exe')
-        handle = self.module.BeginUpdateResource(filename, False)
-        self.assertTrue(self.module.EndUpdateResource(handle, False))
+        with self.load_library(self.module, filename) as handle:
+            count = len(module.EnumResourceTypes(handle))
+
+        # when
+        handle = module.BeginUpdateResource(filename, False)
+        self.assertTrue(module.EndUpdateResource(handle, False))
+
+        # then
+        with self.load_library(self.module, filename) as handle:
+            self.assertEqual(len(module.EnumResourceTypes(handle)), count)
+
+        # when
+        handle = module.BeginUpdateResource(filename, True)
+        self.assertTrue(module.EndUpdateResource(handle, True))
+
+        # then
+        with self.load_library(self.module, filename) as handle:
+            self.assertEqual(len(module.EnumResourceTypes(handle)), count)
+
+        # when
+        handle = module.BeginUpdateResource(filename, True)
+        self.assertTrue(module.EndUpdateResource(handle, False))
+
+        # then
+        with self.load_library(self.module, filename) as handle:
+            self.assertEqual(len(module.EnumResourceTypes(handle)), 0)
 
     def test_update_resource(self):
         # given
