@@ -60,7 +60,7 @@ check_zero = check_zero_factory()
 
 def check_false_factory(function_name=None):
     def check_false(result, function, arguments, *args):
-        if result == True:
+        if not bool(result):
             error = make_error(function, function_name)
             # In some cases (e.g. running under wine)
             # there is no error we still get a non true
