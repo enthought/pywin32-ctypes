@@ -94,7 +94,7 @@ class TestWin32API(compat.TestCase):
         with self.assertRaises(error):
             self.module.EnumResourceNames(2, 3)
 
-    def test_enum_resource_languages(self):
+    def _test_enum_resource_languages(self):
         with self.load_library(win32api, u'shell32.dll') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
@@ -185,7 +185,10 @@ class TestWin32API(compat.TestCase):
             self.assertEqual(len(module.EnumResourceTypes(handle)), 0)
 
     def test_begin_update_resource_with_invalid(self):
-        # when/then
+        if skip_on_wine:
+            self.skipTest('BeginUpdateResource known failure on wine, see #59')
+
+            # when/then
         with self.assertRaises(error) as context:
             self.module.BeginUpdateResource('invalid', False)
         # the errno cannot be 0 (i.e. success)
@@ -193,7 +196,7 @@ class TestWin32API(compat.TestCase):
 
     def test_end_update_resource_with_invalid(self):
         if skip_on_wine:
-            self.skipTest('EnumResourceTypes known failure on wine, see #59')
+            self.skipTest('EndUpdateResource known failure on wine, see #59')
 
         # when/then
         with self.assertRaises(error) as context:
