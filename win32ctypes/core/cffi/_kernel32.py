@@ -168,10 +168,10 @@ def _EndUpdateResource(hUpdate, fDiscard):
         function_name='EndUpdateResource')
 
 
-def _UpdateResource(hUpdate, lpType, lpName, wLanguage, cData):
-    cpData = ffi.from_buffer(cData)
+def _UpdateResource(hUpdate, lpType, lpName, wLanguage, cData, cbData):
+    lpData = ffi.from_buffer(cData)
     check_false(
         kernel32.UpdateResourceW(
             PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
-            wLanguage, PVOID(cpData), len(cpData)),
+            wLanguage, PVOID(lpData), cbData),
         function_name='UpdateResource')
