@@ -186,7 +186,7 @@ class TestWin32API(compat.TestCase):
 
     def test_begin_update_resource_with_invalid(self):
         # when/then
-        with self.assertRaises(error):
+        with self.assertRaises(error) as context:
             self.module.BeginUpdateResource('invalid', False)
         # the errno cannot be 0 (i.e. success)
         self.assertNotEqual(context.exception.winerror, 0)
