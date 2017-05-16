@@ -188,16 +188,18 @@ class TestWin32API(compat.TestCase):
         # when/then
         with self.assertRaises(error):
             self.module.BeginUpdateResource('invalid', False)
-        self.assertNotEqual(error.winerror, 0)
+        # the errno cannot be 0 (i.e. success)
+        self.assertNotEqual(context.exception.winerror, 0)
 
     def test_end_update_resource_with_invalid(self):
         if skip_on_wine:
             self.skipTest('EnumResourceTypes known failure on wine, see #59')
 
         # when/then
-        with self.assertRaises(error):
+        with self.assertRaises(error) as context:
             self.module.EndUpdateResource(-3, False)
-        self.assertNotEqual(error.winerror, 0)
+        # the errno cannot be 0 (i.e. success)
+        self.assertNotEqual(context.exception.winerror, 0)
 
     def test_update_resource(self):
         # given
