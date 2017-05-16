@@ -169,11 +169,11 @@ def _GetSystemDirectory():
     return ctypes.cast(buffer, LPCWSTR).value
 
 
-def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
+def _UpdateResource(hUpdate, lpType, lpName, wLanguage, cData):
     lp_type = LPCWSTR(lpType)
     lp_name = LPCWSTR(lpName)
     _BaseUpdateResource(
-        hUpdate, lp_type, lp_name, wLanguage, lpData, cbData)
+        hUpdate, lp_type, lp_name, wLanguage, cData, len(cData))
 
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):

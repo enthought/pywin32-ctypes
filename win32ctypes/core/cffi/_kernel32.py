@@ -142,6 +142,7 @@ def _SizeofResource(hModule, hResInfo):
         kernel32.SizeofResource(PVOID(hModule), hResInfo),
         function_name='SizeofResource')
 
+
 def _LoadResource(hModule, hResInfo):
     return check_null(
         kernel32.LoadResource(PVOID(hModule), hResInfo),
@@ -166,9 +167,10 @@ def _EndUpdateResource(hUpdate, fDiscard):
         function_name='EndUpdateResource')
 
 
-def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
+def _UpdateResource(hUpdate, lpType, lpName, wLanguage, cData):
+    cpData = ffi.from_buffer(cData)
     check_false(
         kernel32.UpdateResourceW(
             PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
-            wLanguage, PVOID(lpData), cbData),
+            wLanguage, PVOID(cpData), len(cpData)),
         function_name='UpdateResource')

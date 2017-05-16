@@ -281,6 +281,8 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
         The type of resource to update.
     name : str : int
         The name or Id of the resource to update.
+    data : bytes
+        A bytes like object is expected.
     language : int
         Language to use, default is LANG_NEUTRAL.
 
@@ -289,9 +291,9 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
     - `UpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
 
     """
+
     with _pywin32error():
-        _kernel32._UpdateResource(
-            handle, type, name, language, data, len(data))
+        _kernel32._UpdateResource(handle, type, name, language, bytes(data))
 
 
 def GetWindowsDirectory():
