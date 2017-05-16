@@ -8,9 +8,10 @@ python:
 
 env:
   - BITS=32
+    SKIP_WINE_KNOWN_FAILURES=1
 
 # The pywin32-219 installers for python 2.6 64bit are missing files.
-# 64-bit for 2.7, 3.3 and 3.4 are tested with appveyor.
+# 64-bit for 2.7, 3.5 and 3.6 are tested with appveyor.
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
