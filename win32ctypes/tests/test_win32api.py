@@ -39,6 +39,14 @@ class TestWin32API(compat.TestCase):
         finally:
             module.FreeLibrary(handle)
 
+    @contextlib.contextmanager
+    def resource_update(self, module, library=sys.executable):
+        handle = module.BeginUpdateResource(library, False)
+        try:
+            yield handle
+        finally:
+            module.EndUpdateResource(handle, False)
+
     def test_load_library_ex(self):
         with self.load_library(win32api) as expected:
             with self.load_library(self.module) as handle:
@@ -186,13 +194,10 @@ class TestWin32API(compat.TestCase):
                 handle, resource_type, resource_name, resource_language)
 
         # when
-        handle = module.BeginUpdateResource(filename, False)
-        try:
+        with self.resource_update(self.module, filename) as handle:
             module.UpdateResource(
                 handle, resource_type, resource_name, resource[:-2],
                 resource_language)
-        finally:
-            module.EndUpdateResource(handle, False)
 
         # then
         with self.load_library(self.module, filename) as handle:
@@ -201,18 +206,23 @@ class TestWin32API(compat.TestCase):
         self.assertEqual(len(updated), len(resource) - 2)
         self.assertEqual(updated, resource[:-2])
 
-        # when
+    def test_update_resource_with_unicode(self):
+        # given
+        module = win32api
+        filename = os.path.join(self.tempdir, 'python.exe')
+        with self.load_library(module, filename) as handle:
+            resource_type = module.EnumResourceTypes(handle)[-1]
+            resource_name = module.EnumResourceNames(handle, resource_type)[-1]
+            resource_language = module.EnumResourceLanguages(
+                handle, resource_type, resource_name)[-1]
         resource = u"\N{GREEK CAPITAL LETTER DELTA}"
-        handle = module.BeginUpdateResource(filename, False)
-        try:
-            # then only byte like objects are expected.
+
+        # when
+        with self.resource_update(module, filename) as handle:
             with self.assertRaises(TypeError):
                 module.UpdateResource(
-                    handle, resource_type, resource_name,
-                    resource,
+                    handle, resource_type, resource_name, resource,
                     resource_language)
-        finally:
-            module.EndUpdateResource(handle, False)
 
     def test_get_windows_directory(self):
         # given
