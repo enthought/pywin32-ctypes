@@ -5,13 +5,12 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
+import os
 import sys
 import unittest
 import contextlib
 import tempfile
 import shutil
-import os
 
 import win32api
 
@@ -256,6 +255,7 @@ class TestWin32API(compat.TestCase):
         result = self.module.GetWindowsDirectory()
 
         # then
+        # note: pywin32 returns str on py27, unicode (which is str) on py3
         self.assertIsInstance(result, str)
         self.assertEqual(result.lower(), r"c:\windows")
         self.assertEqual(result, expected)
@@ -268,6 +268,7 @@ class TestWin32API(compat.TestCase):
         result = self.module.GetSystemDirectory()
 
         # then
+        # note: pywin32 returns str on py27, unicode (which is str) on py3
         self.assertIsInstance(result, str)
         self.assertEqual(result.lower(), r"c:\windows\system32")
         self.assertEqual(result, expected)

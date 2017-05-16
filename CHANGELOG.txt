@@ -9,7 +9,7 @@ Version 0.1.0
 -------------
 
 - Fix: Python 3.5 and 3.6 support (#52).
-- API additions to allow pywin32-ctyps to work with pyinstaller (#46
+- API additions to allow pywin32-ctypes to work with pyinstaller (#46
   contributed by @virtuald).
 - Fix: do not update the global copy of the windows dlls (#42)
 - Add documentation and setup automatic builds in ReadTheDocs (#3, #36).
