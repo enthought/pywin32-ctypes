@@ -202,6 +202,23 @@ class TestWin32API(compat.TestCase):
         self.assertEqual(len(updated), len(resource) - 2)
         self.assertEqual(updated, resource[:-2])
 
+        # when
+        handle = module.BeginUpdateResource(filename, False)
+        resource = u"\N{GREEK CAPITAL LETTER DELTA}"
+        try:
+                module.UpdateResource(
+                    handle, resource_type, resource_name,
+                    resource,
+                    resource_language)
+        finally:
+            module.EndUpdateResource(handle, False)
+
+        # then
+        with self.load_library(self.module, filename) as handle:
+            updated = module.LoadResource(
+                handle, resource_type, resource_name, resource_language)
+        self.assertEqual(updated, resource.encode('utf8'))
+
     def test_get_windows_directory(self):
         # given
         expected = win32api.GetWindowsDirectory()
