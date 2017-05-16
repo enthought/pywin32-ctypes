@@ -107,7 +107,7 @@ _BaseEnumResourceNames = function_factory(
     kernel32.EnumResourceNamesW,
     [HMODULE, LPCWSTR, _ENUMRESNAMEPROC, LONG_PTR],
     BOOL,
-    check_zero)
+    check_false)
 
 _BaseEnumResourceLanguages = function_factory(
     kernel32.EnumResourceLanguagesW,
@@ -172,20 +172,19 @@ def _GetSystemDirectory():
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
     lp_type = LPCWSTR(lpType)
     lp_name = LPCWSTR(lpName)
-    return _BaseUpdateResource(
+    _BaseUpdateResource(
         hUpdate, lp_type, lp_name, wLanguage, lpData, cbData)
 
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
     resource_type = LPCWSTR(lpszType)
-    return _BaseEnumResourceNames(
-        hModule, resource_type, lpEnumFunc, lParam)
+    _BaseEnumResourceNames(hModule, resource_type, lpEnumFunc, lParam)
 
 
 def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
     resource_type = LPCWSTR(lpType)
     resource_name = LPCWSTR(lpName)
-    return _BaseEnumResourceLanguages(
+    _BaseEnumResourceLanguages(
         hModule, resource_type, resource_name, lpEnumFunc, lParam)
 
 
