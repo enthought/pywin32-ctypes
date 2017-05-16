@@ -68,8 +68,7 @@ if sys.version_info[:2] == (2, 6):
             if result is not None:
                 errors = result.errors
                 skip_error = (
-                    'in skipTest\n    raise SkipException(msg)'
-                    '\nSkipException:')
+                    'in skipTest\n    raise SkipException(msg)')
                 result.errors = []
                 for error in errors:
                     if skip_error in error[1]:
