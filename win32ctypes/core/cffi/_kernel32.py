@@ -161,13 +161,13 @@ def _BeginUpdateResource(pFileName, bDeleteExistingResources):
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
-    return check_false(
+    check_false(
         kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard),
         function_name='EndUpdateResource')
 
 
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
-    return check_false(
+    check_false(
         kernel32.UpdateResourceW(
             PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
             wLanguage, PVOID(lpData), cbData),

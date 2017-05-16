@@ -266,7 +266,7 @@ def EndUpdateResource(handle, discard):
 
     """
     with _pywin32error():
-        return _kernel32._EndUpdateResource(handle, discard)
+        _kernel32._EndUpdateResource(handle, discard)
 
 
 def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
@@ -290,7 +290,7 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
 
     """
     with _pywin32error():
-        return _kernel32._UpdateResource(
+        _kernel32._UpdateResource(
             handle, type, name, language, data, len(data))
 
 

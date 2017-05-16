@@ -144,7 +144,7 @@ class TestWin32API(compat.TestCase):
 
         # when
         handle = module.BeginUpdateResource(filename, False)
-        self.assertTrue(module.EndUpdateResource(handle, False))
+        module.EndUpdateResource(handle, False)
 
         # then
         with self.load_library(self.module, filename) as handle:
@@ -152,7 +152,7 @@ class TestWin32API(compat.TestCase):
 
         # when
         handle = module.BeginUpdateResource(filename, True)
-        self.assertTrue(module.EndUpdateResource(handle, True))
+        module.EndUpdateResource(handle, True)
 
         # then
         with self.load_library(self.module, filename) as handle:
@@ -160,7 +160,7 @@ class TestWin32API(compat.TestCase):
 
         # when
         handle = module.BeginUpdateResource(filename, True)
-        self.assertTrue(module.EndUpdateResource(handle, False))
+        module.EndUpdateResource(handle, False)
 
         # then
         with self.load_library(self.module, filename) as handle:
@@ -181,12 +181,11 @@ class TestWin32API(compat.TestCase):
         # when
         handle = module.BeginUpdateResource(filename, False)
         try:
-            self.assertTrue(
-                module.UpdateResource(
+            module.UpdateResource(
                     handle, resource_type, resource_name, resource[:-2],
-                    resource_language))
+                    resource_language)
         finally:
-            self.assertTrue(module.EndUpdateResource(handle, False))
+            module.EndUpdateResource(handle, False)
 
         # then
         with self.load_library(self.module, filename) as handle:
