@@ -156,9 +156,10 @@ def _LockResource(hResData):
 
 
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
-    return check_null(
+    result = check_null(
         kernel32.BeginUpdateResourceW(
             unicode(pFileName), bDeleteExistingResources))
+    return HMODULE(result)
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
