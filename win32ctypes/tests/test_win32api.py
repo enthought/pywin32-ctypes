@@ -208,7 +208,7 @@ class TestWin32API(compat.TestCase):
 
     def test_update_resource_with_unicode(self):
         # given
-        module = win32api
+        module = self.module
         filename = os.path.join(self.tempdir, 'python.exe')
         with self.load_library(module, filename) as handle:
             resource_type = module.EnumResourceTypes(handle)[-1]
