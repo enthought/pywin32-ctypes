@@ -166,6 +166,14 @@ class TestWin32API(compat.TestCase):
         with self.load_library(self.module, filename) as handle:
             self.assertEqual(len(module.EnumResourceTypes(handle)), 0)
 
+        # when/then
+        with self.assertRaises(error):
+            handle = module.BeginUpdateResource('invalid', False)
+
+        # when/then
+        with self.assertRaises(error):
+            handle = module.EndUpdateResource(-3, False)
+
     def test_update_resource(self):
         # given
         module = self.module
