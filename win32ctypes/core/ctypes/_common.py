@@ -9,7 +9,9 @@ from __future__ import absolute_import
 
 import ctypes
 import sys
-from ctypes import pythonapi, POINTER, c_void_p, py_object, c_char_p
+from ctypes import (
+    pythonapi, POINTER, c_void_p, py_object, c_char_p, c_int, c_long, c_int64,
+    c_longlong)
 from ctypes import cast  # noqa imported here for convenience
 from ctypes.wintypes import BYTE
 
@@ -19,12 +21,12 @@ from ._util import function_factory
 PPy_UNICODE = c_void_p
 LPBYTE = POINTER(BYTE)
 is_64bits = sys.maxsize > 2**32
-Py_ssize_t = ctypes.c_int64 if is_64bits else ctypes.c_int
+Py_ssize_t = c_int64 if is_64bits else c_int
 
-if ctypes.sizeof(ctypes.c_long) == ctypes.sizeof(ctypes.c_void_p):
-    LONG_PTR = ctypes.c_long
-elif ctypes.sizeof(ctypes.c_longlong) == ctypes.sizeof(ctypes.c_void_p):
-    LONG_PTR = ctypes.c_longlong
+if ctypes.sizeof(c_long) == ctypes.sizeof(c_void_p):
+    LONG_PTR = c_long
+elif ctypes.sizeof(c_longlong) == ctypes.sizeof(c_void_p):
+    LONG_PTR = c_longlong
 
 if PY3:
     _PyBytes_FromStringAndSize = function_factory(
