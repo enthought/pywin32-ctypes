@@ -20,6 +20,9 @@ from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.tests import compat
 
 
+skip_on_wine = 'SKIP_WINE_KNOWN_FAILURES' in os.environ
+
+
 class TestWin32API(compat.TestCase):
 
     module = pywin32.win32api
@@ -146,7 +149,7 @@ class TestWin32API(compat.TestCase):
         # given
         module = self.module
         filename = os.path.join(self.tempdir, 'python.exe')
-        with self.load_library(self.module, filename) as handle:
+        with self.load_library(module, filename) as handle:
             count = len(module.EnumResourceTypes(handle))
 
         # when
@@ -154,7 +157,7 @@ class TestWin32API(compat.TestCase):
         module.EndUpdateResource(handle, False)
 
         # then
-        with self.load_library(self.module, filename) as handle:
+        with self.load_library(module, filename) as handle:
             self.assertEqual(len(module.EnumResourceTypes(handle)), count)
 
         # when
@@ -162,24 +165,37 @@ class TestWin32API(compat.TestCase):
         module.EndUpdateResource(handle, True)
 
         # then
-        with self.load_library(self.module, filename) as handle:
+        with self.load_library(module, filename) as handle:
             self.assertEqual(len(module.EnumResourceTypes(handle)), count)
+
+    def test_begin_removing_all_resources(self):
+        if skip_on_wine:
+            self.skipTest('EnumResourceTypes known failure on wine, see #59')
+
+        # given
+        module = self.module
+        filename = os.path.join(self.tempdir, 'python.exe')
 
         # when
         handle = module.BeginUpdateResource(filename, True)
         module.EndUpdateResource(handle, False)
 
         # then
-        with self.load_library(self.module, filename) as handle:
+        with self.load_library(module, filename) as handle:
             self.assertEqual(len(module.EnumResourceTypes(handle)), 0)
 
+    def test_begin_update_resource_with_invalid(self):
         # when/then
         with self.assertRaises(error):
-            handle = module.BeginUpdateResource('invalid', False)
+            self.module.BeginUpdateResource('invalid', False)
+
+    def test_end_update_resource_with_invalid(self):
+        if skip_on_wine:
+            self.skipTest('EndUpdateResource known failure on wine, see #59')
 
         # when/then
         with self.assertRaises(error):
-            handle = module.EndUpdateResource(-3, False)
+            self.module.EndUpdateResource(-3, False)
 
     def test_update_resource(self):
         # given

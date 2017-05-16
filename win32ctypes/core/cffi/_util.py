@@ -83,8 +83,6 @@ class ErrorWhen(object):
 
     def _raise_error(self, function_name=''):
         code, message = ffi.getwinerror()
-        if not self._raise_on_zero and code == 0:
-            return
         exception = WindowsError()
         exception.errno = ffi.errno
         exception.winerror = code
@@ -95,4 +93,4 @@ class ErrorWhen(object):
 
 check_null = ErrorWhen(ffi.NULL)
 check_zero = ErrorWhen(0)
-check_false = ErrorWhen(False, raise_on_zero=True)
+check_false = ErrorWhen(False)

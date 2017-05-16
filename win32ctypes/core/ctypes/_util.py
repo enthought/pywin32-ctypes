@@ -61,15 +61,7 @@ check_zero = check_zero_factory()
 def check_false_factory(function_name=None):
     def check_false(result, function, arguments, *args):
         if not bool(result):
-            error = make_error(function, function_name)
-            # In some cases (e.g. running under wine)
-            # there is no error we still get a non true
-            # result.
-            if error.winerror == 0:
-                # False alarm
-                return True
-            else:
-                raise error
+            raise make_error(function, function_name)
         else:
             return True
     return check_false
