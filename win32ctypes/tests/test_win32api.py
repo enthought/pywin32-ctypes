@@ -134,7 +134,6 @@ class TestWin32API(compat.TestCase):
     def test_get_tick_count(self):
         self.assertGreater(self.module.GetTickCount(), 0.0)
 
-
     def test_begin_and_end_update_resource(self):
         # given
         module = self.module
@@ -190,8 +189,8 @@ class TestWin32API(compat.TestCase):
         handle = module.BeginUpdateResource(filename, False)
         try:
             module.UpdateResource(
-                    handle, resource_type, resource_name, resource[:-2],
-                    resource_language)
+                handle, resource_type, resource_name, resource[:-2],
+                resource_language)
         finally:
             module.EndUpdateResource(handle, False)
 
