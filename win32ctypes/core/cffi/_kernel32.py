@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 
 from ._util import (
-    ffi, check_null, check_zero, HMODULE, PVOID, RESOURCE, resource)
+    ffi, check_null, check_zero, check_false, HMODULE, PVOID, RESOURCE, resource)
 
 # TODO: retrieve this value using ffi
 MAX_PATH = 260
@@ -95,65 +95,83 @@ def _GetTickCount():
 def _LoadLibraryEx(lpFilename, hFile, dwFlags):
     result = check_null(
         kernel32.LoadLibraryExW(
-            unicode(lpFilename), ffi.NULL, dwFlags))
+            unicode(lpFilename), ffi.NULL, dwFlags),
+        function_name='LoadLibraryEx')
     return HMODULE(result)
 
 
 def _FreeLibrary(hModule):
-    check_zero(kernel32.FreeLibrary(PVOID(hModule)))
+    check_false(
+        kernel32.FreeLibrary(PVOID(hModule)),
+        function_name='FreeLibrary')
 
 
 def _EnumResourceTypes(hModule, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESTYPEPROC', lpEnumFunc)
-    check_zero(
-        kernel32.EnumResourceTypesW(PVOID(hModule), callback, lParam))
+    check_false(
+        kernel32.EnumResourceTypesW(PVOID(hModule), callback, lParam),
+        function_name='EnumResourceTypes')
 
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESNAMEPROC', lpEnumFunc)
-    check_zero(
+    check_false(
         kernel32.EnumResourceNamesW(
-            PVOID(hModule), RESOURCE(lpszType), callback, lParam))
+            PVOID(hModule), RESOURCE(lpszType), callback, lParam),
+        function_name='EnumResourceNames')
 
 
 def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESLANGPROC', lpEnumFunc)
-    check_zero(
+    check_false(
         kernel32.EnumResourceLanguagesW(
             PVOID(hModule), RESOURCE(lpType),
-            RESOURCE(lpName), callback, lParam))
+            RESOURCE(lpName), callback, lParam),
+        function_name='EnumResourceLanguages')
 
 
 def _FindResourceEx(hModule, lpType, lpName, wLanguage):
     return check_null(
         kernel32.FindResourceExW(
-            PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), wLanguage))
+            PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), wLanguage),
+        function_name='FindResourceEx')
 
 
 def _SizeofResource(hModule, hResInfo):
-    return check_zero(kernel32.SizeofResource(PVOID(hModule), hResInfo))
+    return check_zero(
+        kernel32.SizeofResource(PVOID(hModule), hResInfo),
+        function_name='SizeofResource')
 
 
 def _LoadResource(hModule, hResInfo):
-    return check_null(kernel32.LoadResource(PVOID(hModule), hResInfo))
+    return check_null(
+        kernel32.LoadResource(PVOID(hModule), hResInfo),
+        function_name='LoadResource')
 
 
 def _LockResource(hResData):
-    return check_null(kernel32.LockResource(hResData))
+    return check_null(
+        kernel32.LockResource(hResData),
+        function_name='LockResource')
 
 
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
-    return check_null(
+    result = check_null(
         kernel32.BeginUpdateResourceW(
             unicode(pFileName), bDeleteExistingResources))
+    return HMODULE(result)
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
-    check_zero(kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard))
+    check_false(
+        kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard),
+        function_name='EndUpdateResource')
 
 
-def _UpdateResource(hUpdate, lpType, lpName, wLanguage, lpData, cbData):
-    return check_null(
+def _UpdateResource(hUpdate, lpType, lpName, wLanguage, cData, cbData):
+    lpData = ffi.from_buffer(cData)
+    check_false(
         kernel32.UpdateResourceW(
-            PVOID(hUpdate), unicode(lpType), unicode(lpName),
-            wLanguage, PVOID(lpData), cbData))
+            PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
+            wLanguage, PVOID(lpData), cbData),
+        function_name='UpdateResource')

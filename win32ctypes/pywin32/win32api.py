@@ -266,7 +266,7 @@ def EndUpdateResource(handle, discard):
 
     """
     with _pywin32error():
-        return _kernel32._EndUpdateResource(handle, discard)
+        _kernel32._EndUpdateResource(handle, discard)
 
 
 def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
@@ -281,6 +281,8 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
         The type of resource to update.
     name : str : int
         The name or Id of the resource to update.
+    data : bytes
+        A bytes like object is expected.
     language : int
         Language to use, default is LANG_NEUTRAL.
 
@@ -290,8 +292,18 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
 
     """
     with _pywin32error():
-        return _kernel32._UpdateResource(
-            handle, type, name, language, data, len(data))
+        try:
+            lp_data = bytes(data)
+        except UnicodeEncodeError:
+            # FIXME: In python 2.7 pipywin32219 can handle unicode.
+            #        However the data are stored as bytes and it
+            #        is not really possible to convert the information
+            #        back into the original unicode string. This looks
+            #        like a bug so we follow the python 3 behavior.
+            raise TypeError(
+                "a bytes-like object is required, not a 'unicode'")
+        _kernel32._UpdateResource(
+            handle, type, name, language, lp_data, len(lp_data))
 
 
 def GetWindowsDirectory():
@@ -308,7 +320,8 @@ def GetWindowsDirectory():
 
     """
     with _pywin32error():
-        return _kernel32._GetWindowsDirectory()
+        # Note: pywin32 returns str on py27, unicode (which is str) on py3
+        return str(_kernel32._GetWindowsDirectory())
 
 
 def GetSystemDirectory():
@@ -325,4 +338,5 @@ def GetSystemDirectory():
 
     """
     with _pywin32error():
-        return _kernel32._GetSystemDirectory()
+        # Note: pywin32 returns str on py27, unicode (which is str) on py3
+        return str(_kernel32._GetSystemDirectory())
