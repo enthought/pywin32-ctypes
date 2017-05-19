@@ -53,9 +53,27 @@ def resource(lpRESOURCEID):
 
 
 class ErrorWhen(object):
+    """ Callable factory for raising errors when calling cffi functions.
 
-    def __init__(self, check):
+    """
+
+    def __init__(self, check, raise_on_zero=True):
+        """ Constructor
+
+        Parameters
+        ----------
+        check :
+            The return value that designates that an error has taken place.
+
+        raise_on_zero : bool
+            When set any error will be raised. When false the winerror
+            is checked and only non-zero win errors are raised. Currently
+            this parameters is used to workaround issues with the win32
+            implementation in ``wine``.
+
+        """
         self._check = check
+        self._raise_on_zero = raise_on_zero
 
     def __call__(self, value, function_name=''):
         if value == self._check:
@@ -72,5 +90,7 @@ class ErrorWhen(object):
         exception.function = function_name
         raise exception
 
+
 check_null = ErrorWhen(ffi.NULL)
 check_zero = ErrorWhen(0)
+check_false = ErrorWhen(False)

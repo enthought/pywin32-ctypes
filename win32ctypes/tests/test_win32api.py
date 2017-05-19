@@ -9,6 +9,9 @@
 import sys
 import unittest
 import contextlib
+import tempfile
+import shutil
+import os
 
 import win32api
 
@@ -17,9 +20,19 @@ from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.tests import compat
 
 
+skip_on_wine = 'SKIP_WINE_KNOWN_FAILURES' in os.environ
+
+
 class TestWin32API(compat.TestCase):
 
     module = pywin32.win32api
+
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        shutil.copy(sys.executable, self.tempdir)
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
 
     @contextlib.contextmanager
     def load_library(self, module, library=sys.executable, flags=0x2):
@@ -28,6 +41,14 @@ class TestWin32API(compat.TestCase):
             yield handle
         finally:
             module.FreeLibrary(handle)
+
+    @contextlib.contextmanager
+    def resource_update(self, module, library=sys.executable):
+        handle = module.BeginUpdateResource(library, False)
+        try:
+            yield handle
+        finally:
+            module.EndUpdateResource(handle, False)
 
     def test_load_library_ex(self):
         with self.load_library(win32api) as expected:
@@ -73,7 +94,7 @@ class TestWin32API(compat.TestCase):
         with self.assertRaises(error):
             self.module.EnumResourceNames(2, 3)
 
-    def test_enum_resource_languages(self):
+    def _test_enum_resource_languages(self):
         with self.load_library(win32api, u'shell32.dll') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
@@ -124,23 +145,137 @@ class TestWin32API(compat.TestCase):
     def test_get_tick_count(self):
         self.assertGreater(self.module.GetTickCount(), 0.0)
 
+    def test_begin_and_end_update_resource(self):
+        # given
+        module = self.module
+        filename = os.path.join(self.tempdir, 'python.exe')
+        with self.load_library(module, filename) as handle:
+            count = len(module.EnumResourceTypes(handle))
+
+        # when
+        handle = module.BeginUpdateResource(filename, False)
+        module.EndUpdateResource(handle, False)
+
+        # then
+        with self.load_library(module, filename) as handle:
+            self.assertEqual(len(module.EnumResourceTypes(handle)), count)
+
+        # when
+        handle = module.BeginUpdateResource(filename, True)
+        module.EndUpdateResource(handle, True)
+
+        # then
+        with self.load_library(module, filename) as handle:
+            self.assertEqual(len(module.EnumResourceTypes(handle)), count)
+
+    def test_begin_removing_all_resources(self):
+        if skip_on_wine:
+            self.skipTest('EnumResourceTypes known failure on wine, see #59')
+
+        # given
+        module = self.module
+        filename = os.path.join(self.tempdir, 'python.exe')
+
+        # when
+        handle = module.BeginUpdateResource(filename, True)
+        module.EndUpdateResource(handle, False)
+
+        # then
+        with self.load_library(module, filename) as handle:
+            self.assertEqual(len(module.EnumResourceTypes(handle)), 0)
+
+    def test_begin_update_resource_with_invalid(self):
+        if skip_on_wine:
+            self.skipTest('BeginUpdateResource known failure on wine, see #59')
+
+            # when/then
+        with self.assertRaises(error) as context:
+            self.module.BeginUpdateResource('invalid', False)
+        # the errno cannot be 0 (i.e. success)
+        self.assertNotEqual(context.exception.winerror, 0)
+
+    def test_end_update_resource_with_invalid(self):
+        if skip_on_wine:
+            self.skipTest('EndUpdateResource known failure on wine, see #59')
+
+        # when/then
+        with self.assertRaises(error) as context:
+            self.module.EndUpdateResource(-3, False)
+        # the errno cannot be 0 (i.e. success)
+        self.assertNotEqual(context.exception.winerror, 0)
+
+    def test_update_resource(self):
+        # given
+        module = self.module
+        filename = os.path.join(self.tempdir, 'python.exe')
+        with self.load_library(self.module, filename) as handle:
+            resource_type = module.EnumResourceTypes(handle)[-1]
+            resource_name = module.EnumResourceNames(handle, resource_type)[-1]
+            resource_language = module.EnumResourceLanguages(
+                handle, resource_type, resource_name)[-1]
+            resource = module.LoadResource(
+                handle, resource_type, resource_name, resource_language)
+
+        # when
+        with self.resource_update(self.module, filename) as handle:
+            module.UpdateResource(
+                handle, resource_type, resource_name, resource[:-2],
+                resource_language)
+
+        # then
+        with self.load_library(self.module, filename) as handle:
+            updated = module.LoadResource(
+                handle, resource_type, resource_name, resource_language)
+        self.assertEqual(len(updated), len(resource) - 2)
+        self.assertEqual(updated, resource[:-2])
+
+    def test_update_resource_with_unicode(self):
+        # given
+        module = self.module
+        filename = os.path.join(self.tempdir, 'python.exe')
+        with self.load_library(module, filename) as handle:
+            resource_type = module.EnumResourceTypes(handle)[-1]
+            resource_name = module.EnumResourceNames(handle, resource_type)[-1]
+            resource_language = module.EnumResourceLanguages(
+                handle, resource_type, resource_name)[-1]
+        resource = u"\N{GREEK CAPITAL LETTER DELTA}"
+
+        # when
+        with self.resource_update(module, filename) as handle:
+            with self.assertRaises(TypeError):
+                module.UpdateResource(
+                    handle, resource_type, resource_name, resource,
+                    resource_language)
+
+    def test_get_windows_directory(self):
+        # given
+        expected = win32api.GetWindowsDirectory()
+
+        # when
+        result = self.module.GetWindowsDirectory()
+
+        # then
+        self.assertIsInstance(result, str)
+        self.assertEqual(result.lower(), r"c:\windows")
+        self.assertEqual(result, expected)
+
+    def test_get_system_directory(self):
+        # given
+        expected = win32api.GetSystemDirectory()
+
+        # when
+        result = self.module.GetSystemDirectory()
+
+        # then
+        self.assertIsInstance(result, str)
+        self.assertEqual(result.lower(), r"c:\windows\system32")
+        self.assertEqual(result, expected)
+
     def _id2str(self, type_id):
         if hasattr(type_id, 'index'):
             return type_id
         else:
             return u'#{0}'.format(type_id)
-
-    # note: pywin32 returns str on py27, unicode (which is str) on py3
-
-    def test_get_windows_directory(self):
-        r = self.module.GetWindowsDirectory()
-        self.assertTrue(isinstance(r, str))
-        self.assertEqual(r.lower(), r"c:\windows")
-        
-    def test_get_system_directory(self):
-        r = self.module.GetSystemDirectory()
-        self.assertTrue(isinstance(r, str))
-        self.assertEqual(r.lower(), r"c:\windows\system32")
 
 
 if __name__ == '__main__':

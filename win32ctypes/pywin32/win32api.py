@@ -161,7 +161,7 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
         Use None for current process executable.
     type : str : int
         The type of resource to load.
-    name :
+    name : str : int
         The name or Id of the resource to load.
     language : int
         Language to use, default is LANG_NEUTRAL.
@@ -169,7 +169,7 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
     Returns
     -------
     hModule :
-        Handle of the loaded source.
+        Handle of the loaded resource.
 
     See also
     --------
@@ -209,33 +209,135 @@ def FreeLibrary(hModule):
 
 
 def GetTickCount():
+    """ The number of milliseconds that have elapsed since startup
+
+    Returns
+    -------
+    int:
+        The millisecond counts since system startup. Can count up
+        to 49.7 days.
+
+    See also
+    --------
+    - `GetTickCount MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724408%28v=vs.85%29.aspx>`_
+
+    """
     return _kernel32._GetTickCount()
 
 
-def BeginUpdateResource(pFileName, bDeleteExistingResources):
+def BeginUpdateResource(filename, delete):
+    """ Get a handle that can be used by the :func:`UpdateResource`.
+
+    Parameters
+    ----------
+    fileName : unicode
+        The filename of the module to load.
+    delete : bool
+        When true all existing resources are deleted
+
+    Returns
+    -------
+    hModule :
+        Handle of the resource.
+
+    See also
+    --------
+    - `BeginUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648030(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
-        return _kernel32._BeginUpdateResource(
-            pFileName, bDeleteExistingResources)
+        return _kernel32._BeginUpdateResource(filename, delete)
 
 
-def EndUpdateResource(hUpdate, fDiscard):
+def EndUpdateResource(handle, discard):
+    """ End the update resource of the handle.
+
+    Parameters
+    ----------
+    handle : hModule
+        The handle of the resource as it is returned
+        by :func:`BeginUpdateResource`
+    discard : bool
+        When True all writes are discarded.
+
+    See also
+    --------
+    - `EndUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648032(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
-        return _kernel32._EndUpdateResource(hUpdate, fDiscard)
+        _kernel32._EndUpdateResource(handle, discard)
 
 
-def UpdateResource(hUpdate, lpType, lpName, lpData, wLanguage):
+def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
+    """ Update a resource.
+
+    Parameters
+    ----------
+    handle :
+        The handle of the resource file as returned by
+        :func:`BeginUpdateResource`.
+    type : str : int
+        The type of resource to update.
+    name : str : int
+        The name or Id of the resource to update.
+    data : bytes
+        A bytes like object is expected.
+    language : int
+        Language to use, default is LANG_NEUTRAL.
+
+    See also
+    --------
+    - `UpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
+
+    """
+
     with _pywin32error():
-        return _kernel32._UpdateResource(
-            hUpdate, lpType, lpName, wLanguage, lpData, len(lpData))
+        try:
+            lp_data = bytes(data)
+        except UnicodeEncodeError:
+            # FIXME: In python 2.7 pipywin32219 can handle unicode.
+            #        However the data are stored as bytes and it
+            #        is not really possible to convert the information
+            #        back into the original unicode string. This looks
+            #        like a bug so we follow the python 3 behavior.
+            raise TypeError(
+                "a bytes-like object is required, not a 'unicode'")
+        _kernel32._UpdateResource(
+            handle, type, name, language, lp_data, len(lp_data))
 
 
 def GetWindowsDirectory():
+    """ Get the ``Windows`` directory.
+
+    Returns
+    -------
+    str :
+        The path to the ``Windows`` directory.
+
+    See also
+    --------
+    - `GetWindowsDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         # Note: pywin32 returns str on py27, unicode (which is str) on py3
         return str(_kernel32._GetWindowsDirectory())
 
 
 def GetSystemDirectory():
+    """ Get the ``System`` directory.
+
+    Returns
+    -------
+    str :
+        The path to the ``System`` directory.
+
+    See also
+    --------
+    - `GetSystemDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724373(v=vs.85).aspx>`_
+
+    """
     with _pywin32error():
         # Note: pywin32 returns str on py27, unicode (which is str) on py3
         return str(_kernel32._GetSystemDirectory())
