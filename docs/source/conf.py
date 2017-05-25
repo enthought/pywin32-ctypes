@@ -39,7 +39,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'sectiondoc.styles.legacy',
+    'sectiondoc.styles.default',
 ]
 
 autosummary_generate = True

@@ -10,7 +10,7 @@
 from __future__ import absolute_import
 
 from win32ctypes.core import _advapi32, _common, _backend
-from win32ctypes.pywin32.pywintypes import pywin32error
+from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
 
 CRED_TYPE_GENERIC = 0x1
 CRED_PERSIST_ENTERPRISE = 0x3
@@ -43,7 +43,7 @@ def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
     """
     c_creds = _advapi32.CREDENTIAL.fromdict(Credential, Flags)
     c_pcreds = _advapi32.PCREDENTIAL(c_creds)
-    with pywin32error():
+    with _pywin32error():
         _advapi32._CredWrite(c_pcreds, 0)
 
 
@@ -62,19 +62,20 @@ def CredRead(TargetName, Type, Flags=0):
     Returns
     -------
     credentials : dict
-        A dictionary containing the following:
+        ``None`` if the target name was not found or a dictionary
+        containing the following:
 
             - UserName: the retrieved username
             - CredentialBlob: the password (as an utf-16 encoded 'string')
 
-        ``None`` if the target name was not found.
+
 
     """
     if Type != CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported")
 
     flag = 0
-    with pywin32error():
+    with _pywin32error():
         if _backend == 'cffi':
             ppcreds = _advapi32.PPCREDENTIAL()
             _advapi32._CredRead(TargetName, Type, flag, ppcreds)
@@ -104,5 +105,5 @@ def CredDelete(TargetName, Type, Flags=0):
     """
     if not Type == CRED_TYPE_GENERIC:
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
-    with pywin32error():
+    with _pywin32error():
         _advapi32._CredDelete(TargetName, Type, 0)
