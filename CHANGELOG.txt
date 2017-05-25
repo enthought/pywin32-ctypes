@@ -8,14 +8,18 @@ Current development version
 Version 0.1.0
 -------------
 
+- Update tests and provide better compatibility with pywin32 for
+  Resource functions
 - Fix: Python 3.5 and 3.6 support (#52).
 - API additions to allow pywin32-ctypes to work with pyinstaller (#46
-  contributed by @virtuald).
+  and #57 contributed by @virtuald).
 - Fix: do not update the global copy of the windows dlls (#42)
 - Add documentation and setup automatic builds in ReadTheDocs (#3, #36).
 - Add cffi backend to be used when available (#31).
-- Fix: EnumResourceTypes and EnumResourceNames would only return ints (#21, #30).
-- Restructure package layout to split core wrapping modules from pywin32 emulation (#15, #17).
+- Fix: EnumResourceTypes and EnumResourceNames would only return ints
+  (#21, #30).
+- Restructure package layout to split core wrapping modules from
+  pywin32 emulation (#15, #17).
 
 Version 0.0.1
 -------------
