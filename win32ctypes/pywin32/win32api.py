@@ -23,14 +23,16 @@ def LoadLibraryEx(fileName, handle, flags):
     ----------
     fileName : unicode
         The filename of the module to load.
-    handle :
+
+    handle : int
         Reserved, always zero.
-    flags :
+
+    flags : int
         The action to be taken when loading the module.
 
     Returns
     -------
-    hModule :
+    handle : hModule
         The handle of the loaded module
 
     See also
@@ -117,10 +119,12 @@ def EnumResourceLanguages(hModule, lpType, lpName):
     ----------
     hModule : handle
         Handle to the resource module.
+
     lpType : str : int
         The type of resource to enumerate. If ``lpType`` is a string
         starting with '#', it should be followed by the decimal number
         that define the integer resource type identifier.
+
     lpName : str : int
         The name of resource to enumerate. If ``lpType`` is a string
         starting with '#', it should be followed by the decimal number
@@ -156,20 +160,23 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
 
     Parameters
     ----------
-    handle :
+    handle : hModule
         The handle of the module containing the resource.
         Use None for current process executable.
+
     type : str : int
         The type of resource to load.
+
     name : str : int
         The name or Id of the resource to load.
+
     language : int
         Language to use, default is LANG_NEUTRAL.
 
     Returns
     -------
-    hModule :
-        Handle of the loaded resource.
+    resource : bytes
+        The byte string blob of the resource
 
     See also
     --------
@@ -200,7 +207,7 @@ def FreeLibrary(hModule):
 
     Parameters
     ----------
-    hModule :
+    handle : hModule
         The handle to the library as returned by the LoadLibrary function.
 
     """
@@ -213,7 +220,7 @@ def GetTickCount():
 
     Returns
     -------
-    int:
+    counts : int
         The millisecond counts since system startup. Can count up
         to 49.7 days.
 
@@ -237,7 +244,7 @@ def BeginUpdateResource(filename, delete):
 
     Returns
     -------
-    hModule :
+    result : hModule
         Handle of the resource.
 
     See also
@@ -257,6 +264,7 @@ def EndUpdateResource(handle, discard):
     handle : hModule
         The handle of the resource as it is returned
         by :func:`BeginUpdateResource`
+
     discard : bool
         When True all writes are discarded.
 
@@ -274,15 +282,19 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
 
     Parameters
     ----------
-    handle :
+    handle : hModule
         The handle of the resource file as returned by
         :func:`BeginUpdateResource`.
+
     type : str : int
         The type of resource to update.
+
     name : str : int
         The name or Id of the resource to update.
+
     data : bytes
         A bytes like object is expected.
+
     language : int
         Language to use, default is LANG_NEUTRAL.
 
@@ -291,7 +303,6 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
     - `UpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
 
     """
-
     with _pywin32error():
         try:
             lp_data = bytes(data)
@@ -312,7 +323,7 @@ def GetWindowsDirectory():
 
     Returns
     -------
-    str :
+    result : str
         The path to the ``Windows`` directory.
 
     See also
@@ -330,7 +341,7 @@ def GetSystemDirectory():
 
     Returns
     -------
-    str :
+    result : str
         The path to the ``System`` directory.
 
     See also

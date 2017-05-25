@@ -8,11 +8,12 @@
 from __future__ import absolute_import
 
 from ._util import (
-    ffi, check_null, check_zero, check_false, HMODULE, PVOID, RESOURCE, resource)
+    ffi, check_null, check_zero, check_false, HMODULE, PVOID, RESOURCE,
+    resource)
 
 # TODO: retrieve this value using ffi
 MAX_PATH = 260
-MAX_PATH_BUF = 'wchar_t[%s]' % MAX_PATH
+MAX_PATH_BUF = u'wchar_t[{0}]'.format(MAX_PATH)
 
 ffi.cdef("""
 
@@ -42,7 +43,7 @@ LPVOID WINAPI LockResource(HGLOBAL hResData);
 
 HANDLE WINAPI BeginUpdateResourceW(LPCTSTR pFileName, BOOL bDeleteExistingResources);
 BOOL WINAPI EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard);
-BOOL WINAPI UpdateResourceW(HANDLE  hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
+BOOL WINAPI UpdateResourceW(HANDLE hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
 UINT WINAPI GetWindowsDirectoryW(LPTSTR lpBuffer, UINT uSize);
 UINT WINAPI GetSystemDirectoryW(LPTSTR lpBuffer, UINT uSize);
 

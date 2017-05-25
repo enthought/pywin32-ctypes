@@ -5,13 +5,12 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
+import os
 import sys
 import unittest
 import contextlib
 import tempfile
 import shutil
-import os
 
 import win32api
 
@@ -25,6 +24,7 @@ skip_on_wine = 'SKIP_WINE_KNOWN_FAILURES' in os.environ
 
 class TestWin32API(compat.TestCase):
 
+    # the pywin32ctypes implementation
     module = pywin32.win32api
 
     def setUp(self):
@@ -94,7 +94,7 @@ class TestWin32API(compat.TestCase):
         with self.assertRaises(error):
             self.module.EnumResourceNames(2, 3)
 
-    def _test_enum_resource_languages(self):
+    def test_enum_resource_languages(self):
         with self.load_library(win32api, u'shell32.dll') as handle:
             resource_types = win32api.EnumResourceTypes(handle)
             for resource_type in resource_types:
@@ -255,6 +255,7 @@ class TestWin32API(compat.TestCase):
         result = self.module.GetWindowsDirectory()
 
         # then
+        # note: pywin32 returns str on py27, unicode (which is str) on py3
         self.assertIsInstance(result, str)
         self.assertEqual(result.lower(), r"c:\windows")
         self.assertEqual(result, expected)
@@ -267,6 +268,7 @@ class TestWin32API(compat.TestCase):
         result = self.module.GetSystemDirectory()
 
         # then
+        # note: pywin32 returns str on py27, unicode (which is str) on py3
         self.assertIsInstance(result, str)
         self.assertEqual(result.lower(), r"c:\windows\system32")
         self.assertEqual(result, expected)
