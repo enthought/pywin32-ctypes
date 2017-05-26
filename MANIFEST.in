@@ -4,4 +4,4 @@ include LICENSE.rst
 include dev_requirements.txt
 include doc_requirements.txt
 include tox.ini
-include win32ctypes/VERSION
+include VERSION
