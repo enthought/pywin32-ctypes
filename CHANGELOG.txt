@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 0.1.1
+-------------
+
+(bugfix release)
+
+- update Manifest
+- fix VERSION path in Manifest.in (#62 contributed by @MinchinWeb)
+
 
 Version 0.1.0
 -------------
