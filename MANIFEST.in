@@ -2,6 +2,6 @@ include README.rst
 include CHANGELOG.txt
 include LICENSE.txt
 include dev_requirements.txt
-include doc_requirements.txt
+include doc-requirements.txt
 include tox.ini
 include VERSION
