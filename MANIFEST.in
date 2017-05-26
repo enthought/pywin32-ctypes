@@ -1,7 +1,6 @@
-include README.rst
-include CHANGELOG.rst
-include LICENSE.rst
-include dev_requirements.txt
-include doc_requirements.txt
+include *.rst
+include *.txt
+recursive-include docs *.bat *.py *.rst
+include docs/Makefile
 include tox.ini
 include VERSION
