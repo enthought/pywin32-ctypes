@@ -6,7 +6,7 @@ Version 0.1.1
 
 (bugfix release)
 
-- update Manifest
+- Update Manifest.in entries (#63)
 - fix VERSION path in Manifest.in (#62 contributed by @MinchinWeb)
 
 
