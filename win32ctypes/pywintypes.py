@@ -9,5 +9,5 @@ import warnings
 from win32ctypes.pywin32.pywintypes import *
 
 warnings.warn(
-    "Please use 'from win32ctypes.pywin32 import win32cred'",
+    "Please use 'from win32ctypes.pywin32 import pywintypes'",
     DeprecationWarning)
