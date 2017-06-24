@@ -6,10 +6,8 @@
 # LICENSE.txt
 #
 import warnings
-from win32ctypes.pywin32 import win32cred
+from win32ctypes.pywin32.win32cred import *
 
 warnings.warn(
     "Please use 'from win32ctypes.pywin32 import win32cred'",
     DeprecationWarning)
-
-__all__ = ['win32cred']
