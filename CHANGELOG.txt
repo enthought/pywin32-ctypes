@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 0.1.2
+-------------
+
+(bugfix release)
+
+- Fix implementation for the deprecated api (#64).
+
 Version 0.1.1
 -------------
 
