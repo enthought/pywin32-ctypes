@@ -57,7 +57,7 @@ class ErrorWhen(object):
 
     """
 
-    def __init__(self, check, raise_on_zero=True):
+    def __init__(self, check):
         """ Constructor
 
         Parameters
@@ -65,15 +65,8 @@ class ErrorWhen(object):
         check :
             The return value that designates that an error has taken place.
 
-        raise_on_zero : bool
-            When set any error will be raised. When false the winerror
-            is checked and only non-zero win errors are raised. Currently
-            this parameters is used to workaround issues with the win32
-            implementation in ``wine``.
-
         """
         self._check = check
-        self._raise_on_zero = raise_on_zero
 
     def __call__(self, value, function_name=''):
         if value == self._check:

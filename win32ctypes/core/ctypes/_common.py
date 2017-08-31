@@ -7,42 +7,38 @@
 #
 from __future__ import absolute_import
 
-import ctypes
 import sys
 from ctypes import (
-    pythonapi, POINTER, c_void_p, py_object, c_char_p, c_int, c_long, c_int64,
-    c_longlong)
-from ctypes import cast  # noqa imported here for convenience
+    POINTER, c_void_p, py_object, c_char_p, c_int, c_long, c_int64, c_longlong,
+    PyDLL, sizeof, byref, cast)
 from ctypes.wintypes import BYTE
 
 from win32ctypes.core.compat import PY3
-from ._util import function_factory
+from ._util import Wrapping as W, DLL
 
 PPy_UNICODE = c_void_p
 LPBYTE = POINTER(BYTE)
 is_64bits = sys.maxsize > 2**32
 Py_ssize_t = c_int64 if is_64bits else c_int
 
-if ctypes.sizeof(c_long) == ctypes.sizeof(c_void_p):
+if sizeof(c_long) == sizeof(c_void_p):
     LONG_PTR = c_long
-elif ctypes.sizeof(c_longlong) == ctypes.sizeof(c_void_p):
+elif sizeof(c_longlong) == sizeof(c_void_p):
     LONG_PTR = c_longlong
+byreference = byref
 
-if PY3:
-    _PyBytes_FromStringAndSize = function_factory(
-        pythonapi.PyBytes_FromStringAndSize,
-        [c_char_p, Py_ssize_t],
-        return_type=py_object)
-else:
-    _PyBytes_FromStringAndSize = function_factory(
-        pythonapi.PyString_FromStringAndSize,
-        [c_char_p, Py_ssize_t],
-        return_type=py_object)
 
-IS_INTRESOURCE = lambda x: x >> 16 == 0
-
-byreference = ctypes.byref
+def IS_INTRESOURCE(x):
+    return x >> 16 == 0
 
 
 def dereference(x):
     return x.contents
+
+
+pythonapi = DLL(
+    PyDLL("python dll", None, sys.dllhandle),
+    functions={
+        '_PyBytes_FromStringAndSize': W(
+            'PyBytes_FromStringAndSize' if PY3 else 'PyString_FromStringAndSize',  # noqa
+            [c_char_p, Py_ssize_t], py_object, None)})
