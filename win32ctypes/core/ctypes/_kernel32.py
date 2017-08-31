@@ -13,7 +13,8 @@ from ctypes.wintypes import (
     HGLOBAL, LPVOID, UINT, LPWSTR, MAX_PATH)
 
 from ._common import LONG_PTR, IS_INTRESOURCE
-from ._util import check_null, check_zero, check_false, function_factory
+from ._util import (
+    check_null, check_zero, check_false, Wrapping as W, DLL)
 
 
 _ENUMRESTYPEPROC = ctypes.WINFUNCTYPE(BOOL, HMODULE, LPVOID, LONG_PTR)
@@ -79,7 +80,7 @@ wrapped_functions = {
     '_EndUpdateResource': W('EndUpdateResourceW', [HANDLE, BOOL], BOOL, check_false),  # noqa
     '_BaseUpdateResource': W('UpdateResourceW', [HANDLE, LPCWSTR, LPCWSTR, WORD, LPVOID, DWORD], BOOL, check_false),  # noqa
     '_BaseGetWindowsDirectory': W('GetWindowsDirectoryW', [LPWSTR, UINT], UINT, check_zero),  # noqa
-    '_BaseGetSystemDirectory': W('GetSystemDirectoryW', [LPWSTR, UINT], UINT, check_zero),  # noqa
+    '_BaseGetSystemDirectory': W('GetSystemDirectoryW', [LPWSTR, UINT], UINT, check_zero)}  # noqa
 
 
 class KERNEL32(DLL):
