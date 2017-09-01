@@ -76,9 +76,7 @@ def EnumResourceNames(hModule, resType):
     hModule : handle
         The handle to the module.
     resType : str : int
-        The type of resource to enumerate. If ``resType`` is a string
-        starting with '#' is should be followed by the decimal number
-        that define the integer resource type identifier.
+        The type or id of resource to enumerate.
 
     Returns
     -------
@@ -108,14 +106,10 @@ def EnumResourceLanguages(hModule, lpType, lpName):
         Handle to the resource module.
 
     lpType : str : int
-        The type of resource to enumerate. If ``lpType`` is a string
-        starting with '#', it should be followed by the decimal number
-        that define the integer resource type identifier.
+        The type or id of resource to enumerate.
 
     lpName : str : int
-        The name of resource to enumerate. If ``lpType`` is a string
-        starting with '#', it should be followed by the decimal number
-        that define the integer resource type identifier.
+        The type or id of resource to enumerate.
 
     Returns
     -------
@@ -192,9 +186,7 @@ def GetTickCount():
     Returns
     -------
     counts : int
-        The millisecond counts since system startup. Can count up
-        to 49.7 days.
-
+        The millisecond counts since system startup.
     """
     return _kernel32._GetTickCount()
 
