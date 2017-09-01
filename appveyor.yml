@@ -23,7 +23,7 @@ install:
   - ps: pip install tox
 test_script:
   - mkdir testruns
-  - copy .coveragerc testruns/
+  - copy .coveragerc testruns
   - cd testruns
   - tox
 on_success:
