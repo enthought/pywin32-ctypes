@@ -35,10 +35,6 @@ def LoadLibraryEx(fileName, handle, flags):
     handle : hModule
         The handle of the loaded module
 
-    See also
-    --------
-    - `LoadLibraryEx MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms684179(v=vs.85).aspx>`_
-
     """
     if not handle == 0:
         raise ValueError("handle != 0 not supported")
@@ -58,10 +54,6 @@ def EnumResourceTypes(hModule):
     -------
     resource_types : list
        The list of resource types in the module.
-
-    See also
-    --------
-    - `EnumResourceTypes MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648039(v=vs.85).aspx>`_
 
     """
     resource_types = []
@@ -93,11 +85,6 @@ def EnumResourceNames(hModule, resType):
     resource_names : list
        The list of resource names (unicode strings) of the specific
        resource type in the module.
-
-    See also
-    --------
-    - `EnumResourceNames MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648037(v=vs.85).aspx>`_
-    - `Predefined resource types <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648009(v=vs.85).aspx>`_
 
     """
     resource_names = []
@@ -135,13 +122,6 @@ def EnumResourceLanguages(hModule, lpType, lpName):
     resource_languages : list
         List of the resource language ids.
 
-
-    See also
-    --------
-    - `EnumResourceLanguages MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648035(v=vs.85).aspx>`_
-    - `Predefined resource types <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648009(v=vs.85).aspx>`_
-    - `Predefined resource language ids <https://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx>`_
-
     """
     resource_languages = []
 
@@ -177,15 +157,6 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
     -------
     resource : bytes
         The byte string blob of the resource
-
-    See also
-    --------
-    - `FindResourceEx MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648043(v=vs.85).aspx>`_
-    - `SizeofResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648048(v=vs.85).aspx>`_
-    - `LoadResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648046(v=vs.85).aspx>`_
-    - `LockResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648047(v=vs.85).aspx>`_
-    - `Predefined resource types <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648009(v=vs.85).aspx>`_
-    - `Predefined resource language ids <https://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
@@ -224,10 +195,6 @@ def GetTickCount():
         The millisecond counts since system startup. Can count up
         to 49.7 days.
 
-    See also
-    --------
-    - `GetTickCount MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724408%28v=vs.85%29.aspx>`_
-
     """
     return _kernel32._GetTickCount()
 
@@ -247,10 +214,6 @@ def BeginUpdateResource(filename, delete):
     result : hModule
         Handle of the resource.
 
-    See also
-    --------
-    - `BeginUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648030(v=vs.85).aspx>`_
-
     """
     with _pywin32error():
         return _kernel32._BeginUpdateResource(filename, delete)
@@ -267,10 +230,6 @@ def EndUpdateResource(handle, discard):
 
     discard : bool
         When True all writes are discarded.
-
-    See also
-    --------
-    - `EndUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648032(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
@@ -298,10 +257,6 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
     language : int
         Language to use, default is LANG_NEUTRAL.
 
-    See also
-    --------
-    - `UpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
-
     """
     with _pywin32error():
         try:
@@ -327,8 +282,6 @@ def GetWindowsDirectory():
         The path to the ``Windows`` directory.
 
     See also
-    --------
-    - `GetWindowsDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
@@ -343,10 +296,6 @@ def GetSystemDirectory():
     -------
     result : str
         The path to the ``System`` directory.
-
-    See also
-    --------
-    - `GetSystemDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724373(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
