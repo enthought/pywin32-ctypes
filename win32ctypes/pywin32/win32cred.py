@@ -23,22 +23,10 @@ def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
     Parameters
     ----------
     Credential : dict
-        Parameters to be passed to win32 API CredWrite/
+        A dictionary corresponding to the PyWin32 ``PyCREDENTIAL``
+        structure.
     Flags : int
-        Always pass CRED_PRESERVE_CREDENTIAL_BLOB (i.e. 0).
-
-    Returns
-    -------
-    credentials : dict
-        A dictionary containing the following:
-
-            - Type: the type of credential (see MSDN)
-            - TargetName: the target to use (string)
-            - Persist: see MSDN
-            - UserName: the retrieved username
-            - CredentialBlob: the password (as a *string*, not an encoded
-              binary stream - this function takes care of the encoding).
-            - Comment: a string
+        Always pass ``CRED_PRESERVE_CREDENTIAL_BLOB`` (i.e. 0).
 
     """
     c_creds = _advapi32.CREDENTIAL.fromdict(Credential, Flags)
@@ -62,13 +50,8 @@ def CredRead(TargetName, Type, Flags=0):
     Returns
     -------
     credentials : dict
-        ``None`` if the target name was not found or a dictionary
-        containing the following:
-
-            - UserName: the retrieved username
-            - CredentialBlob: the password (as an utf-16 encoded 'string')
-
-
+        ``None`` if the target name was not found or A dictionary
+        corresponding to the PyWin32 ``PyCREDENTIAL`` structure.
 
     """
     if Type != CRED_TYPE_GENERIC:

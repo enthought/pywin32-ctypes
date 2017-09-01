@@ -35,10 +35,6 @@ def LoadLibraryEx(fileName, handle, flags):
     handle : hModule
         The handle of the loaded module
 
-    See also
-    --------
-    - `LoadLibraryEx MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms684179(v=vs.85).aspx>`_
-
     """
     if not handle == 0:
         raise ValueError("handle != 0 not supported")
@@ -58,10 +54,6 @@ def EnumResourceTypes(hModule):
     -------
     resource_types : list
        The list of resource types in the module.
-
-    See also
-    --------
-    - `EnumResourceTypes MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648039(v=vs.85).aspx>`_
 
     """
     resource_types = []
@@ -84,20 +76,13 @@ def EnumResourceNames(hModule, resType):
     hModule : handle
         The handle to the module.
     resType : str : int
-        The type of resource to enumerate. If ``resType`` is a string
-        starting with '#' is should be followed by the decimal number
-        that define the integer resource type identifier.
+        The type or id of resource to enumerate.
 
     Returns
     -------
     resource_names : list
        The list of resource names (unicode strings) of the specific
        resource type in the module.
-
-    See also
-    --------
-    - `EnumResourceNames MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648037(v=vs.85).aspx>`_
-    - `Predefined resource types <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648009(v=vs.85).aspx>`_
 
     """
     resource_names = []
@@ -121,26 +106,15 @@ def EnumResourceLanguages(hModule, lpType, lpName):
         Handle to the resource module.
 
     lpType : str : int
-        The type of resource to enumerate. If ``lpType`` is a string
-        starting with '#', it should be followed by the decimal number
-        that define the integer resource type identifier.
+        The type or id of resource to enumerate.
 
     lpName : str : int
-        The name of resource to enumerate. If ``lpType`` is a string
-        starting with '#', it should be followed by the decimal number
-        that define the integer resource type identifier.
+        The type or id of resource to enumerate.
 
     Returns
     -------
     resource_languages : list
         List of the resource language ids.
-
-
-    See also
-    --------
-    - `EnumResourceLanguages MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648035(v=vs.85).aspx>`_
-    - `Predefined resource types <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648009(v=vs.85).aspx>`_
-    - `Predefined resource language ids <https://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx>`_
 
     """
     resource_languages = []
@@ -178,15 +152,6 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
     resource : bytes
         The byte string blob of the resource
 
-    See also
-    --------
-    - `FindResourceEx MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648043(v=vs.85).aspx>`_
-    - `SizeofResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648048(v=vs.85).aspx>`_
-    - `LoadResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648046(v=vs.85).aspx>`_
-    - `LockResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648047(v=vs.85).aspx>`_
-    - `Predefined resource types <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648009(v=vs.85).aspx>`_
-    - `Predefined resource language ids <https://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx>`_
-
     """
     with _pywin32error():
         hrsrc = _kernel32._FindResourceEx(hModule, type, name, language)
@@ -221,13 +186,7 @@ def GetTickCount():
     Returns
     -------
     counts : int
-        The millisecond counts since system startup. Can count up
-        to 49.7 days.
-
-    See also
-    --------
-    - `GetTickCount MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724408%28v=vs.85%29.aspx>`_
-
+        The millisecond counts since system startup.
     """
     return _kernel32._GetTickCount()
 
@@ -247,10 +206,6 @@ def BeginUpdateResource(filename, delete):
     result : hModule
         Handle of the resource.
 
-    See also
-    --------
-    - `BeginUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648030(v=vs.85).aspx>`_
-
     """
     with _pywin32error():
         return _kernel32._BeginUpdateResource(filename, delete)
@@ -267,10 +222,6 @@ def EndUpdateResource(handle, discard):
 
     discard : bool
         When True all writes are discarded.
-
-    See also
-    --------
-    - `EndUpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648032(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
@@ -295,23 +246,22 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
     data : bytes
         A bytes like object is expected.
 
+        ..note ::
+          ``pipywin32219`` on Python 2.7 can handle unicode inputs.
+          However the data are stored as bytes and it is not really
+          possible to convert the information back into the original
+          unicode string. To be consistent with the Python 3 behaviour
+          of pywin32 we raise an error if the input cannot be
+          converted to bytes.
+
     language : int
         Language to use, default is LANG_NEUTRAL.
-
-    See also
-    --------
-    - `UpdateResource MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
         try:
             lp_data = bytes(data)
         except UnicodeEncodeError:
-            # FIXME: In python 2.7 pipywin32219 can handle unicode.
-            #        However the data are stored as bytes and it
-            #        is not really possible to convert the information
-            #        back into the original unicode string. This looks
-            #        like a bug so we follow the python 3 behavior.
             raise TypeError(
                 "a bytes-like object is required, not a 'unicode'")
         _kernel32._UpdateResource(
@@ -327,8 +277,6 @@ def GetWindowsDirectory():
         The path to the ``Windows`` directory.
 
     See also
-    --------
-    - `GetWindowsDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms648049(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
@@ -343,10 +291,6 @@ def GetSystemDirectory():
     -------
     result : str
         The path to the ``System`` directory.
-
-    See also
-    --------
-    - `GetSystemDirectory MSDN reference <https://msdn.microsoft.com/en-us/library/windows/desktop/ms724373(v=vs.85).aspx>`_
 
     """
     with _pywin32error():
