@@ -246,13 +246,13 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
     data : bytes
         A bytes like object is expected.
 
-        ..note ::
-          ``pipywin32219`` on Python 2.7 can handle unicode inputs.
-          However the data are stored as bytes and it is not really
+        .. note::
+          PyWin32 version 219, on Python 2.7, can handle unicode inputs.
+          However, the data are stored as bytes and it is not really
           possible to convert the information back into the original
           unicode string. To be consistent with the Python 3 behaviour
-          of pywin32 we raise an error if the input cannot be
-          converted to bytes.
+          of pywin32, we raise an error if the input cannot be
+          converted to `bytes`.
 
     language : int
         Language to use, default is LANG_NEUTRAL.
