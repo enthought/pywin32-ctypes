@@ -5,8 +5,8 @@ skip_branch_with_pr: true
 environment:
 
   global:
-    PYTHONUNBUFFERED: "1"
-    SHOW_TEST_ENV: "1"
+    PYTHONUNBUFFERED: 1
+    SHOW_TEST_ENV: 1
 
   matrix:
     - toxpy27: "C:/Python27-x64/python.exe"
