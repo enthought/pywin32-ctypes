@@ -10,7 +10,7 @@ import os
 
 if 'SHOW_TEST_ENV' in os.environ:
     import sys
-    from win32ctypes.core _backend
+    from win32ctypes.core import _backend
     is_64bits = sys.maxsize > 2**32
     print '=' * 30
     print 'Running on python: {} {}'.format(
