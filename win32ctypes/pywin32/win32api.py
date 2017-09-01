@@ -251,7 +251,7 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
           However, the data are stored as bytes and it is not really
           possible to convert the information back into the original
           unicode string. To be consistent with the Python 3 behaviour
-          of pywin32, we raise an error if the input cannot be
+          of PyWin32, we raise an error if the input cannot be
           converted to `bytes`.
 
     language : int
@@ -275,8 +275,6 @@ def GetWindowsDirectory():
     -------
     result : str
         The path to the ``Windows`` directory.
-
-    See also
 
     """
     with _pywin32error():
