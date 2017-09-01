@@ -7,7 +7,6 @@
 #
 from __future__ import absolute_import
 
-from win32ctypes.core.compat import unicode
 from ._util import (
     ffi, check_null, check_zero, check_false, HMODULE, PVOID, RESOURCE, resource)
 
