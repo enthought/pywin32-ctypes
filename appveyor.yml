@@ -22,6 +22,8 @@ cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache
 
 install:
+  - SET pythonunbuffered
+  - SET show_test_env
   - ps: pip install --upgrade pip wheel
   - ps: pip install tox
 test_script:
