@@ -4,9 +4,8 @@ skip_branch_with_pr: true
 
 environment:
 
-  global:
-    PYTHONUNBUFFERED: 1
-    SHOW_TEST_ENV: 1
+  PYTHONUNBUFFERED: 1
+  SHOW_TEST_ENV: 1
 
   matrix:
     - toxpy27: "C:/Python27-x64/python.exe"
@@ -26,7 +25,7 @@ test_script:
   - mkdir testruns
   - copy .coveragerc testruns
   - cd testruns
-  - tox py27,py35,py36
+  - tox
 on_success:
   - pip install codecov
   - codecov
