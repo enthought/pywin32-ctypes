@@ -4,8 +4,8 @@ skip_branch_with_pr: true
 
 environment:
 
-  PYTHONUNBUFFERED: 1
-  SHOW_TEST_ENV: 1
+  pythonunbuffered: "1"
+  show_test_env: "1"
 
   matrix:
     - toxpy27: "C:/Python27-x64/python.exe"
@@ -14,6 +14,9 @@ environment:
     - toxpy27: "C:/Python27/python.exe"
       toxpy35: "C:/Python35/python.exe"
       toxpy36: "C:/Python36/python.exe"
+
+matrix:
+  fast_finish: true
 
 cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache
