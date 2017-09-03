@@ -7,7 +7,6 @@
 #
 import os
 
-
 if 'SHOW_TEST_ENV' in os.environ:
     import sys
     from win32ctypes.core import _backend
