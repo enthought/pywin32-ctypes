@@ -4,31 +4,31 @@ skip_branch_with_pr: true
 
 environment:
 
-  global:
-    PYTHONUNBUFFERED: "1"
+  pythonunbuffered: "1"
+  show_test_env: "1"
 
   matrix:
-    - python: "C:/Python27-x64"
-    - python: "C:/Python27"
-    - python: "C:/Python35-x64"
-    - python: "C:/Python35"
-    - python: "C:/Python36-x64"
-    - python: "C:/Python36"
+    - toxpy27: "C:/Python27-x64/python.exe"
+      toxpy35: "C:/Python35-x64/python.exe"
+      toxpy36: "C:/Python36-x64/python.exe"
+    - toxpy27: "C:/Python27/python.exe"
+      toxpy35: "C:/Python35/python.exe"
+      toxpy36: "C:/Python36/python.exe"
+
+matrix:
+  fast_finish: true
 
 cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache
 
-init:
-  - ps: $Env:path = $Env:python + ";" + $Env:python + "\scripts;" + $Env:path
-
 install:
   - ps: pip install --upgrade pip wheel
-  - ps: pip --version
-  - ps: pip install coverage
-  - ps: pip install --only-binary pypiwin32 pypiwin32
-  - ps: pip install -e .
+  - ps: pip install tox
 test_script:
-  - cmd: ./scripts/appveyor-test.cmd
+  - mkdir testruns
+  - copy .coveragerc testruns
+  - cd testruns
+  - tox
 on_success:
   - pip install codecov
   - codecov

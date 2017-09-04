@@ -1,4 +1,0 @@
-nose
-pywin32
-tox>=1.6
-cffi>=0.9.1
