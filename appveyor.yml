@@ -25,13 +25,12 @@ install:
   - SET pythonunbuffered
   - SET show_test_env
   - ps: pip install --upgrade pip wheel
-  - ps: pip install tox coverage
+  - ps: pip install tox
 test_script:
   - mkdir testruns
   - copy .coveragerc testruns
   - cd testruns
   - tox
-  - coverage combine
 on_success:
   - pip install codecov
   - codecov
