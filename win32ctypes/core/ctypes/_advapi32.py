@@ -13,17 +13,14 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
 from win32ctypes.core.compat import is_unicode
-from ._common import LPBYTE, _PyBytes_FromStringAndSize
-from ._util import function_factory, check_zero_factory
-from ._kernel32 import _GetACP
+from ._common import LPBYTE, pythonapi
+from ._util import check_zero, Wrapping as W, DLL
+from . import _kernel32
 
 
 SUPPORTED_CREDKEYS = set((
     u'Type', u'TargetName', u'Persist',
     u'UserName', u'Comment', u'CredentialBlob'))
-
-# Use a local copy of the advapi32 dll.
-advapi = ctypes.WinDLL('advapi32')
 
 
 class CREDENTIAL(Structure):
@@ -70,6 +67,7 @@ class CREDENTIAL(Structure):
                     c_creds.CredentialBlob = ctypes.cast(blob_data, LPBYTE)
         return c_creds
 
+
 PCREDENTIAL = POINTER(CREDENTIAL)
 
 
@@ -80,7 +78,7 @@ def make_unicode(password):
     if is_unicode(password):
         return password
     else:
-        code_page = _GetACP()
+        code_page = _kernel32.dll._GetACP()
         return unicode(password, encoding=str(code_page), errors='strict')
 
 
@@ -90,29 +88,17 @@ def credential2dict(creds):
         if key != u'CredentialBlob':
             credential[key] = getattr(creds, key)
         else:
-            blob = _PyBytes_FromStringAndSize(
+            blob = pythonapi._PyBytes_FromStringAndSize(
                 cast(creds.CredentialBlob, c_char_p),
                 creds.CredentialBlobSize)
             credential[u'CredentialBlob'] = blob
     return credential
 
 
-_CredWrite = function_factory(
-    advapi.CredWriteW,
-    [PCREDENTIAL, DWORD],
-    BOOL,
-    check_zero_factory("CredWrite"))
+wrapped_functions = {
+        '_CredWrite': W('CredWriteW', [PCREDENTIAL, DWORD], BOOL, check_zero),
+        '_CredRead': W('CredReadW', [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)], BOOL, check_zero),  # noqa
+        '_CredDelete': W('CredDeleteW', [LPCWSTR, DWORD, DWORD], BOOL, check_zero),  # noqa
+        '_CredFree': W('CredFree', [PCREDENTIAL], None, None)}
 
-_CredRead = function_factory(
-    advapi.CredReadW,
-    [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
-    BOOL,
-    check_zero_factory("CredRead"))
-
-_CredDelete = function_factory(
-    advapi.CredDeleteW,
-    [LPCWSTR, DWORD, DWORD],
-    BOOL,
-    check_zero_factory("CredDelete"))
-
-_CredFree = function_factory(advapi.CredFree, [PCREDENTIAL])
+dll = DLL(ctypes.WinDLL('advapi32'), functions=wrapped_functions)
