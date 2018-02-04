@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2014 Enthought, Inc., Austin, TX
+# (C) Copyright 2014-18 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
@@ -14,16 +14,13 @@ from ctypes.wintypes import (
 
 from win32ctypes.core.compat import is_unicode
 from ._common import LPBYTE, _PyBytes_FromStringAndSize
-from ._util import function_factory, check_zero_factory
-from ._kernel32 import _GetACP
+from ._util import function_factory, check_zero_factory, dlls
+from ._nl_support import _GetACP
 
 
 SUPPORTED_CREDKEYS = set((
     u'Type', u'TargetName', u'Persist',
     u'UserName', u'Comment', u'CredentialBlob'))
-
-# Use a local copy of the advapi32 dll.
-advapi = ctypes.WinDLL('advapi32')
 
 
 class CREDENTIAL(Structure):
@@ -70,6 +67,7 @@ class CREDENTIAL(Structure):
                     c_creds.CredentialBlob = ctypes.cast(blob_data, LPBYTE)
         return c_creds
 
+
 PCREDENTIAL = POINTER(CREDENTIAL)
 
 
@@ -98,21 +96,21 @@ def credential2dict(creds):
 
 
 _CredWrite = function_factory(
-    advapi.CredWriteW,
+    dlls.advapi32.CredWriteW,
     [PCREDENTIAL, DWORD],
     BOOL,
     check_zero_factory("CredWrite"))
 
 _CredRead = function_factory(
-    advapi.CredReadW,
+    dlls.advapi32.CredReadW,
     [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
     BOOL,
     check_zero_factory("CredRead"))
 
 _CredDelete = function_factory(
-    advapi.CredDeleteW,
+    dlls.advapi32.CredDeleteW,
     [LPCWSTR, DWORD, DWORD],
     BOOL,
     check_zero_factory("CredDelete"))
 
-_CredFree = function_factory(advapi.CredFree, [PCREDENTIAL])
+_CredFree = function_factory(dlls.advapi32.CredFree, [PCREDENTIAL])
