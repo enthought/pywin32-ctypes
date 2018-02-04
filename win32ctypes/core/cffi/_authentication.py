@@ -10,8 +10,8 @@ from __future__ import absolute_import
 from weakref import WeakKeyDictionary
 
 from win32ctypes.core.compat import is_unicode
-from ._util import ffi, check_zero
-from ._kernel32 import _GetACP
+from ._util import ffi, check_zero, dlls
+from ._nl_support import _GetACP
 from ._common import _PyBytes_FromStringAndSize
 
 
@@ -54,7 +54,6 @@ BOOL WINAPI CredDeleteW(LPCWSTR TargetName, DWORD Type, DWORD Flags);
 """)
 
 _keep_alive = WeakKeyDictionary()
-advapi32 = ffi.dlopen('advapi32.dll')
 
 
 SUPPORTED_CREDKEYS = set((
@@ -111,6 +110,7 @@ class _CREDENTIAL(object):
         _keep_alive[c_creds] = tuple(values)
         return c_creds
 
+
 CREDENTIAL = _CREDENTIAL()
 
 
@@ -143,20 +143,20 @@ def credential2dict(pc_creds):
 def _CredRead(TargetName, Type, Flags, ppCredential):
     target = make_unicode(TargetName)
     value = check_zero(
-        advapi32.CredReadW(target, Type, Flags, ppCredential),
+        dlls.advapi32.CredReadW(target, Type, Flags, ppCredential),
         u'CredRead')
     return value
 
 
 def _CredWrite(Credential, Flags):
     return check_zero(
-        advapi32.CredWriteW(Credential, Flags), u'CredWrite')
+        dlls.advapi32.CredWriteW(Credential, Flags), u'CredWrite')
 
 
 def _CredDelete(TargetName, Type, Flags):
     return check_zero(
-        advapi32.CredDeleteW(
+        dlls.advapi32.CredDeleteW(
             make_unicode(TargetName), Type, Flags), u'CredDelete')
 
 
-_CredFree = advapi32.CredFree
+_CredFree = dlls.advapi32.CredFree
