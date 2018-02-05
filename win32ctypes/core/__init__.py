@@ -33,7 +33,7 @@ class BackendLoader(Loader):
         self.redirect_module = redirect_module
 
     def load_module(self, fullname):
-        module = importlib.import_module(self.redirected_module)
+        module = importlib.import_module(self.redirect_module)
         sys.modules[fullname] = module
         return module
 
