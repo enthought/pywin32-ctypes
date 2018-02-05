@@ -10,7 +10,7 @@
 """
 from __future__ import absolute_import
 
-from ctypes import GetLastError, FormatError
+from ctypes import GetLastError, FormatError, WinDLL
 
 
 def function_factory(
@@ -68,3 +68,14 @@ def check_false_factory(function_name=None):
 
 
 check_false = check_false_factory()
+
+
+class Libraries(object):
+
+    def __getattr__(self, name):
+        library = WinDLL(name)
+        self.__dict__[name] = library
+        return library
+
+
+dlls = Libraries()

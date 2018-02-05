@@ -39,10 +39,24 @@ else:
         [c_char_p, Py_ssize_t],
         return_type=py_object)
 
-IS_INTRESOURCE = lambda x: x >> 16 == 0
+
+def IS_INTRESOURCE(x):
+    return x >> 16 == 0
+
 
 byreference = ctypes.byref
 
 
 def dereference(x):
     return x.contents
+
+
+class Libraries(object):
+
+    def __getattr__(self, name):
+        library = ctypes.WinDLL(name)
+        self.__dict__[name] = library
+        return library
+
+
+dlls = Libraries()

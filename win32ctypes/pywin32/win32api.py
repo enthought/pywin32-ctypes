@@ -9,7 +9,8 @@
 
 from __future__ import absolute_import
 
-from win32ctypes.core import _common, _kernel32, _backend
+from win32ctypes.core import (
+    _common, _dll, _resource, _system_information, _backend, _time)
 from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
 
 LOAD_LIBRARY_AS_DATAFILE = 0x2
@@ -39,7 +40,7 @@ def LoadLibraryEx(fileName, handle, flags):
     if not handle == 0:
         raise ValueError("handle != 0 not supported")
     with _pywin32error():
-        return _kernel32._LoadLibraryEx(fileName, 0, flags)
+        return _dll._LoadLibraryEx(fileName, 0, flags)
 
 
 def EnumResourceTypes(hModule):
@@ -63,8 +64,8 @@ def EnumResourceTypes(hModule):
         return True
 
     with _pywin32error():
-        _kernel32._EnumResourceTypes(
-            hModule, _kernel32.ENUMRESTYPEPROC(callback), 0)
+        _resource._EnumResourceTypes(
+            hModule, _resource.ENUMRESTYPEPROC(callback), 0)
     return resource_types
 
 
@@ -92,8 +93,8 @@ def EnumResourceNames(hModule, resType):
         return True
 
     with _pywin32error():
-        _kernel32._EnumResourceNames(
-            hModule, resType, _kernel32.ENUMRESNAMEPROC(callback), 0)
+        _resource._EnumResourceNames(
+            hModule, resType, _resource.ENUMRESNAMEPROC(callback), 0)
     return resource_names
 
 
@@ -124,8 +125,8 @@ def EnumResourceLanguages(hModule, lpType, lpName):
         return True
 
     with _pywin32error():
-        _kernel32._EnumResourceLanguages(
-            hModule, lpType, lpName, _kernel32.ENUMRESLANGPROC(callback), 0)
+        _resource._EnumResourceLanguages(
+            hModule, lpType, lpName, _resource.ENUMRESLANGPROC(callback), 0)
     return resource_languages
 
 
@@ -154,14 +155,14 @@ def LoadResource(hModule, type, name, language=LANG_NEUTRAL):
 
     """
     with _pywin32error():
-        hrsrc = _kernel32._FindResourceEx(hModule, type, name, language)
-        size = _kernel32._SizeofResource(hModule, hrsrc)
-        hglob = _kernel32._LoadResource(hModule, hrsrc)
+        hrsrc = _resource._FindResourceEx(hModule, type, name, language)
+        size = _resource._SizeofResource(hModule, hrsrc)
+        hglob = _resource._LoadResource(hModule, hrsrc)
         if _backend == 'ctypes':
             pointer = _common.cast(
-                _kernel32._LockResource(hglob), _common.c_char_p)
+                _resource._LockResource(hglob), _common.c_char_p)
         else:
-            pointer = _kernel32._LockResource(hglob)
+            pointer = _resource._LockResource(hglob)
         return _common._PyBytes_FromStringAndSize(pointer, size)
 
 
@@ -177,7 +178,7 @@ def FreeLibrary(hModule):
 
     """
     with _pywin32error():
-        return _kernel32._FreeLibrary(hModule)
+        return _dll._FreeLibrary(hModule)
 
 
 def GetTickCount():
@@ -188,7 +189,7 @@ def GetTickCount():
     counts : int
         The millisecond counts since system startup.
     """
-    return _kernel32._GetTickCount()
+    return _time._GetTickCount()
 
 
 def BeginUpdateResource(filename, delete):
@@ -208,7 +209,7 @@ def BeginUpdateResource(filename, delete):
 
     """
     with _pywin32error():
-        return _kernel32._BeginUpdateResource(filename, delete)
+        return _resource._BeginUpdateResource(filename, delete)
 
 
 def EndUpdateResource(handle, discard):
@@ -225,7 +226,7 @@ def EndUpdateResource(handle, discard):
 
     """
     with _pywin32error():
-        _kernel32._EndUpdateResource(handle, discard)
+        _resource._EndUpdateResource(handle, discard)
 
 
 def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
@@ -264,7 +265,7 @@ def UpdateResource(handle, type, name, data, language=LANG_NEUTRAL):
         except UnicodeEncodeError:
             raise TypeError(
                 "a bytes-like object is required, not a 'unicode'")
-        _kernel32._UpdateResource(
+        _resource._UpdateResource(
             handle, type, name, language, lp_data, len(lp_data))
 
 
@@ -279,7 +280,7 @@ def GetWindowsDirectory():
     """
     with _pywin32error():
         # Note: pywin32 returns str on py27, unicode (which is str) on py3
-        return str(_kernel32._GetWindowsDirectory())
+        return str(_system_information._GetWindowsDirectory())
 
 
 def GetSystemDirectory():
@@ -293,4 +294,4 @@ def GetSystemDirectory():
     """
     with _pywin32error():
         # Note: pywin32 returns str on py27, unicode (which is str) on py3
-        return str(_kernel32._GetSystemDirectory())
+        return str(_system_information._GetSystemDirectory())
