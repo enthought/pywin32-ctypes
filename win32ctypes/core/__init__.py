@@ -19,31 +19,41 @@ except ImportError:
 else:
     del cffi
     _backend = 'cffi'
+try:
+    from importlib.abc import MetaPathFinder, Loader
+except ImportError:
+    MetaPathFinder = object
+    Loader = object
 
+# Setup module redirection based on the backend
 
-class BackendFinder(object):
+class BackendLoader(Loader):
+
+    def __init__(self, redirect_module):
+        self.redirect_module = redirect_module
+
+    def load_module(self, fullname):
+        module = importlib.import_module(self.redirected_module)
+        sys.modules[fullname] = module
+        return module
+
+class BackendFinder(MetaPathFinder):
 
     def __init__(self, modules):
-        self.redirected_modules = [
+        self.redirected_modules = {
             'win32ctypes.core.{}'.format(module)
-            for module in modules]
+            for module in modules}
 
     def find_module(self, fullname, path=None):
         if fullname in self.redirected_modules:
-            return self
+            module_name = fullname.split('.')[-1]
+            if _backend == 'ctypes':
+                redirected = 'win32ctypes.core.ctypes.{}'
+            else:
+                redirected = 'win32ctypes.core.cffi.{}'
+            return BackendLoader(redirected.format(module_name))
         else:
             return None
-
-    def load_module(self, fullname):
-        module_name = fullname.split('.')[-1]
-        if _backend == 'ctypes':
-            new_fullname = 'win32ctypes.core.ctypes.{}'
-        else:
-            new_fullname = 'win32ctypes.core.cffi.{}'
-        module = importlib.import_module(
-            new_fullname.format(module_name))
-        return module
-
 
 sys.meta_path.append(BackendFinder([
     '_dll', '_authentication', '_time',
