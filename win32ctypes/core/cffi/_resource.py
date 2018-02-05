@@ -7,9 +7,12 @@
 #
 from __future__ import absolute_import
 
+
+from win32ctypes.core.compat import text_type
 from ._util import (
     ffi, check_null, check_zero, check_false, HMODULE,
     PVOID, RESOURCE, resource, dlls)
+
 
 ffi.cdef("""
 
@@ -58,6 +61,7 @@ def ENUMRESLANGPROC(callback):
             hModule, resource(lpszType), resource(lpszName),
             wIDLanguage, lParam)
     return wrapped
+
 
 def _EnumResourceTypes(hModule, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESTYPEPROC', lpEnumFunc)
@@ -111,7 +115,7 @@ def _LockResource(hResData):
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
     result = check_null(
         dlls.kernel32.BeginUpdateResourceW(
-            unicode(pFileName), bDeleteExistingResources))
+            text_type(pFileName), bDeleteExistingResources))
     return HMODULE(result)
 
 

@@ -27,7 +27,6 @@ setup(
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
     ],
-    use_2to3=True,
     zip_safe=False,
     test_suite='win32ctypes.tests',
 )

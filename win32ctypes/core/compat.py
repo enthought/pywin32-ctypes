@@ -8,12 +8,24 @@ else:
     PY2 = True
 
 if PY3:
-    def is_unicode(s):
+    def is_bytes(b):
+        return isinstance(b, bytes)
+
+    def is_text(s):
         return isinstance(s, str)
 
-    unicode = str
+    def is_integer(i):
+        return isinstance(i, int)
+
+    text_type = str
 else:
-    def is_unicode(s):
+    def is_text(s):
         return isinstance(s, unicode)
 
-    unicode = unicode
+    def is_bytes(b):
+        return isinstance(b, (bytes, str))
+
+    def is_integer(i):
+        return isinstance(i, (int, long))
+
+    text_type = unicode

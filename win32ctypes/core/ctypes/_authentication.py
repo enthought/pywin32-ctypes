@@ -12,7 +12,7 @@ from ctypes import POINTER, Structure, c_void_p, c_wchar_p, c_char_p, cast
 from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
-from win32ctypes.core.compat import is_unicode
+from win32ctypes.core.compat import is_text
 from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_zero_factory, dlls
 from ._nl_support import _GetACP
@@ -75,11 +75,11 @@ def make_unicode(password):
     """ Convert the input string to unicode.
 
     """
-    if is_unicode(password):
+    if is_text(password):
         return password
     else:
         code_page = _GetACP()
-        return unicode(password, encoding=str(code_page), errors='strict')
+        return password.decode(encoding=str(code_page), errors='strict')
 
 
 def credential2dict(creds):
