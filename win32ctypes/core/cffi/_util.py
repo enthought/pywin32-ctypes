@@ -95,3 +95,14 @@ class ErrorWhen(object):
 check_null = ErrorWhen(ffi.NULL)
 check_zero = ErrorWhen(0)
 check_false = ErrorWhen(False)
+
+
+class Libraries(object):
+
+    def __getattr__(self, name):
+        library = ffi.dlopen('{}.dll'.format(name))
+        self.__dict__[name] = library
+        return library
+
+
+dlls = Libraries()

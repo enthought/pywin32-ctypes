@@ -8,11 +8,8 @@
 from __future__ import absolute_import
 
 from ._util import (
-    ffi, check_null, check_zero, check_false, HMODULE, PVOID, RESOURCE, resource)
-
-# TODO: retrieve this value using ffi
-MAX_PATH = 260
-MAX_PATH_BUF = u'wchar_t[{0}]'.format(MAX_PATH)
+    ffi, check_null, check_zero, check_false, HMODULE,
+    PVOID, RESOURCE, resource, dlls)
 
 ffi.cdef("""
 
@@ -21,11 +18,6 @@ typedef WINBOOL (__stdcall *ENUMRESTYPEPROC) (HANDLE, LPTSTR, LONG_PTR);
 typedef WINBOOL (__stdcall *ENUMRESNAMEPROC) (HANDLE, LPCTSTR, LPTSTR, LONG_PTR);
 typedef WINBOOL (__stdcall *ENUMRESLANGPROC) (HANDLE, LPCTSTR, LPCTSTR, WORD, LONG_PTR);
 
-BOOL WINAPI Beep(DWORD dwFreq, DWORD dwDuration);
-UINT WINAPI GetACP(void);
-DWORD WINAPI GetTickCount(void);
-HMODULE WINAPI LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
-BOOL WINAPI FreeLibrary(HMODULE hModule);
 BOOL WINAPI EnumResourceTypesW(
     HMODULE hModule, ENUMRESTYPEPROC lpEnumFunc, LONG_PTR lParam);
 BOOL WINAPI EnumResourceNamesW(
@@ -43,12 +35,8 @@ LPVOID WINAPI LockResource(HGLOBAL hResData);
 HANDLE WINAPI BeginUpdateResourceW(LPCTSTR pFileName, BOOL bDeleteExistingResources);
 BOOL WINAPI EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard);
 BOOL WINAPI UpdateResourceW(HANDLE hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
-UINT WINAPI GetWindowsDirectoryW(LPTSTR lpBuffer, UINT uSize);
-UINT WINAPI GetSystemDirectoryW(LPTSTR lpBuffer, UINT uSize);
 
 """)
-
-kernel32 = ffi.dlopen('kernel32.dll')
 
 
 def ENUMRESTYPEPROC(callback):
@@ -71,52 +59,17 @@ def ENUMRESLANGPROC(callback):
             wIDLanguage, lParam)
     return wrapped
 
-
-def _GetACP():
-    return kernel32.GetACP()
-
-
-def _GetWindowsDirectory():
-    buffer = ffi.new(MAX_PATH_BUF)
-    l = kernel32.GetWindowsDirectoryW(buffer, MAX_PATH)
-    return ffi.unpack(buffer, l)
-
-
-def _GetSystemDirectory():
-    buffer = ffi.new(MAX_PATH_BUF)
-    l = kernel32.GetSystemDirectoryW(buffer, MAX_PATH)
-    return ffi.unpack(buffer, l)
-
-
-def _GetTickCount():
-    return kernel32.GetTickCount()
-
-
-def _LoadLibraryEx(lpFilename, hFile, dwFlags):
-    result = check_null(
-        kernel32.LoadLibraryExW(
-            unicode(lpFilename), ffi.NULL, dwFlags),
-        function_name='LoadLibraryEx')
-    return HMODULE(result)
-
-
-def _FreeLibrary(hModule):
-    check_false(
-        kernel32.FreeLibrary(PVOID(hModule)),
-        function_name='FreeLibrary')
-
-
 def _EnumResourceTypes(hModule, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESTYPEPROC', lpEnumFunc)
     check_false(
-        kernel32.EnumResourceTypesW(PVOID(hModule), callback, lParam),
+        dlls.kernel32.EnumResourceTypesW(PVOID(hModule), callback, lParam),
         function_name='EnumResourceTypes')
 
 
 def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESNAMEPROC', lpEnumFunc)
     check_false(
-        kernel32.EnumResourceNamesW(
+        dlls.kernel32.EnumResourceNamesW(
             PVOID(hModule), RESOURCE(lpszType), callback, lParam),
         function_name='EnumResourceNames')
 
@@ -124,7 +77,7 @@ def _EnumResourceNames(hModule, lpszType, lpEnumFunc, lParam):
 def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
     callback = ffi.callback('ENUMRESLANGPROC', lpEnumFunc)
     check_false(
-        kernel32.EnumResourceLanguagesW(
+        dlls.kernel32.EnumResourceLanguagesW(
             PVOID(hModule), RESOURCE(lpType),
             RESOURCE(lpName), callback, lParam),
         function_name='EnumResourceLanguages')
@@ -132,46 +85,46 @@ def _EnumResourceLanguages(hModule, lpType, lpName, lpEnumFunc, lParam):
 
 def _FindResourceEx(hModule, lpType, lpName, wLanguage):
     return check_null(
-        kernel32.FindResourceExW(
+        dlls.kernel32.FindResourceExW(
             PVOID(hModule), RESOURCE(lpType), RESOURCE(lpName), wLanguage),
         function_name='FindResourceEx')
 
 
 def _SizeofResource(hModule, hResInfo):
     return check_zero(
-        kernel32.SizeofResource(PVOID(hModule), hResInfo),
+        dlls.kernel32.SizeofResource(PVOID(hModule), hResInfo),
         function_name='SizeofResource')
 
 
 def _LoadResource(hModule, hResInfo):
     return check_null(
-        kernel32.LoadResource(PVOID(hModule), hResInfo),
+        dlls.kernel32.LoadResource(PVOID(hModule), hResInfo),
         function_name='LoadResource')
 
 
 def _LockResource(hResData):
     return check_null(
-        kernel32.LockResource(hResData),
+        dlls.kernel32.LockResource(hResData),
         function_name='LockResource')
 
 
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
     result = check_null(
-        kernel32.BeginUpdateResourceW(
+        dlls.kernel32.BeginUpdateResourceW(
             unicode(pFileName), bDeleteExistingResources))
     return HMODULE(result)
 
 
 def _EndUpdateResource(hUpdate, fDiscard):
     check_false(
-        kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard),
+        dlls.kernel32.EndUpdateResourceW(PVOID(hUpdate), fDiscard),
         function_name='EndUpdateResource')
 
 
 def _UpdateResource(hUpdate, lpType, lpName, wLanguage, cData, cbData):
     lpData = ffi.from_buffer(cData)
     check_false(
-        kernel32.UpdateResourceW(
+        dlls.kernel32.UpdateResourceW(
             PVOID(hUpdate), RESOURCE(lpType), RESOURCE(lpName),
             wLanguage, PVOID(lpData), cbData),
         function_name='UpdateResource')
