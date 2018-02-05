@@ -10,6 +10,7 @@
 """
 from __future__ import absolute_import
 
+from win32ctypes.core.compat import is_text, is_integer, text_type
 from cffi import FFI
 
 ffi = FFI()
@@ -35,10 +36,10 @@ def RESOURCE(resource):
     """ Convert a resource into a compatible input for cffi.
 
     """
-    if isinstance(resource, (int, long)):
+    if is_integer(resource):
         resource = ffi.cast('wchar_t *', resource)
-    elif isinstance(resource, str):
-        resource = unicode(resource)
+    elif is_text(resource):
+        resource = text_type(resource)
     return resource
 
 
