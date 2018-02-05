@@ -37,6 +37,12 @@ class BackendLoader(Loader):
         sys.modules[fullname] = module
         return module
 
+    # NOTE: Defined here to make python 3.3.x happy
+    def module_repr(self, module):
+        # The exception will cause ModuleType.__repr__ to ignore this method.
+        raise NotImplementedError
+
+
 class BackendFinder(MetaPathFinder):
 
     def __init__(self, modules):
