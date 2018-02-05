@@ -19,7 +19,7 @@ matrix:
   fast_finish: true
 
 cache:
-  - C:\Users\appveyor\AppData\Local\pip\Cache
+  - C:\Users\appveyor\AppData\Local\pip\Cache -> appveyor-cache.txt
 
 install:
   - ps: pip install --upgrade pip wheel
