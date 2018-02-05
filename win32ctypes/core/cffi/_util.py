@@ -10,7 +10,7 @@
 """
 from __future__ import absolute_import
 
-from win32ctypes.core.compat import is_text, is_integer, text_type
+from win32ctypes.core.compat import is_bytes, is_integer, text_type
 from cffi import FFI
 
 ffi = FFI()
@@ -38,7 +38,7 @@ def RESOURCE(resource):
     """
     if is_integer(resource):
         resource = ffi.cast('wchar_t *', resource)
-    elif is_text(resource):
+    elif is_bytes(resource):
         resource = text_type(resource)
     return resource
 

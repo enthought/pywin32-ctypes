@@ -8,6 +8,9 @@ else:
     PY2 = True
 
 if PY3:
+    def is_bytes(b):
+        return isinstance(b, bytes)
+
     def is_text(s):
         return isinstance(s, str)
 
@@ -18,6 +21,9 @@ if PY3:
 else:
     def is_text(s):
         return isinstance(s, unicode)
+
+    def is_bytes(b):
+        return isinstance(b, (bytes, str))
 
     def is_integer(i):
         return isinstance(i, (int, long))
