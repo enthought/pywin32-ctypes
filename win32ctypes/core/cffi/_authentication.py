@@ -9,7 +9,7 @@ from __future__ import absolute_import
 
 from weakref import WeakKeyDictionary
 
-from win32ctypes.core.compat import is_unicode
+from win32ctypes.core.compat import is_text
 from ._util import ffi, check_zero, dlls
 from ._nl_support import _GetACP
 from ._common import _PyBytes_FromStringAndSize
@@ -65,11 +65,11 @@ def make_unicode(password):
     """ Convert the input string to unicode.
 
     """
-    if is_unicode(password):
+    if is_text(password):
         return password
     else:
         code_page = _GetACP()
-        return unicode(password, encoding=str(code_page), errors='strict')
+        return password.decode(encoding=str(code_page), errors='strict')
 
 
 class _CREDENTIAL(object):

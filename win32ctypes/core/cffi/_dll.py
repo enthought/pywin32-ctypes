@@ -7,6 +7,7 @@
 #
 from __future__ import absolute_import
 
+from win32ctypes.core.compat import text_type
 from ._util import ffi, check_null, check_false, dlls, HMODULE, PVOID
 
 
@@ -21,7 +22,7 @@ BOOL WINAPI FreeLibrary(HMODULE hModule);
 def _LoadLibraryEx(lpFilename, hFile, dwFlags):
     result = check_null(
         dlls.kernel32.LoadLibraryExW(
-            unicode(lpFilename), ffi.NULL, dwFlags),
+            text_type(lpFilename), ffi.NULL, dwFlags),
         function_name='LoadLibraryEx')
     return HMODULE(result)
 
