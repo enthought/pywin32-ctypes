@@ -1,6 +1,4 @@
-.. image:: https://travis-ci.org/enthought/pywin32-ctypes.png
-  :target: https://travis-ci.org/enthought/pywin32-ctypes
-  
+
 .. image:: https://ci.appveyor.com/api/projects/status/62xqtrro26gw3l4x/branch/master?svg=true
   :target: https://ci.appveyor.com/project/EnthoughtOSS/pywin32-ctypes
 
@@ -43,4 +41,4 @@ The following should be good enough::
 .. note::
 
    - While pywin32-ctypes should regularly be tested on windows, you can also
-     develop/test on unix by using wine (see travis-ci configuration to set it up).
+     develop/test on unix by using wine
