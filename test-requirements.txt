@@ -1,4 +1,4 @@
 coverage
 haas
---only-binary pypiwin32
-pypiwin32
+--only-binary pywin32
+pywin32
