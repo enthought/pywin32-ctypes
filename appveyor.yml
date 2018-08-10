@@ -32,7 +32,7 @@ cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache -> appveyor-cache.txt
 
 install:
-  - cmd: pip install --upgrade pip wheel
+  - cmd: python -m pip install --upgrade pip wheel
   - ps: pip install tox
 test_script:
   - mkdir testruns
