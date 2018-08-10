@@ -1,0 +1,3 @@
+coverage
+haas
+--only-binary pypiwin32 pypiwin32
