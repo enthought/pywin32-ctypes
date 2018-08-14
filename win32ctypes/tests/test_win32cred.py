@@ -22,8 +22,11 @@ from win32ctypes.tests import compat
 # find the pywin32 version
 version_file = os.path.join(
     os.path.dirname(os.path.dirname(win32cred.__file__)), 'pywin32.version.txt')
-with open(version_file) as handle:
-    pywin32_build = handle.read().strip()
+if os.path.exists(version_file):
+    with open(version_file) as handle:
+        pywin32_build = handle.read().strip()
+else:
+    pywin32_build = None
 
 
 class TestCred(compat.TestCase):
