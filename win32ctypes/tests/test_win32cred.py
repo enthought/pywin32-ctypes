@@ -135,7 +135,7 @@ class TestCred(compat.TestCase):
             "Persist": CRED_PERSIST_ENTERPRISE}
         CredWrite(r_credentials, 0)
 
-        credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)
+        credentials = CredRead(target, CRED_TYPE_GENERIC)
         self.assertTrue(credentials is not None)
 
         CredDelete(target, CRED_TYPE_GENERIC)
