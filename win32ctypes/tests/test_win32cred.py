@@ -7,6 +7,8 @@
 #
 
 from __future__ import absolute_import
+import os
+import sys
 
 import unittest
 
@@ -19,10 +21,19 @@ from win32ctypes.pywin32.win32cred import (
     CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
 from win32ctypes.tests import compat
 
+# find the pywin32 version
+version_file = os.path.join(
+    os.path.dirname(os.path.dirname(win32cred.__file__)), 'pywin32.version.txt')
+with open(version_file) as handle:
+    pywin32_build = handle.read().strip()
+
 
 class TestCred(compat.TestCase):
 
-    def test_write_simple(self):
+    @unittest.skipIf(
+        pywin32_build == "223" and sys.version_info[:2] == (3,7),
+        "pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)")
+    def test_write_to_pywin32(self):
         username = u"john"
         password = u"doefsajfsakfj"
         comment = u"Created by MiniPyWin32Cred test suite"
