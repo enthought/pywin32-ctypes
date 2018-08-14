@@ -5,11 +5,9 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
 from __future__ import absolute_import
 import os
 import sys
-
 import unittest
 
 import win32cred
@@ -59,7 +57,7 @@ class TestCred(compat.TestCase):
         self.assertEqual(
             res["CredentialBlob"].decode('utf-16'), password)
 
-    def test_read_simple(self):
+    def test_read_from_pywin32(self):
         username = "john"
         password = "doe"
         comment = u"Created by MiniPyWin32Cred test suite"
