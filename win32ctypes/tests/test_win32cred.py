@@ -5,9 +5,9 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
 from __future__ import absolute_import
-
+import os
+import sys
 import unittest
 
 import win32cred
@@ -19,10 +19,22 @@ from win32ctypes.pywin32.win32cred import (
     CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
 from win32ctypes.tests import compat
 
+# find the pywin32 version
+version_file = os.path.join(
+    os.path.dirname(os.path.dirname(win32cred.__file__)), 'pywin32.version.txt')
+if os.path.exists(version_file):
+    with open(version_file) as handle:
+        pywin32_build = handle.read().strip()
+else:
+    pywin32_build = None
+
 
 class TestCred(compat.TestCase):
 
-    def test_write_simple(self):
+    @unittest.skipIf(
+        pywin32_build == "223" and sys.version_info[:2] == (3,7),
+        "pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)")
+    def test_write_to_pywin32(self):
         username = u"john"
         password = u"doefsajfsakfj"
         comment = u"Created by MiniPyWin32Cred test suite"
@@ -48,7 +60,7 @@ class TestCred(compat.TestCase):
         self.assertEqual(
             res["CredentialBlob"].decode('utf-16'), password)
 
-    def test_read_simple(self):
+    def test_read_from_pywin32(self):
         username = "john"
         password = "doe"
         comment = u"Created by MiniPyWin32Cred test suite"
@@ -67,7 +79,34 @@ class TestCred(compat.TestCase):
         credentials = CredRead(target, CRED_TYPE_GENERIC)
 
         # XXX: the fact that we have to decode the password when reading, but
-        # not encode when writing is a bit insane, but that's what pywin32
+        # not encode when writing is a bit strange, but that's what pywin32
+        # seems to do as well, and we try to be backward compatible here.
+        self.assertEqual(credentials["UserName"], username)
+        self.assertEqual(credentials["TargetName"], target)
+        self.assertEqual(credentials["Comment"], comment)
+        self.assertEqual(
+            credentials["CredentialBlob"].decode("utf-16"), password)
+
+    def test_read_write(self):
+        username = "john"
+        password = "doe"
+        comment = u"Created by MiniPyWin32Cred test suite"
+
+        target = u"{0}@{1}".format(username, password)
+
+        r_credentials = {
+            u"Type": CRED_TYPE_GENERIC,
+            u"TargetName": target,
+            u"UserName": username,
+            u"CredentialBlob": password,
+            u"Comment": comment,
+            u"Persist": CRED_PERSIST_ENTERPRISE}
+        CredWrite(r_credentials)
+
+        credentials = CredRead(target, CRED_TYPE_GENERIC)
+
+        # XXX: the fact that we have to decode the password when reading, but
+        # not encode when writing is a bit strange, but that's what pywin32
         # seems to do as well, and we try to be backward compatible here.
         self.assertEqual(credentials["UserName"], username)
         self.assertEqual(credentials["TargetName"], target)
@@ -97,7 +136,7 @@ class TestCred(compat.TestCase):
             "Persist": CRED_PERSIST_ENTERPRISE}
         CredWrite(r_credentials, 0)
 
-        credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)
+        credentials = CredRead(target, CRED_TYPE_GENERIC)
         self.assertTrue(credentials is not None)
 
         CredDelete(target, CRED_TYPE_GENERIC)
