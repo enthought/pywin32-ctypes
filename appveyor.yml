@@ -32,7 +32,7 @@ cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache -> appveyor-cache.txt
 
 install:
-  - $env:path = TOXPY27 + ';' + $env:path
+  - $Env:path = $Env:TOXPY27 + ';' + $Env:path
   - cmd: python -m pip install --upgrade pip wheel
   - ps: pip install tox
 test_script:
