@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+Version 0.2.0
+-------------
+
+- Fix syntax error when installing in python 3.7 (#81).
+- Support testing on python 3.7 (#82).
+- Support testing on python 3.3 and python 3.4 (#77).
+- Do not use 2to3 (#75).
+- Support lazy wrapping of win32 functions (#67).
+- Add CRED_PERSIST constants (#79 contributed by @tivnet).
+
 Version 0.1.2
 -------------
 
