@@ -31,8 +31,9 @@ branches:
 cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache -> appveyor-cache.txt
 
+init:
+  - ps: $Env:path = TOXPY27 + ";" + $Env:path
 install:
-  - $Env:path = $Env:TOXPY27 + ';' + $Env:path
   - cmd: python -m pip install --upgrade pip wheel
   - ps: pip install tox
 test_script:
