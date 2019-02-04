@@ -10,7 +10,7 @@ from __future__ import absolute_import
 import ctypes
 from ctypes.wintypes import (
     DWORD, HANDLE, POINTER, BOOL, SHORT, WORD, LPDWORD,
-    LPCTSTR)
+    LPCTSTR, CHAR, WCHAR, UINT)
 from subprocess import (  # noqa
     STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE)
 from ._util import (
@@ -33,6 +33,61 @@ class SMALL_RECT(ctypes.Structure):
       ('Bottom', SHORT)]
 
 
+class _Char(ctypes.Union):
+    _fields_ = [('UnicodeChar', WCHAR), ('AsciiChar', CHAR)]
+
+
+class CHAR_INFO(ctypes.Structure):
+    _anonymous_ = ('Char',)
+    _fields_ = [('Char', _Char), ('Attributes', WORD)]
+
+
+class FOCUS_EVENT_RECORD(ctypes.Structure):
+    _fields_ = [('bSetFocus', BOOL)]
+
+
+class KEY_EVENT_RECORD(ctypes.Structure):
+    _anonymous_ = ('uChar',)
+    _fields_ = [
+        ('bKeyDown', BOOL),
+        ('wRepeatCount', WORD),
+        ('wVirtualKeyCode', WORD),
+        ('wVirtualScanCode', WORD),
+        ('uChar', _Char),
+        ('dwControlKeyState', DWORD)]
+
+
+class MENU_EVENT_RECORD(ctypes.Structure):
+    _fields_ = [('dwCommandId', UINT)]
+
+
+class MOUSE_EVENT_RECORD(ctypes.Structure):
+    _fields_ = [
+        ('dwMousePosition', COORD),
+        ('dwButtonState', DWORD),
+        ('dwControlKeyState', DWORD),
+        ('dwEventFlags', DWORD)]
+
+
+class WINDOW_BUFFER_SIZE_RECORD(ctypes.Structure):
+    _fields_ = [('dwSize', COORD)]
+
+
+class _Event(ctypes.Union):
+    _fields_ = [
+        ('KeyEvent', KEY_EVENT_RECORD),
+        ('MouseEvent', MOUSE_EVENT_RECORD),
+        ('WindowsBufferSizeEvent', WINDOW_BUFFER_SIZE_RECORD),
+        ('MenuEvent', MENU_EVENT_RECORD),
+        ('FocusEvent', FOCUS_EVENT_RECORD)]
+
+
+class INPUT_RECORD(ctypes.Structure):
+
+    _anonymous_ = ('Event',)
+    _fields_ = [('EventType', WORD), ('Event', _Event)]
+
+
 class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
     _fields_ = [
         ('dwSize', COORD),
@@ -48,6 +103,9 @@ class CONSOLE_FONT_INFO(ctypes.Structure):
         ('dwFontSize', COORD)]
 
 
+PCHAR_INFO = POINTER(CHAR_INFO)
+PFOCUS_EVENT_RECORD = POINTER(FOCUS_EVENT_RECORD)
+PMENU_EVENT_RECORD = POINTER(MENU_EVENT_RECORD)
 PCONSOLE_CURSOR_INFO = POINTER(CONSOLE_CURSOR_INFO)
 PCONSOLE_FONT_INFO = POINTER(CONSOLE_FONT_INFO)
 PCONSOLE_SCREEN_BUFFER_INFO = POINTER(CONSOLE_SCREEN_BUFFER_INFO)
