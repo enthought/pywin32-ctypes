@@ -37,8 +37,7 @@ cache:
 init:
   - ps: $Env:path = $Env:PYTHON + ";" + $Env:PYTHON + "/Scripts;" + $Env:path
 install:
-  - cmd: python -m pip install --upgrade pip wheel
-  - cmd: pip install tox
+  - cmd: python -m pip install -rtox-requirements.txt
 test_script:
   - mkdir testruns
   - copy .coveragerc testruns
