@@ -35,7 +35,7 @@ init:
   - ps: $Env:path = $:Env:TOXPY27 + ";" + $Env:path
 install:
   - cmd: python -m pip install --upgrade pip wheel
-  - ps: pip install tox
+  - cmd: pip install tox
 test_script:
   - mkdir testruns
   - copy .coveragerc testruns
