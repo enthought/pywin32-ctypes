@@ -15,12 +15,14 @@ environment:
       TOXPY35: "C:/Python35-x64/python.exe"
       TOXPY36: "C:/Python36-x64/python.exe"
       TOXPY37: "C:/Python37-x64/python.exe"
+      PYTHON: "C:/Python33-x64/"
     - TOXPY27: "C:/Python27/python.exe"
       TOXPY33: "C:/Python33/python.exe"
       TOXPY34: "C:/Python34/python.exe"
       TOXPY35: "C:/Python35/python.exe"
       TOXPY36: "C:/Python36/python.exe"
       TOXPY37: "C:/Python37/python.exe"
+      PYTHON: "C:/Python33"
 
 matrix:
   fast_finish: true
@@ -33,7 +35,7 @@ cache:
   - C:\Users\appveyor\AppData\Local\pip\Cache -> appveyor-cache.txt
 
 init:
-  - ps: $Env:path = $:Env:TOXPY27 + ";" + $Env:path
+  - ps: $Env:path = $Env:PYTHON + ";" + $Env:PYTHON + "/Scripts;" + $Env:path
 install:
   - cmd: python -m pip install --upgrade pip wheel
   - cmd: pip install tox
@@ -41,7 +43,7 @@ test_script:
   - mkdir testruns
   - copy .coveragerc testruns
   - cd testruns
-  - tox
+  - python -m tox -v
 on_success:
-  - pip install codecov
-  - codecov
+  - python -m pip install codecov
+  - python -m codecov
