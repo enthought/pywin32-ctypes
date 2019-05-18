@@ -50,6 +50,8 @@ def ENUMRESTYPEPROC(callback):
 
 def ENUMRESNAMEPROC(callback):
     def wrapped(hModule, lpszType, lpszName, lParam):
+        if lpszName == ffi.NULL:
+            return False
         return callback(
             hModule, resource(lpszType), resource(lpszName), lParam)
     return wrapped
