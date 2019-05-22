@@ -1,4 +1,0 @@
-setuptools < 40.0.0; python_version == '3.3'
-pip < 11.0.0; python_version == '3.3'
-wheel <= 0.29; python_version == '3.3'
-wheel; python_version != '3.3'
