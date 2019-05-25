@@ -1,0 +1,4 @@
+pip < 11.0.0; python_version == '3.3'
+wheel <= 0.29; python_version == '3.3'
+setuptools < 40.0.0; python_version == '3.3'
+pycparser < 2.15; python_version == '3.3'
