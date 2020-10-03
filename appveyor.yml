@@ -24,7 +24,7 @@ environment:
       TOXPY36: "C:\Python36\Python.exe"
       TOXPY37: "C:\Python37\Python.exe"
       TOXPY38: "C:\Python38\Python.exe"
-      PYTHON: "C:\Python36"
+      PYTHON: "C:\Python36-x64"
 
 matrix:
   fast_finish: true
