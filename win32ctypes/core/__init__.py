@@ -64,4 +64,4 @@ class BackendFinder(MetaPathFinder):
 sys.meta_path.append(BackendFinder([
     '_dll', '_authentication', '_time',
     '_common', '_resource', '_nl_support',
-    '_system_information']))
+    '_system_information', '_console']))

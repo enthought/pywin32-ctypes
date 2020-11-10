@@ -11,7 +11,9 @@
 from __future__ import absolute_import
 
 from ctypes import GetLastError, FormatError, WinDLL
+from ctypes.wintypes import HANDLE
 
+INVALID_HANDLE_VALUE = -1
 
 def function_factory(
         function, argument_types=None,
@@ -62,12 +64,22 @@ def check_false_factory(function_name=None):
     def check_false(result, function, arguments, *args):
         if not bool(result):
             raise make_error(function, function_name)
-        else:
-            return True
+        return True
     return check_false
 
 
 check_false = check_false_factory()
+
+
+def check_invalid_handle_factory(function_name=None):
+    def check_handle(result, function, arguments, *args):
+        if result == INVALID_HANDLE_VALUE:
+            raise make_error(function, function_name)
+        return result
+    return check_handle
+
+
+check_invalid_handle = check_invalid_handle_factory()
 
 
 class Libraries(object):
