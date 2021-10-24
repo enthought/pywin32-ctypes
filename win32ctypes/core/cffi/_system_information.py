@@ -24,11 +24,11 @@ UINT WINAPI GetSystemDirectoryW(LPTSTR lpBuffer, UINT uSize);
 
 def _GetWindowsDirectory():
     buffer = ffi.new(MAX_PATH_BUF)
-    l = dlls.kernel32.GetWindowsDirectoryW(buffer, MAX_PATH)
-    return ffi.unpack(buffer, l)
+    directory = dlls.kernel32.GetWindowsDirectoryW(buffer, MAX_PATH)
+    return ffi.unpack(buffer, directory)
 
 
 def _GetSystemDirectory():
     buffer = ffi.new(MAX_PATH_BUF)
-    l = dlls.kernel32.GetSystemDirectoryW(buffer, MAX_PATH)
-    return ffi.unpack(buffer, l)
+    directory = dlls.kernel32.GetSystemDirectoryW(buffer, MAX_PATH)
+    return ffi.unpack(buffer, directory)

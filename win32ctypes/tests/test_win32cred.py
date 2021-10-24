@@ -21,7 +21,8 @@ from win32ctypes.tests import compat
 
 # find the pywin32 version
 version_file = os.path.join(
-    os.path.dirname(os.path.dirname(win32cred.__file__)), 'pywin32.version.txt')
+    os.path.dirname(
+        os.path.dirname(win32cred.__file__)), 'pywin32.version.txt')
 if os.path.exists(version_file):
     with open(version_file) as handle:
         pywin32_build = handle.read().strip()
@@ -32,7 +33,7 @@ else:
 class TestCred(compat.TestCase):
 
     @unittest.skipIf(
-        pywin32_build == "223" and sys.version_info[:2] == (3,7),
+        pywin32_build == "223" and sys.version_info[:2] == (3, 7),
         "pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)")
     def test_write_to_pywin32(self):
         username = u"john"

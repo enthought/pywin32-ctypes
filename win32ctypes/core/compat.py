@@ -20,12 +20,12 @@ if PY3:
     text_type = str
 else:
     def is_text(s):
-        return isinstance(s, unicode)
+        return isinstance(s, unicode)  # noqa
 
     def is_bytes(b):
         return isinstance(b, (bytes, str))
 
     def is_integer(i):
-        return isinstance(i, (int, long))
+        return isinstance(i, (int, long))  # noqa
 
-    text_type = unicode
+    text_type = unicode  # noqa

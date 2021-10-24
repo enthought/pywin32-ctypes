@@ -10,7 +10,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        python-version: [2.7, 3.3, 3.4, 3.6, 3.7]
+        python-version: [3.6, 3.7]
         os: [windows-2019]
     runs-on: ${{ matrix.os }}
     steps:
@@ -19,26 +19,32 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-	architecture: 'x64'
+        architecture: 'x64'
+    - name: Install on ${{ matrix.python-version }} 64-bit
+      run: |
+          pip install -e .
+          pip install -r "test-requirements.txt"
+          pip --version
     - name: Test on ${{ matrix.python-version }} 64-bit
       run: |
-          pip install -q -rtest-requirements.txt
-    	  pip --version
-    	  coverage run -p -m haas -v win32ctypes
-    	  pip install --upgrade cffi
-    	  coverage run -p -m haas -v win32ctypes
+          coverage run -m haas -v win32ctypes
+          pip install --upgrade cffi
+          coverage run -m haas -v win32ctypes
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-	architecture: 'x86'
+        architecture: 'x86'
+    - name: Install on ${{ matrix.python-version }} 32-bit
+      run: |
+          pip install -e .
+          pip install -r "test-requirements.txt"
+          pip --version
     - name: test on ${{ matrix.python-version }} 32-bit
       run: |
-          pip install -q -rtest-requirements.txt
-    	  pip --version
-    	  coverage run -p -m haas -v win32ctypes
-    	  pip install --upgrade cffi
-    	  coverage run -p -m haas -v win32ctypes
+          coverage run -p -m haas -v win32ctypes
+          pip install --upgrade cffi
+          coverage run -p -m haas -v win32ctypes
     - uses: actions/upload-artifact@v2
       with:
         name: Upload Coverage info
@@ -55,4 +61,3 @@ jobs:
       run: python -m pip install flake8
     - name: Lint codebase
       run: python -m flake8 win32ctypes/
-      
