@@ -22,7 +22,7 @@ jobs:
         architecture: 'x64'
     - name: Test on ${{ matrix.python-version }} 64-bit
       run: |
-          pip install -q -rtest-requirements.txt
+          pip install -q -r "test-requirements.txt"
           pip --version
           coverage run -p -m haas -v win32ctypes
           pip install --upgrade cffi
@@ -34,7 +34,7 @@ jobs:
         architecture: 'x86'
     - name: test on ${{ matrix.python-version }} 32-bit
       run: |
-          pip install -q -rtest-requirements.txt
+          pip install -q - "rtest-requirements.txt"
           pip --version
           coverage run -p -m haas -v win32ctypes
           pip install --upgrade cffi
