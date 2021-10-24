@@ -1,10 +1,4 @@
 
-.. image:: https://ci.appveyor.com/api/projects/status/62xqtrro26gw3l4x/branch/master?svg=true
-  :target: https://ci.appveyor.com/project/EnthoughtOSS/pywin32-ctypes
-
-.. image:: https://codecov.io/github/enthought/pywin32-ctypes/coverage.svg?branch=master
-   :target: https://codecov.io/github/enthought/pywin32-ctypes?branch=master
-
 .. image:: https://readthedocs.org/projects/pywin32-ctypes/badge/?version=master
    :target: http://pywin32-ctypes.readthedocs.org/en/latest/?badge=master
    :alt: Documentation Status
