@@ -6,7 +6,7 @@
 # LICENSE.txt
 #
 import warnings
-from win32ctypes.pywin32.win32api import *
+from win32ctypes.pywin32.win32api import *  # noqa
 
 warnings.warn(
     "Please use 'from win32ctypes.pywin32 import win32api'",

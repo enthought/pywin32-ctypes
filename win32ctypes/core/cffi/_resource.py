@@ -39,7 +39,7 @@ HANDLE WINAPI BeginUpdateResourceW(LPCTSTR pFileName, BOOL bDeleteExistingResour
 BOOL WINAPI EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard);
 BOOL WINAPI UpdateResourceW(HANDLE hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
 
-""")
+""")  # noqa
 
 
 def ENUMRESTYPEPROC(callback):
