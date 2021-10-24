@@ -15,7 +15,6 @@ from ctypes import (
 from ctypes import cast  # noqa imported here for convenience
 from ctypes.wintypes import BYTE
 
-from win32ctypes.core.compat import PY3
 from ._util import function_factory
 
 PPy_UNICODE = c_void_p
@@ -28,16 +27,10 @@ if ctypes.sizeof(c_long) == ctypes.sizeof(c_void_p):
 elif ctypes.sizeof(c_longlong) == ctypes.sizeof(c_void_p):
     LONG_PTR = c_longlong
 
-if PY3:
-    _PyBytes_FromStringAndSize = function_factory(
-        pythonapi.PyBytes_FromStringAndSize,
-        [c_char_p, Py_ssize_t],
-        return_type=py_object)
-else:
-    _PyBytes_FromStringAndSize = function_factory(
-        pythonapi.PyString_FromStringAndSize,
-        [c_char_p, Py_ssize_t],
-        return_type=py_object)
+_PyBytes_FromStringAndSize = function_factory(
+    pythonapi.PyBytes_FromStringAndSize,
+    [c_char_p, Py_ssize_t],
+    return_type=py_object)
 
 
 def IS_INTRESOURCE(x):
