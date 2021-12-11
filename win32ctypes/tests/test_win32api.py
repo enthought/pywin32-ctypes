@@ -16,13 +16,12 @@ import win32api
 
 from win32ctypes import pywin32
 from win32ctypes.pywin32.pywintypes import error
-from win32ctypes.tests import compat
 
 
 skip_on_wine = 'SKIP_WINE_KNOWN_FAILURES' in os.environ
 
 
-class TestWin32API(compat.TestCase):
+class TestWin32API(unittest.TestCase):
 
     # the pywin32ctypes implementation
     module = pywin32.win32api
