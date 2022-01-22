@@ -29,8 +29,8 @@ Development setup
 
 The following should be good enough::
 
-  pip install -r dev_requirements.txt
-  python install -e
+  pip install -r test_requirements.txt
+  python install -e .
 
 .. note::
 
