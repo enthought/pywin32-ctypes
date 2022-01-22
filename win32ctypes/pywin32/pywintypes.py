@@ -6,8 +6,6 @@
 # LICENSE.txt
 #
 """ A module which supports common Windows types. """
-
-from __future__ import absolute_import
 import contextlib
 
 

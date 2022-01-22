@@ -5,10 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
-
-from win32ctypes.core.compat import text_type
 from ._util import (
     ffi, check_null, check_zero, check_false, HMODULE,
     PVOID, RESOURCE, resource, dlls)
@@ -117,7 +113,7 @@ def _LockResource(hResData):
 def _BeginUpdateResource(pFileName, bDeleteExistingResources):
     result = check_null(
         dlls.kernel32.BeginUpdateResourceW(
-            text_type(pFileName), bDeleteExistingResources))
+            str(pFileName), bDeleteExistingResources))
     return HMODULE(result)
 
 

@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 from ctypes.wintypes import DWORD
 
 from ._util import function_factory, dlls

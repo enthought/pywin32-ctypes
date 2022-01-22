@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 from weakref import WeakKeyDictionary
 
 from win32ctypes.core.compat import is_text

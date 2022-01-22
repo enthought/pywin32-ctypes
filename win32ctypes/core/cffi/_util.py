@@ -5,12 +5,9 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
 """ Utility functions to help with cffi wrapping.
 """
-from __future__ import absolute_import
-
-from win32ctypes.core.compat import is_bytes, is_integer, text_type
+from win32ctypes.core.compat import is_bytes, is_integer
 from cffi import FFI
 
 ffi = FFI()
@@ -39,7 +36,7 @@ def RESOURCE(resource):
     if is_integer(resource):
         resource = ffi.cast('wchar_t *', resource)
     elif is_bytes(resource):
-        resource = text_type(resource)
+        resource = str(resource)
     return resource
 
 

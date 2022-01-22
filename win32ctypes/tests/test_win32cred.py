@@ -5,7 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
 import os
 import sys
 import unittest
@@ -17,7 +16,6 @@ from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.pywin32.win32cred import (
     CredDelete, CredRead, CredWrite,
     CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
-from win32ctypes.tests import compat
 
 # find the pywin32 version
 version_file = os.path.join(
@@ -30,7 +28,7 @@ else:
     pywin32_build = None
 
 
-class TestCred(compat.TestCase):
+class TestCred(unittest.TestCase):
 
     @unittest.skipIf(
         pywin32_build == "223" and sys.version_info[:2] == (3, 7),

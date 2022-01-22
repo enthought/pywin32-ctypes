@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 from win32ctypes.pywin32 import pywintypes
 from win32ctypes.pywin32 import win32api
 from win32ctypes.pywin32 import win32cred

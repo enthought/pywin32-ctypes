@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 from ._util import ffi, dlls
 
 # TODO: retrieve this value using ffi
