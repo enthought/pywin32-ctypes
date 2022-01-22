@@ -6,9 +6,6 @@
 # LICENSE.txt
 #
 """ Interface to credentials management functions. """
-
-from __future__ import absolute_import
-
 from win32ctypes.core import _authentication, _common, _backend
 from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
 

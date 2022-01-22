@@ -5,11 +5,8 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-
 """ Utility functions to help with ctypes wrapping.
 """
-from __future__ import absolute_import
-
 from ctypes import GetLastError, FormatError, WinDLL
 
 

@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 from ctypes.wintypes import BOOL, DWORD, HANDLE, HMODULE, LPCWSTR
 
 from ._util import check_null, check_false, function_factory, dlls

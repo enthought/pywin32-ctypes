@@ -1,6 +1,3 @@
-text_type = str
-
-
 def is_bytes(b):
     return isinstance(b, bytes)
 

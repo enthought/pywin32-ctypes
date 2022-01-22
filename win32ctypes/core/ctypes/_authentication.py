@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 import ctypes
 from ctypes import POINTER, Structure, c_void_p, c_wchar_p, c_char_p, cast
 from ctypes.wintypes import (

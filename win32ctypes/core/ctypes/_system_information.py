@@ -5,8 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from __future__ import absolute_import
-
 import ctypes
 from ctypes.wintypes import LPCWSTR, UINT, LPWSTR, MAX_PATH
 
