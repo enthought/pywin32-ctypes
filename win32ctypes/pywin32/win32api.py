@@ -8,10 +8,8 @@
 """ A module, encapsulating the Windows Win32 API. """
 from win32ctypes.core import (
     _common, _dll, _resource, _system_information, _backend, _time)
-from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
-
-LOAD_LIBRARY_AS_DATAFILE = 0x2
-LANG_NEUTRAL = 0x00
+from .pywintypes import pywin32error as _pywin32error
+from ._constants import LOAD_LIBRARY_AS_DATAFILE, LANG_NEUTRAL
 
 
 def LoadLibraryEx(fileName, handle, flags):
