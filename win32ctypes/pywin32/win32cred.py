@@ -7,14 +7,14 @@
 #
 """ Interface to credentials management functions. """
 from win32ctypes.core import _authentication, _common, _backend
-from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
-
-CRED_TYPE_GENERIC = 0x1
-CRED_PERSIST_SESSION = 0x1
-CRED_PERSIST_LOCAL_MACHINE = 0x2
-CRED_PERSIST_ENTERPRISE = 0x3
-CRED_PRESERVE_CREDENTIAL_BLOB = 0
-CRED_ENUMERATE_ALL_CREDENTIALS = 0x1
+from .pywintypes import pywin32error as _pywin32error
+from ._constants import (
+    CRED_TYPE_GENERIC,
+    CRED_PERSIST_SESSION,
+    CRED_PERSIST_LOCAL_MACHINE,
+    CRED_PERSIST_ENTERPRISE,
+    CRED_ENUMERATE_ALL_CREDENTIALS,
+    CRED_PRESERVE_CREDENTIAL_BLOB)
 
 
 def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
