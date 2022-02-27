@@ -8,16 +8,18 @@
 """ Interface to credentials management functions. """
 from win32ctypes.core import _authentication, _common, _backend
 from .pywintypes import pywin32error as _pywin32error
-from ._constants import (
+
+# Bring constants into namespace
+from win32ctypes.constants import (
     CRED_TYPE_GENERIC,
     CRED_PERSIST_SESSION,
     CRED_PERSIST_LOCAL_MACHINE,
     CRED_PERSIST_ENTERPRISE,
     CRED_ENUMERATE_ALL_CREDENTIALS,
-    CRED_PRESERVE_CREDENTIAL_BLOB)
+    CRED_PERSIST_ENTERPRISE)  # noqa
 
 
-def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
+def CredWrite(Credential, Flags=0):
     """ Creates or updates a stored credential.
 
     Parameters
@@ -26,7 +28,7 @@ def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
         A dictionary corresponding to the PyWin32 ``PyCREDENTIAL``
         structure.
     Flags : int
-        Always pass ``CRED_PRESERVE_CREDENTIAL_BLOB`` (i.e. 0).
+        ``CRED_PRESERVE_CREDENTIAL_BLOB`` or 0. Default is 0.
 
     """
     c_creds = _authentication.CREDENTIAL.fromdict(Credential, Flags)
