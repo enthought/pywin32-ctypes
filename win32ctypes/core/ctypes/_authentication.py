@@ -16,11 +16,6 @@ from ._util import function_factory, check_false_factory, dlls
 from ._nl_support import _GetACP
 
 
-SUPPORTED_CREDKEYS = set((
-    u'Type', u'TargetName', u'Persist',
-    u'UserName', u'Comment', u'CredentialBlob'))
-
-
 class CREDENTIAL(Structure):
     _fields_ = [
         ("Flags", DWORD),
@@ -31,38 +26,26 @@ class CREDENTIAL(Structure):
         ("CredentialBlobSize", DWORD),
         ("CredentialBlob", LPBYTE),
         ("Persist", DWORD),
-        ("_DO_NOT_USE_AttributeCount", DWORD),
-        ("__DO_NOT_USE_Attribute", c_void_p),
+        ("AttributeCount", DWORD),
+        ("Attribute", c_void_p),
         ("TargetAlias", c_wchar_p),
         ("UserName", c_wchar_p)]
 
     @classmethod
-    def fromdict(cls, credential, flags=0):
-        unsupported = set(credential.keys()) - SUPPORTED_CREDKEYS
-        if len(unsupported):
-            raise ValueError("Unsupported keys: {0}".format(unsupported))
-        if flags != 0:
-            raise ValueError("flag != 0 not yet supported")
-
+    def fromdict(cls, credential):
         c_creds = cls()
         c_pcreds = PCREDENTIAL(c_creds)
 
         # zero-out memory
         ctypes.memset(c_pcreds, 0, ctypes.sizeof(c_creds))
 
-        for key in SUPPORTED_CREDKEYS:
-            if key in credential:
-                if key != 'CredentialBlob':
-                    setattr(c_creds, key, credential[key])
-                else:
-                    blob = make_unicode(credential['CredentialBlob'])
-                    blob_data = ctypes.create_unicode_buffer(blob)
-                    # Create_unicode_buffer adds a NULL at the end of the
-                    # string we do not want that.
-                    c_creds.CredentialBlobSize = \
-                        ctypes.sizeof(blob_data) - \
-                        ctypes.sizeof(ctypes.c_wchar)
-                    c_creds.CredentialBlob = ctypes.cast(blob_data, LPBYTE)
+        for key in credential:
+            if key == 'CredentialBlob':
+                blob_data, blob_size = _make_blob(credential['CredentialBlob'])
+                c_creds.CredentialBlob = ctypes.cast(blob_data, LPBYTE)
+                c_creds.CredentialBlobSize = blob_size
+            else:
+                setattr(c_creds, key, credential[key])
         return c_creds
 
 
@@ -71,28 +54,35 @@ PPCREDENTIAL = POINTER(PCREDENTIAL)
 PPPCREDENTIAL = POINTER(PPCREDENTIAL)
 
 
-def make_unicode(text):
-    """ Convert the input string to unicode.
-
-    """
-    if is_text(text):
-        return text
-    else:
-        code_page = _GetACP()
-        return text.decode(encoding=str(code_page), errors='strict')
-
-
 def credential2dict(creds):
     credential = {}
-    for key in SUPPORTED_CREDKEYS:
-        if key != u'CredentialBlob':
-            credential[key] = getattr(creds, key)
-        else:
+    for key, type_ in CREDENTIAL._fields_:
+        if key == u'CredentialBlob':
             blob = _PyBytes_FromStringAndSize(
                 cast(creds.CredentialBlob, c_char_p),
                 creds.CredentialBlobSize)
             credential[u'CredentialBlob'] = blob
+        else:
+            credential[key] = getattr(creds, key)
     return credential
+
+
+def _make_blob(data):
+    """ Convert a string to credential compatible blob dict values
+
+    """
+    blob_data = ctypes.create_unicode_buffer(data)
+    # Create_unicode_buffer adds a NULL at the end of the
+    # string we do not want that.
+    blob_size = (
+        ctypes.sizeof(blob_data) - ctypes.sizeof(ctypes.c_wchar))
+    blob_pointer = ctypes.cast(blob_data, LPBYTE)
+    return blob_pointer, blob_size
+
+
+def _CredEnumerate(Filter, Flags, Count, pppCredential):
+    filter_ = LPCWSTR(Filter)
+    _BaseCredEnumerate(filter_, Flags, Count, pppCredential)
 
 
 _CredWrite = function_factory(

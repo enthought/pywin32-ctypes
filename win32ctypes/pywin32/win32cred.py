@@ -31,7 +31,7 @@ def CredWrite(Credential, Flags=0):
         ``CRED_PRESERVE_CREDENTIAL_BLOB`` or 0. Default is 0.
 
     """
-    c_creds = _authentication.CREDENTIAL.fromdict(Credential, Flags)
+    c_creds = _authentication.CREDENTIAL.fromdict(Credential)
     c_pcreds = _authentication.PCREDENTIAL(c_creds)
     with _pywin32error():
         _authentication._CredWrite(c_pcreds, 0)
