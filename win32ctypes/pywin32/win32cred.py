@@ -10,13 +10,13 @@ from win32ctypes.core import _authentication, _common, _backend
 from .pywintypes import pywin32error as _pywin32error
 
 # Bring constants into namespace
-from win32ctypes.constants import (
+from win32ctypes.constants import (  # noqa
     CRED_TYPE_GENERIC,
     CRED_PERSIST_SESSION,
     CRED_PERSIST_LOCAL_MACHINE,
     CRED_PERSIST_ENTERPRISE,
     CRED_ENUMERATE_ALL_CREDENTIALS,
-    CRED_PERSIST_ENTERPRISE)  # noqa
+    CRED_PERSIST_ENTERPRISE)
 
 
 def CredWrite(Credential, Flags=0):

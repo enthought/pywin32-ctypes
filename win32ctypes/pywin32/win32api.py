@@ -9,7 +9,7 @@
 from win32ctypes.core import (
     _common, _dll, _resource, _system_information, _backend, _time)
 from .pywintypes import pywin32error as _pywin32error
-from ._constants import LOAD_LIBRARY_AS_DATAFILE, LANG_NEUTRAL
+from ._constants import LOAD_LIBRARY_AS_DATAFILE, LANG_NEUTRAL  # noqa
 
 
 def LoadLibraryEx(fileName, handle, flags):
