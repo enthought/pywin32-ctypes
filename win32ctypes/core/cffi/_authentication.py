@@ -48,6 +48,8 @@ BOOL WINAPI CredReadW(
 BOOL WINAPI CredWriteW(PCREDENTIAL Credential, DWORD);
 VOID WINAPI CredFree(PVOID Buffer);
 BOOL WINAPI CredDeleteW(LPCWSTR TargetName, DWORD Type, DWORD Flags);
+BOOL WINAPI CredEnumerateW(
+    LPCWSTR Filter, DWORD Flags, DWORD *Count, PCREDENTIAL **Credential);
 
 """)
 
@@ -111,6 +113,8 @@ class _CREDENTIAL(object):
 
 CREDENTIAL = _CREDENTIAL()
 
+def PDWORD(value=0):
+    return ffi.new("DWORD *", value)
 
 def PCREDENTIAL(value=None):
     return ffi.new("PCREDENTIAL", ffi.NULL if value is None else value)
@@ -119,6 +123,8 @@ def PCREDENTIAL(value=None):
 def PPCREDENTIAL(value=None):
     return ffi.new("PCREDENTIAL*", ffi.NULL if value is None else value)
 
+def PPPCREDENTIAL(value=None):
+    return ffi.new("PCREDENTIAL**", ffi.NULL if value is None else value)
 
 def credential2dict(pc_creds):
     credentials = {}
@@ -156,5 +162,14 @@ def _CredDelete(TargetName, Type, Flags):
         dlls.advapi32.CredDeleteW(
             make_unicode(TargetName), Type, Flags), u'CredDelete')
 
+def _CredEnumerate(Filter, Flags, Count, pppCredential):
+    if Filter:
+        filter = make_unicode(Filter)
+    else:
+        filter = ffi.NULL
+    value = check_zero(
+        dlls.advapi32.CredEnumerateW(filter, Flags, Count, pppCredential),
+        u'CredRead')
+    return value
 
 _CredFree = dlls.advapi32.CredFree
