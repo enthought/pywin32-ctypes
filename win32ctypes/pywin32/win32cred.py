@@ -114,7 +114,7 @@ def CredEnumerate(Filter=None, Flags=0):
             pppcreds = _authentication.PPPCREDENTIAL()
             _authentication._CredEnumerate(Filter, Flags, pcount, pppcreds)
             count = pcount[0]
-            pppcreds = _common.cast(f"PCREDENTIAL*[{count}]", pppcreds)
+            pppcreds = _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcreds)
             ppcreds = _common.dereference(pppcreds)
         else:
             pppcreds = _authentication.PPPCREDENTIAL()

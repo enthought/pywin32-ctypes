@@ -8,7 +8,6 @@
 from weakref import WeakKeyDictionary
 
 from ._util import ffi
-from .ffi import cast, new  # noqa imported here for convenience
 
 _keep_alive = WeakKeyDictionary()
 
@@ -19,7 +18,7 @@ def _PyBytes_FromStringAndSize(pointer, size):
 
 
 def byreference(x):
-    return new(ffi.getctype(ffi.typeof(x), '*'), x)
+    return ffi.new(ffi.getctype(ffi.typeof(x), '*'), x)
 
 
 def dereference(x):
@@ -27,4 +26,4 @@ def dereference(x):
 
 
 def PDWORD(value=0):
-    return new("DWORD *", value)
+    return ffi.new("DWORD *", value)
