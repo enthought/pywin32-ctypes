@@ -14,7 +14,7 @@ import win32cred
 from win32ctypes.core._winerrors import ERROR_NOT_FOUND
 from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.pywin32.win32cred import (
-    CredDelete, CredRead, CredWrite,
+    CredDelete, CredRead, CredWrite, CredEnumerate,
     CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
 
 # find the pywin32 version
@@ -112,6 +112,47 @@ class TestCred(unittest.TestCase):
         self.assertEqual(credentials["Comment"], comment)
         self.assertEqual(
             credentials["CredentialBlob"].decode("utf-16"), password)
+
+    def test_enumerate_filter(self):
+        username = "john"
+        password = "doe"
+        comment = u"Created by MiniPyWin32Cred test suite"
+        target = u"{0}@{1}".format(username, password)
+        r_credentials = {
+            u"Type": CRED_TYPE_GENERIC,
+            u"TargetName": target,
+            u"UserName": username,
+            u"CredentialBlob": password,
+            u"Comment": comment,
+            u"Persist": CRED_PERSIST_ENTERPRISE}
+        CredWrite(r_credentials)
+
+        credentials = CredEnumerate('john@doe')[0]
+        # XXX: the fact that we have to decode the password when reading, but
+        # not encode when writing is a bit strange, but that's what pywin32
+        # seems to do as well, and we try to be backward compatible here.
+        self.assertEqual(credentials["UserName"], username)
+        self.assertEqual(credentials["TargetName"], target)
+        self.assertEqual(credentials["Comment"], comment)
+        self.assertEqual(
+            credentials["CredentialBlob"].decode("utf-16"), password)
+
+    def test_enumerate_no_filter(self):
+        username = "john"
+        password = "doe"
+        comment = u"Created by MiniPyWin32Cred test suite"
+        target = u"{0}@{1}".format(username, password)
+        r_credentials = {
+            u"Type": CRED_TYPE_GENERIC,
+            u"TargetName": target,
+            u"UserName": username,
+            u"CredentialBlob": password,
+            u"Comment": comment,
+            u"Persist": CRED_PERSIST_ENTERPRISE}
+        CredWrite(r_credentials)
+
+        credentials = CredEnumerate()
+        self.assertGreater(len(credentials), 1)
 
     def test_read_doesnt_exists(self):
         target = "Floupi_dont_exists@MiniPyWin"

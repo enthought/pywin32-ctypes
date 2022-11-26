@@ -11,8 +11,8 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
 from win32ctypes.core.compat import is_text
-from ._common import LPBYTE, _PyBytes_FromStringAndSize
-from ._util import function_factory, check_zero_factory, dlls
+from ._common import LPBYTE, _PyBytes_FromStringAndSize, PDWORD
+from ._util import function_factory, check_false_factory, dlls
 from ._nl_support import _GetACP
 
 
@@ -67,17 +67,19 @@ class CREDENTIAL(Structure):
 
 
 PCREDENTIAL = POINTER(CREDENTIAL)
+PPCREDENTIAL = POINTER(PCREDENTIAL)
+PPPCREDENTIAL = POINTER(PPCREDENTIAL)
 
 
-def make_unicode(password):
+def make_unicode(text):
     """ Convert the input string to unicode.
 
     """
-    if is_text(password):
-        return password
+    if is_text(text):
+        return text
     else:
         code_page = _GetACP()
-        return password.decode(encoding=str(code_page), errors='strict')
+        return text.decode(encoding=str(code_page), errors='strict')
 
 
 def credential2dict(creds):
@@ -93,22 +95,33 @@ def credential2dict(creds):
     return credential
 
 
+def _CredEnumerate(Filter, Flags, Count, pppCredential):
+    filter = LPCWSTR(Filter)
+    _BaseCredEnumerate(Filter, Flags, Count, pppCredential)
+
+
 _CredWrite = function_factory(
     dlls.advapi32.CredWriteW,
     [PCREDENTIAL, DWORD],
     BOOL,
-    check_zero_factory("CredWrite"))
+    check_false_factory("CredWrite"))
 
 _CredRead = function_factory(
     dlls.advapi32.CredReadW,
-    [LPCWSTR, DWORD, DWORD, POINTER(PCREDENTIAL)],
+    [LPCWSTR, DWORD, DWORD, PPCREDENTIAL],
     BOOL,
-    check_zero_factory("CredRead"))
+    check_false_factory("CredRead"))
 
 _CredDelete = function_factory(
     dlls.advapi32.CredDeleteW,
     [LPCWSTR, DWORD, DWORD],
     BOOL,
-    check_zero_factory("CredDelete"))
+    check_false_factory("CredDelete"))
+
+_BaseCredEnumerate = function_factory(
+    dlls.advapi32.CredEnumerateW,
+    [LPCWSTR, DWORD, PDWORD, PPPCREDENTIAL],
+    BOOL,
+    check_false_factory("CredEnumerate"))
 
 _CredFree = function_factory(dlls.advapi32.CredFree, [PCREDENTIAL])
