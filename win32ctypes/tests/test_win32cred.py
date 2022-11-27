@@ -32,7 +32,7 @@ class TestCred(unittest.TestCase):
 
     def setUp(self):
         try:
-            win32cred.CredDelete(u'jone@doe')
+            win32cred.CredDelete(u'jone@doe', 0)
         except error:
             pass
 
