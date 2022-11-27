@@ -134,16 +134,13 @@ class TestCred(unittest.TestCase):
         CredWrite(r_credentials)
 
         # when
+        pywin32_result = win32cred.CredEnumerate()
         credentials = CredEnumerate()
 
         # then
-        self.assertGreater(len(credentials), 1)
+        self.assertEqual(len(credentials), len(pywin32_result))
 
     def test_enumerate_all(self):
-        # given
-        r_credentials = self._demo_credentials()
-        CredWrite(r_credentials)
-
         # when
         credentials = CredEnumerate(Flags=CRED_ENUMERATE_ALL_CREDENTIALS)
 
