@@ -31,8 +31,9 @@ else:
 class TestCred(unittest.TestCase):
 
     def setUp(self):
+        from pywintypes import error
         try:
-            win32cred.CredDelete(u'jone@doe', 0)
+            win32cred.CredDelete(u'jone@doe', CRED_TYPE_GENERIC)
         except error:
             pass
 
