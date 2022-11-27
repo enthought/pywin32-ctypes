@@ -9,7 +9,7 @@ import ctypes
 import sys
 from ctypes import (
     pythonapi, POINTER, c_void_p, py_object, c_char_p, c_int, c_long, c_int64,
-    c_longlong)
+    c_longlong, c_ubyte)
 from ctypes import cast  # noqa imported here for convenience
 from ctypes.wintypes import BYTE, DWORD
 
@@ -17,7 +17,6 @@ from ._util import function_factory
 
 PPy_UNICODE = c_void_p
 LPBYTE = POINTER(BYTE)
-PDWORD = POINTER(DWORD)
 is_64bits = sys.maxsize > 2**32
 Py_ssize_t = c_int64 if is_64bits else c_int
 

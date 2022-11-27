@@ -117,16 +117,19 @@ def CredEnumerate(Filter=None, Flags=0):
             pppcreds = _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcreds)
             ppcreds = _common.dereference(pppcreds)
         else:
-            pppcreds = _authentication.PPPCREDENTIAL()
-            print(pppcreds)
-            pcount = _common.PDWORD()
-            _authentication._CredEnumerate(Filter, Flags, pcount, pppcreds)
-            print(pcount)
-
+            import ctypes
+            count = _common.DWORD()
+            # Create a mutable pointer variable
+            mem = ctypes.create_string_buffer(1)
+            pppcreds = _common.cast(
+                mem, _authentication.PPPCREDENTIAL)
+            _authentication._CredEnumerate(
+                Filter, Flags, _common.byreference(count), pppcreds)
+            count = count.value
+            pcreds = _common.dereference(_common.dereference(pppcreds))
     try:
         return [
-            _authentication.credential2dict(ppcreds[i])
+            _authentication.credential2dict(pcreds[i])
             for i in range(count)]
     finally:
-        for i in range(count):
-            _authentication._CredFree(ppcreds[i])
+        _authentication._CredFree(pcreds)
