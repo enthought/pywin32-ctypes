@@ -14,6 +14,7 @@ CRED_PERSIST_SESSION = 0x1
 CRED_PERSIST_LOCAL_MACHINE = 0x2
 CRED_PERSIST_ENTERPRISE = 0x3
 CRED_PRESERVE_CREDENTIAL_BLOB = 0
+CRED_ENUMERATE_ALL_CREDENTIALS = 0x1
 
 
 def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
@@ -89,3 +90,49 @@ def CredDelete(TargetName, Type, Flags=0):
         raise ValueError("Type != CRED_TYPE_GENERIC not yet supported.")
     with _pywin32error():
         _authentication._CredDelete(TargetName, Type, 0)
+
+
+def CredEnumerate(Filter=None, Flags=0):
+    """ Remove the given target name from the stored credentials.
+
+    Parameters
+    ----------
+    Filter : unicode
+        Matches credentials' target names by prefix, can be None.
+    Flags : int
+        When set to CRED_ENUMERATE_ALL_CREDENTIALS enumerates all of
+        the credentials in the user's credential set but in that
+        case the Filter parameter should be NULL, an error is
+        raised otherwise
+
+    Returns
+    -------
+    credentials : list
+        Returns a sequence of CREDENTIAL dictionaries.
+
+    """
+    with _pywin32error():
+        if _backend == 'cffi':
+            pcount = _common.PDWORD()
+            pppcreds = _authentication.PPPCREDENTIAL()
+            _authentication._CredEnumerate(Filter, Flags, pcount, pppcreds)
+            count = pcount[0]
+            pcreds = _common.dereference(
+                _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcreds))
+        else:
+            import ctypes
+            count = ctypes.DWORD()
+            # Create a mutable pointer variable
+            mem = ctypes.create_string_buffer(1)
+            pppcreds = _common.cast(
+                mem, _authentication.PPPCREDENTIAL)
+            _authentication._CredEnumerate(
+                Filter, Flags, _common.byreference(count), pppcreds)
+            count = count.value
+            pcreds = _common.dereference(_common.dereference(pppcreds))
+    try:
+        return [
+            _authentication.credential2dict(pcreds[i])
+            for i in range(count)]
+    finally:
+        _authentication._CredFree(pcreds)

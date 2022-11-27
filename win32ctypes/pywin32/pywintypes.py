@@ -32,4 +32,6 @@ def pywin32error():
     try:
         yield
     except WindowsError as exception:
+        if not hasattr(exception, 'function'):
+            exception.function = 'unknown'
         raise error(exception.winerror, exception.function, exception.strerror)

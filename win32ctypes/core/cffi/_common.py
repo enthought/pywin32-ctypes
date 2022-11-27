@@ -23,3 +23,7 @@ def byreference(x):
 
 def dereference(x):
     return x[0]
+
+
+def PDWORD(value=0):
+    return ffi.new("DWORD *", value)
