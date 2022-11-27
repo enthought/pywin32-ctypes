@@ -9,9 +9,9 @@ import ctypes
 import sys
 from ctypes import (
     pythonapi, POINTER, c_void_p, py_object, c_char_p, c_int, c_long, c_int64,
-    c_longlong, c_ubyte)
+    c_longlong)
 from ctypes import cast  # noqa imported here for convenience
-from ctypes.wintypes import BYTE, DWORD
+from ctypes.wintypes import BYTE
 
 from ._util import function_factory
 

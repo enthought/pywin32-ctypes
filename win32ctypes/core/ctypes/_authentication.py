@@ -96,8 +96,8 @@ def credential2dict(creds):
 
 
 def _CredEnumerate(Filter, Flags, Count, pppCredential):
-    filter = LPCWSTR(Filter)
-    _BaseCredEnumerate(Filter, Flags, Count, pppCredential)
+    filter_ = LPCWSTR(Filter)
+    _BaseCredEnumerate(filter_, Flags, Count, pppCredential)
 
 
 _CredWrite = function_factory(

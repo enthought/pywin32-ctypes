@@ -118,7 +118,7 @@ def CredEnumerate(Filter=None, Flags=0):
                 _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcreds))
         else:
             import ctypes
-            count = _common.DWORD()
+            count = ctypes.DWORD()
             # Create a mutable pointer variable
             mem = ctypes.create_string_buffer(1)
             pppcreds = _common.cast(
