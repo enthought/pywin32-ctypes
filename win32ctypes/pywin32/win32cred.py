@@ -100,7 +100,10 @@ def CredEnumerate(Filter=None, Flags=0):
     Filter : unicode
         Matches credentials' target names by prefix, can be None.
     Flags : int
-        Reserved, use 0 if passed in.
+        When set to CRED_ENUMERATE_ALL_CREDENTIALS enumerates all of
+        the credentials in the user's credential set but in that
+        case the Filter parameter should be NULL, an error is
+        raised otherwise
 
     Returns
     -------
