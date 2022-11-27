@@ -15,7 +15,8 @@ from win32ctypes.core._winerrors import ERROR_NOT_FOUND
 from win32ctypes.pywin32.pywintypes import error
 from win32ctypes.pywin32.win32cred import (
     CredDelete, CredRead, CredWrite, CredEnumerate,
-    CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC)
+    CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC,
+    CRED_ENUMERATE_ALL_CREDENTIALS)
 
 # find the pywin32 version
 version_file = os.path.join(
@@ -134,6 +135,17 @@ class TestCred(unittest.TestCase):
 
         # when
         credentials = CredEnumerate()
+
+        # then
+        self.assertGreater(len(credentials), 1)
+
+    def test_enumerate_all(self):
+        # given
+        r_credentials = self._demo_credentials()
+        CredWrite(r_credentials)
+
+        # when
+        credentials = CredEnumerate(Flags=CRED_ENUMERATE_ALL_CREDENTIALS)
 
         # then
         self.assertGreater(len(credentials), 1)
