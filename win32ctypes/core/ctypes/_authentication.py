@@ -11,7 +11,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR)
 
 from win32ctypes.core.compat import is_text
-from ._common import LPBYTE, _PyBytes_FromStringAndSize, PDWORD
+from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_false_factory, dlls
 from ._nl_support import _GetACP
 
@@ -120,7 +120,7 @@ _CredDelete = function_factory(
 
 _BaseCredEnumerate = function_factory(
     dlls.advapi32.CredEnumerateW,
-    [LPCWSTR, DWORD, PDWORD, PPPCREDENTIAL],
+    [LPCWSTR, DWORD, POINTER(DWORD), PPPCREDENTIAL],
     BOOL,
     check_false_factory("CredEnumerate"))
 
