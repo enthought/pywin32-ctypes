@@ -31,7 +31,7 @@ jobs:
           coverage run -m haas -v win32ctypes
           pip install --upgrade cffi
           coverage run -m haas -v win32ctypes
-      env: 
+      env:
           PYTHONFAULTHANDLER: 1
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -48,7 +48,7 @@ jobs:
           coverage run -p -m haas -v win32ctypes
           pip install --upgrade cffi
           coverage run -p -m haas -v win32ctypes
-      env: 
+      env:
           PYTHONFAULTHANDLER: 1
     - uses: actions/upload-artifact@v2
       with:
@@ -57,9 +57,9 @@ jobs:
   code-lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
     - name: Install flake8
