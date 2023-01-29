@@ -115,7 +115,8 @@ def CredEnumerate(Filter=None, Flags=0):
         if _backend == 'cffi':
             pcount = _common.PDWORD()
             pppcredential = _authentication.PPPCREDENTIAL()
-            _authentication._CredEnumerate(Filter, Flags, pcount, pppcredential)
+            _authentication._CredEnumerate(
+                Filter, Flags, pcount, pppcredential)
             count = pcount[0]
             data = _common.dereference(
                 _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcredential))

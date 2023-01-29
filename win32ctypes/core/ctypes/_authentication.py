@@ -94,6 +94,7 @@ def credential2dict(creds):
             credential[u'CredentialBlob'] = blob
     return credential
 
+
 _CredWrite = function_factory(
     dlls.advapi32.CredWriteW,
     [PCREDENTIAL, DWORD],
