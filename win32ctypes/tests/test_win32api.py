@@ -11,8 +11,10 @@ import unittest
 import contextlib
 import tempfile
 import shutil
+import faulthandler
 
 import win32api
+
 
 from win32ctypes import pywin32
 from win32ctypes.pywin32.pywintypes import error
@@ -49,6 +51,23 @@ class TestWin32API(unittest.TestCase):
         finally:
             module.EndUpdateResource(handle, False)
 
+    @contextlib.contextmanager
+    def nofaulthandler(self):
+        """ Disable the faulthander
+
+            Use this function to avoid poluting the output with errors
+            When it is known that an access violation is expected.
+
+        """
+        enabled = faulthandler.is_enabled()
+        faulthandler.disable()
+        try:
+            yield
+        finally:
+            if enabled:
+                faulthandler.enable()
+
+
     def test_load_library_ex(self):
         with self.load_library(win32api) as expected:
             with self.load_library(self.module) as handle:
@@ -63,7 +82,8 @@ class TestWin32API(unittest.TestCase):
             self.assertNotEqual(self.module.FreeLibrary(handle), 0)
 
         with self.assertRaises(error):
-            self.module.FreeLibrary(-3)
+            with self.nofaulthandler():
+                self.module.FreeLibrary(-3)
 
     def test_enum_resource_types(self):
         with self.load_library(win32api, u'shell32.dll') as handle:
@@ -75,7 +95,8 @@ class TestWin32API(unittest.TestCase):
         self.assertEqual(resource_types, expected)
 
         with self.assertRaises(error):
-            self.module.EnumResourceTypes(-3)
+            with self.nofaulthandler():
+                self.module.EnumResourceTypes(-3)
 
     def test_enum_resource_names(self):
         with self.load_library(win32api, u'shell32.dll') as handle:
@@ -138,8 +159,9 @@ class TestWin32API(unittest.TestCase):
                         self.assertEqual(resource, expected)
 
         with self.assertRaises(error):
-            self.module.LoadResource(
-                handle, resource_type, resource_name, 12435)
+            with self.nofaulthandler():
+                self.module.LoadResource(
+                    handle, resource_type, resource_name, 12435)
 
     def test_get_tick_count(self):
         self.assertGreater(self.module.GetTickCount(), 0.0)
