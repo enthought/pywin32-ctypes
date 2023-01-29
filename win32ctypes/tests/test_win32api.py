@@ -67,7 +67,6 @@ class TestWin32API(unittest.TestCase):
             if enabled:
                 faulthandler.enable()
 
-
     def test_load_library_ex(self):
         with self.load_library(win32api) as expected:
             with self.load_library(self.module) as handle:
