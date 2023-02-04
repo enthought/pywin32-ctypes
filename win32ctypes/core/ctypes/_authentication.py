@@ -95,11 +95,6 @@ def credential2dict(creds):
     return credential
 
 
-def _CredEnumerate(Filter, Flags, Count, pppCredential):
-    filter_ = LPCWSTR(Filter)
-    _BaseCredEnumerate(filter_, Flags, Count, pppCredential)
-
-
 _CredWrite = function_factory(
     dlls.advapi32.CredWriteW,
     [PCREDENTIAL, DWORD],
@@ -118,7 +113,7 @@ _CredDelete = function_factory(
     BOOL,
     check_false_factory("CredDelete"))
 
-_BaseCredEnumerate = function_factory(
+_CredEnumerate = function_factory(
     dlls.advapi32.CredEnumerateW,
     [LPCWSTR, DWORD, POINTER(DWORD), PPPCREDENTIAL],
     BOOL,

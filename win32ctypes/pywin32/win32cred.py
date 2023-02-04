@@ -114,25 +114,32 @@ def CredEnumerate(Filter=None, Flags=0):
     with _pywin32error():
         if _backend == 'cffi':
             pcount = _common.PDWORD()
-            pppcreds = _authentication.PPPCREDENTIAL()
-            _authentication._CredEnumerate(Filter, Flags, pcount, pppcreds)
+            pppcredential = _authentication.PPPCREDENTIAL()
+            _authentication._CredEnumerate(
+                Filter, Flags, pcount, pppcredential)
             count = pcount[0]
-            pcreds = _common.dereference(
-                _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcreds))
+            data = _common.dereference(
+                _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcredential))
+            memory = _common.dereference(pppcredential)
         else:
             import ctypes
             count = _authentication.DWORD()
-            # Create a mutable pointer variable
-            mem = ctypes.create_string_buffer(1)
-            pppcreds = _common.cast(
-                mem, _authentication.PPPCREDENTIAL)
+            pcredential = _authentication.PCREDENTIAL()
+            ppcredential = ctypes.pointer(pcredential)
+            pppcredential = ctypes.pointer(ppcredential)
             _authentication._CredEnumerate(
-                Filter, Flags, _common.byreference(count), pppcreds)
+                Filter, Flags, _common.byreference(count), pppcredential)
             count = count.value
-            pcreds = _common.dereference(_common.dereference(pppcreds))
+            data = _common.dereference(
+                _common.cast(
+                    ppcredential,
+                    _common.POINTER(_authentication.PCREDENTIAL*count)))
+            memory = pcredential
     try:
-        return [
-            _authentication.credential2dict(pcreds[i])
-            for i in range(count)]
+        result = []
+        for i in range(count):
+            credential = _common.dereference(data[i])
+            result.append(_authentication.credential2dict(credential))
+        return result
     finally:
-        _authentication._CredFree(pcreds)
+        _authentication._CredFree(memory)
