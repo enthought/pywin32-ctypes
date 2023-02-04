@@ -50,10 +50,14 @@ jobs:
           coverage run -p -m haas -v win32ctypes
       env:
           PYTHONFAULTHANDLER: 1
+    - name: Generate coverage report
+      run: |
+          coverage combine
+          coverage html
     - uses: actions/upload-artifact@v3
       with:
         name: Upload Coverage info
-        path: .coverage*
+        path: coverage/*
   code-lint:
     runs-on: ubuntu-latest
     steps:
