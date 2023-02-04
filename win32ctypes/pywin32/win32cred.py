@@ -120,7 +120,7 @@ def CredEnumerate(Filter=None, Flags=0):
             count = pcount[0]
             data = _common.dereference(
                 _common.ffi.cast(f"PCREDENTIAL*[{count}]", pppcredential))
-            memory = pppcredential
+            memory = _common.dereference(pppcredential)
         else:
             import ctypes
             count = _authentication.DWORD()
