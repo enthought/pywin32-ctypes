@@ -57,7 +57,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: Upload Coverage info
-        path: coverage/*
+        path: htmlcov/*
   code-lint:
     runs-on: ubuntu-latest
     steps:
