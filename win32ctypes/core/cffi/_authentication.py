@@ -88,23 +88,24 @@ class _CREDENTIAL(object):
         c_creds = factory()
         # values to ref and make sure that they will not go away
         values = []
-        for key in SUPPORTED_CREDKEYS:
-            if key in credential:
-                if key == u'CredentialBlob':
-                    blob = make_unicode(credential['CredentialBlob'])
-                    blob_data = ffi.new('wchar_t[]', blob)
-                    # new adds a NULL at the end that we do not want.
-                    c_creds.CredentialBlobSize = \
-                        ffi.sizeof(blob_data) - ffi.sizeof('wchar_t')
-                    c_creds.CredentialBlob = ffi.cast('LPBYTE', blob_data)
-                    values.append(blob_data)
-                elif key in (u'Type', u'Persist'):
-                    setattr(c_creds, key, credential[key])
-                else:
-                    blob = make_unicode(credential[key])
-                    value = ffi.new('wchar_t[]', blob)
-                    values.append(value)
-                    setattr(c_creds, key, ffi.cast('LPTSTR', value))
+        for key, value in credential.items():
+            if key == u'CredentialBlob':
+                blob = make_unicode(value)
+                blob_data = ffi.new('wchar_t[]', blob)
+                # new adds a NULL at the end that we do not want.
+                c_creds.CredentialBlobSize = \
+                    ffi.sizeof(blob_data) - ffi.sizeof('wchar_t')
+                c_creds.CredentialBlob = ffi.cast('LPBYTE', blob_data)
+                values.append(blob_data)
+            elif key in (u'Type', u'Persist'):
+                setattr(c_creds, key, value)
+            elif value is None:
+                setattr(c_creds, key, ffi.NULL)
+            else:
+                blob = make_unicode(value)
+                pblob = ffi.new('wchar_t[]', blob)
+                values.append(pblob)
+                setattr(c_creds, key, ffi.cast('LPTSTR', pblob))
         # keep values alive until c_creds goes away.
         _keep_alive[c_creds] = tuple(values)
         return c_creds
@@ -136,7 +137,7 @@ def credential2dict(pc_creds):
         else:
             string_pointer = getattr(pc_creds, key)
             if string_pointer == ffi.NULL:
-                data = u''
+                data = None
             else:
                 data = ffi.string(string_pointer)
         credentials[key] = data
