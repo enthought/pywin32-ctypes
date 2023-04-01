@@ -89,7 +89,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
 
-    def test_read_from_pywin32_with_none(self):
+    def test_read_from_pywin32_with_none_usename(self):
         # given
         target = u'jone@doe'
         r_credentials = self._demo_credentials(None)
@@ -97,6 +97,22 @@ class TestCred(unittest.TestCase):
 
         # when
         credentials = CredRead(target, CRED_TYPE_GENERIC)
+
+        self.assertEqual(credentials["UserName"], None)
+        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(
+            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+        self.assertEqual(
+            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+
+    def test_write_to_pywin32_with_none_usename(self):
+        # given
+        target = u'jone@doe'
+        r_credentials = self._demo_credentials(None)
+        CredWrite(r_credentials)
+
+        # when
+        credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)
 
         self.assertEqual(credentials["UserName"], None)
         self.assertEqual(credentials["TargetName"], u'jone@doe')
