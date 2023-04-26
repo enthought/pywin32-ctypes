@@ -11,6 +11,7 @@ from importlib.abc import MetaPathFinder, Loader
 
 from . import _winerrors  # noqa
 
+# Setup module redirection based on the backend
 try:
     import cffi
 except ImportError:
@@ -19,7 +20,6 @@ else:
     del cffi
     _backend = 'cffi'
 
-# Setup module redirection based on the backend
 
 class BackendLoader(Loader):
 
