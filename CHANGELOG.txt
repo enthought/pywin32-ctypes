@@ -8,7 +8,7 @@ Version 0.2.1
 - Fix support for None username in credentials to be consistent in all backends (#99).
 - Test also on cp38, cp39, cp310, cp311 and use cp38 for linking (#114, #107, #100).
 - Add support for CredEnumerate extending code from @markb-EE (#110, #109, #111)
-- Remove support for older python versions < cp36 (#104).
+- Remove support for older python versions < cp36 (#104, #120).
 
 Version 0.2.0
 -------------
