@@ -80,11 +80,6 @@ def _make_blob(data):
     return blob_pointer, blob_size
 
 
-def _CredEnumerate(Filter, Flags, Count, pppCredential):
-    filter_ = LPCWSTR(Filter)
-    _BaseCredEnumerate(filter_, Flags, Count, pppCredential)
-
-
 _CredWrite = function_factory(
     dlls.advapi32.CredWriteW,
     [PCREDENTIAL, DWORD],
