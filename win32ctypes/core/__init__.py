@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2014-2018 Enthought, Inc., Austin, TX
+# (C) Copyright 2014-2023 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
@@ -7,6 +7,7 @@
 #
 import sys
 import importlib
+from importlib.abc import MetaPathFinder, Loader
 
 from . import _winerrors  # noqa
 
@@ -17,14 +18,8 @@ except ImportError:
 else:
     del cffi
     _backend = 'cffi'
-try:
-    from importlib.abc import MetaPathFinder, Loader
-except ImportError:
-    MetaPathFinder = object
-    Loader = object
 
 # Setup module redirection based on the backend
-
 
 class BackendLoader(Loader):
 
@@ -36,11 +31,6 @@ class BackendLoader(Loader):
         sys.modules[fullname] = module
         return module
 
-    # NOTE: Defined here to make python 3.3.x happy
-    def module_repr(self, module):
-        # The exception will cause ModuleType.__repr__ to ignore this method.
-        raise NotImplementedError
-
 
 class BackendFinder(MetaPathFinder):
 
@@ -49,14 +39,15 @@ class BackendFinder(MetaPathFinder):
             'win32ctypes.core.{}'.format(module)
             for module in modules}
 
-    def find_module(self, fullname, path=None):
+    def find_spec(self, fullname, path, target=None):
         if fullname in self.redirected_modules:
             module_name = fullname.split('.')[-1]
             if _backend == 'ctypes':
-                redirected = 'win32ctypes.core.ctypes.{}'
+                redirected = f'win32ctypes.core.ctypes.{module_name}'
             else:
-                redirected = 'win32ctypes.core.cffi.{}'
-            return BackendLoader(redirected.format(module_name))
+                redirected = f'win32ctypes.core.cffi.{module_name}'
+            loader = BackendLoader(redirected)
+            return importlib.machinery.ModuleSpec(module_name, loader)
         else:
             return None
 
