@@ -1,6 +1,6 @@
 include *.rst
 include *.txt
+include *.cfg
 recursive-include docs *.bat *.py *.rst
 include docs/Makefile
-include tox.ini
 include VERSION
