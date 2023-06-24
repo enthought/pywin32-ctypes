@@ -7,7 +7,7 @@
 #
 """ Utility functions to help with ctypes wrapping.
 """
-from ctypes import GetLastError, FormatError, WinDLL
+from ctypes import get_last_error, FormatError, WinDLL
 
 
 def function_factory(
@@ -70,7 +70,7 @@ check_false = check_false_factory()
 class Libraries(object):
 
     def __getattr__(self, name):
-        library = WinDLL(name)
+        library = WinDLL(name, use_last_error=True)
         self.__dict__[name] = library
         return library
 
