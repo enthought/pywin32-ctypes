@@ -22,7 +22,7 @@ def function_factory(
 
 
 def make_error(function, function_name=None):
-    code = GetLastError()
+    code = get_last_error()
     description = FormatError(code).strip()
     if function_name is None:
         function_name = function.__name__
