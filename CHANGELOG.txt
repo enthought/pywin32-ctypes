@@ -4,14 +4,14 @@ Change Log
 Version 0.2.2
 -------------
 
-- Use ctypes.set_last_error to avoid race conditions (#122)
+- Use ctypes.get_last_error to avoid race conditions (#122)
 
 Version 0.2.1
 -------------
 
 - Use faulthandler when testing and fix discovered errors (#115, #117).
 - Fix support for None username in credentials to be consistent in all backends (#99).
-- Test also on cp38, cp39, cp310, cp311 and use cp38 for linking (#114, #107, #100).
+- Test also on cp38, cp39, cp310, cp311 and use cp38 for linting (#114, #107, #100).
 - Add support for CredEnumerate extending code from @markb-EE (#110, #109, #111)
 - Remove support for older python versions < cp36 (#104, #120).
 
