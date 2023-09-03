@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'PyWin32ctypes'
-copyright = u'2015, Enthought Ltd'
+copyright = u'2015-2023, Enthought Ltd'
 author = u'David Cournapeau, Ioannis Tziakos'
 
 # The version info for the project you're documenting, acts as replacement for
