@@ -64,7 +64,6 @@ class TestCred(unittest.TestCase):
     @unittest.skipIf(
         pywin32_build == '223' and sys.version_info[:2] == (3, 7),
         'pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)')
-
     def test_write_to_pywin32(self):
         # given
         target = u'jone@doe'
