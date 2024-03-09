@@ -44,7 +44,8 @@ class TestCred(unittest.TestCase):
             'Keyword': keyword,
             'Value': b'Created by MiniPyWin32Cred test suite', 'Flags': 0}
         attribute2 = {
-            'Keyword': keyword + '12', 'Value': b'Attribute from MiniPyWin32', 'Flags': 0}
+            'Keyword': keyword + '12',
+            'Value': b'Attribute from MiniPyWin32', 'Flags': 0}
         return (attribute1, attribute2)
 
     def _demo_credentials(self, UserName=u'jone'):
