@@ -101,7 +101,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
-    def _test_read_from_pywin32_with_none_usename(self):
+    def test_read_from_pywin32_with_none_usename(self):
         # given
         target = u'jone@doe'
         r_credentials = self._demo_credentials(None)
@@ -117,7 +117,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
-    def _test_write_to_pywin32_with_none_usename(self):
+    def test_write_to_pywin32_with_none_usename(self):
         # given
         target = u'jone@doe'
         r_credentials = self._demo_credentials(None)
@@ -133,7 +133,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
-    def _test_read_write(self):
+    def test_read_write(self):
         # given
         target = u'jone@doe'
         r_credentials = self._demo_credentials()
@@ -149,7 +149,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
-    def _test_read_write_with_none_username(self):
+    def test_read_write_with_none_username(self):
         # given
         target = u'jone@doe'
         r_credentials = self._demo_credentials(None)
@@ -166,7 +166,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
-    def _test_enumerate_filter(self):
+    def test_enumerate_filter(self):
         # given
         r_credentials = self._demo_credentials()
         CredWrite(r_credentials)
@@ -182,7 +182,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(
             credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
-    def _test_enumerate_no_filter(self):
+    def test_enumerate_no_filter(self):
         # given
         r_credentials = self._demo_credentials()
         CredWrite(r_credentials)
@@ -194,14 +194,14 @@ class TestCred(unittest.TestCase):
         # then
         self.assertEqual(len(credentials), len(pywin32_result))
 
-    def _test_enumerate_all(self):
+    def test_enumerate_all(self):
         # when
         credentials = CredEnumerate(Flags=CRED_ENUMERATE_ALL_CREDENTIALS)
 
         # then
         self.assertGreater(len(credentials), 1)
 
-    def _test_read_doesnt_exists(self):
+    def test_read_doesnt_exists(self):
         # given
         target = 'Floupi_dont_exists@MiniPyWin'
 
@@ -210,7 +210,7 @@ class TestCred(unittest.TestCase):
             CredRead(target, CRED_TYPE_GENERIC)
         self.assertTrue(ctx.exception.winerror, ERROR_NOT_FOUND)
 
-    def _test_delete_simple(self):
+    def test_delete_simple(self):
         # given
         target = u'jone@doe'
         r_credentials = self._demo_credentials()
@@ -227,7 +227,7 @@ class TestCred(unittest.TestCase):
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
         self.assertEqual(ctx.exception.funcname, 'CredRead')
 
-    def _test_delete_doesnt_exists(self):
+    def test_delete_doesnt_exists(self):
         # given
         target = u'Floupi_doesnt_exists@MiniPyWin32'
 
