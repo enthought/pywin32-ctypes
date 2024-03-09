@@ -72,12 +72,11 @@ class CREDENTIAL(Structure):
                 count = len(attributes)
                 if count == 0:
                     continue
-                data = (PCREDENTIAL_ATTRIBUTE * count)()
-                for index in range(count):
-                    attribute = CREDENTIAL_ATTRIBUTE.fromdict(
-                        attributes[index])
-                    data[index] = PCREDENTIAL_ATTRIBUTE(attribute)
-                c_credentials.Attributes = cast(data, PCREDENTIAL_ATTRIBUTE)
+                elif count > 1:
+                    raise ValueError('Multiple attributes are not supported')
+                c_attribute = CREDENTIAL_ATTRIBUTE.fromdict(attributes[0])
+                c_pattribute = PCREDENTIAL_ATTRIBUTE(c_attribute)
+                c_credentials.Attributes = c_pattribute
                 c_credentials.AttributeCount = count
             else:
                 setattr(c_credentials, key, credential[key])

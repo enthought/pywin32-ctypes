@@ -56,15 +56,13 @@ class TestCREDENTIAL(unittest.TestCase):
         keyword = 'mysecret-attribute'
         value = b'Created by MiniPyWin32Cred test suite'
         attribute1 = {'Keyword': keyword, 'Value': value, 'Flags': 2}
-        attribute2 = {
-            'Keyword': keyword + '12', 'Value': value[:10], 'Flags': 1}
         data = {
             'Type': CRED_TYPE_GENERIC,
             'TargetName': target,
             'UserName': username,
             'CredentialBlob': password,
             'Comment': comment,
-            'Attributes': (attribute1, attribute2),
+            'Attributes': (attribute1,),
             'Persist': CRED_PERSIST_ENTERPRISE}
 
         # when
@@ -80,9 +78,6 @@ class TestCREDENTIAL(unittest.TestCase):
         del result['CredentialBlobSize']
         del result['AttributeCount']
         result['CredentialBlob'] = result['CredentialBlob'].decode('utf-16')
-        for attribute in result['Attributes']:
-            if 'Value' in attribute:
-                attribute['Value'] = attribute['Value']
         self.assertEqual(result, data)
 
 

@@ -46,7 +46,7 @@ class TestCred(unittest.TestCase):
         attribute2 = {
             'Keyword': keyword + '12',
             'Value': b'Attribute from MiniPyWin32', 'Flags': 0}
-        return (attribute1, attribute2)
+        return (attribute1,)
 
     def _demo_credentials(self, UserName=u'jone'):
         return {
@@ -61,6 +61,7 @@ class TestCred(unittest.TestCase):
     @unittest.skipIf(
         pywin32_build == '223' and sys.version_info[:2] == (3, 7),
         'pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)')
+
     def test_write_to_pywin32(self):
         # given
         target = u'jone@doe'
