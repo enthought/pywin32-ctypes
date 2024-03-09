@@ -6,11 +6,11 @@
 # LICENSE.txt
 #
 import ctypes
-from ctypes import POINTER, Structure, c_char, c_char_p, cast, c_wchar_p
+from ctypes import POINTER, Structure, c_char_p, cast
 from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR, LPWSTR)
 
-from ._common import LPBYTE, _PyBytes_FromStringAndSize, dereference
+from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_false_factory, dlls
 
 
@@ -74,13 +74,15 @@ class CREDENTIAL(Structure):
                     continue
                 data = (PCREDENTIAL_ATTRIBUTE * count)()
                 for index in range(count):
-                    attribute = CREDENTIAL_ATTRIBUTE.fromdict(attributes[index])
+                    attribute = CREDENTIAL_ATTRIBUTE.fromdict(
+                        attributes[index])
                     data[index] = PCREDENTIAL_ATTRIBUTE(attribute)
                 c_credentials.Attributes = cast(data, PCREDENTIAL_ATTRIBUTE)
                 c_credentials.AttributeCount = count
             else:
                 setattr(c_credentials, key, credential[key])
         return c_credentials
+
 
 _data = []
 PCREDENTIAL = POINTER(CREDENTIAL)
