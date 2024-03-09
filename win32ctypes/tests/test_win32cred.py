@@ -38,7 +38,7 @@ class TestCred(unittest.TestCase):
         except error:
             pass
 
-    def _demo_attributes(self):
+    def _demo_attributes(self, multiple=False):
         keyword = 'mysecret-attribute'
         attribute1 = {
             'Keyword': keyword,
@@ -46,15 +46,18 @@ class TestCred(unittest.TestCase):
         attribute2 = {
             'Keyword': keyword + '12',
             'Value': b'Attribute from MiniPyWin32', 'Flags': 0}
-        return (attribute1,)
+        if multiple:
+            return (attribute1, attribute2)
+        else:
+            return (attribute1,)
 
-    def _demo_credentials(self, UserName=u'jone'):
+    def _demo_credentials(self, UserName=u'jone', multiple=False):
         return {
             'Type': CRED_TYPE_GENERIC,
             'TargetName': u'jone@doe',
             'UserName': UserName,
             'CredentialBlob': u'doefsajfsakfj',
-            'Attributes': self._demo_attributes(),
+            'Attributes': self._demo_attributes(multiple),
             'Comment': u'Created by MiniPyWin32Cred test suite',
             'Persist': CRED_PERSIST_ENTERPRISE}
 
@@ -87,8 +90,8 @@ class TestCred(unittest.TestCase):
     def test_read_from_pywin32(self):
         # given
         target = u'jone@doe'
-        r_credentials = self._demo_credentials()
-        r_attributes = self._demo_attributes()
+        r_credentials = self._demo_credentials(multiple=True)
+        r_attributes = self._demo_attributes(multiple=True)
         win32cred.CredWrite(r_credentials)
 
         # when
