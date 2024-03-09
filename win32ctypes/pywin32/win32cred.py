@@ -30,6 +30,11 @@ def CredWrite(Credential, Flags=0):
     Flags : int
         ``CRED_PRESERVE_CREDENTIAL_BLOB`` or 0. Default is 0.
 
+    Note
+    ----
+    The max number of the credential attributes supported by
+    the win32ctypes implementation is 1.
+
     """
     c_creds = _authentication.CREDENTIAL.fromdict(Credential)
     c_pcreds = _authentication.PCREDENTIAL(c_creds)
