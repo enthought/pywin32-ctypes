@@ -14,6 +14,7 @@ from win32ctypes.core._authentication import (
 from win32ctypes.constants import (
     CRED_TYPE_GENERIC, CRED_PERSIST_ENTERPRISE)
 
+
 class TestCREDENTIAL(unittest.TestCase):
 
     maxDiff = None

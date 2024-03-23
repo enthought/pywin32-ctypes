@@ -83,7 +83,7 @@ class CREDENTIAL(Structure):
                 c_credential.Attributes = c_pattribute
                 c_credential.AttributeCount = count
             else:
-                setattr(c_credentials, key, credential[key])
+                setattr(c_credential, key, credential[key])
         return c_credential
 
 
