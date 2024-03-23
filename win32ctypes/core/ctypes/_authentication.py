@@ -11,6 +11,7 @@ from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR, LPWSTR)
 from weakref import WeakKeyDictionary
 
+from win32ctypes.core.compat import is_text
 from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_false_factory, dlls
 
@@ -38,9 +39,14 @@ class CREDENTIAL_ATTRIBUTE(Structure):
         self.Keyword = attribute['Keyword']
         self.Flags = attribute.get('Flags', 0)
         value = attribute['Value']
-        blob = c_char_p(value)
-        self.Value = cast(blob, LPBYTE)
-        self.ValueSize = len(value)
+        if is_text(value):
+            blob, size = _make_blob(value)
+        else:
+            blob = c_char_p(value)
+            blob = cast(blob, LPBYTE)
+            size = len(value)
+        self.Value = blob
+        self.ValueSize = size
 
 
 PCREDENTIAL_ATTRIBUTE = POINTER(CREDENTIAL_ATTRIBUTE)
@@ -120,6 +126,8 @@ def credential2dict(c_credential):
                 attribute = credential_attribute2dict(data[index])
                 attributes.append(attribute)
             credential['Attributes'] = tuple(attributes)
+        elif key in ('AttributeCount', 'CredentialBlobSize'):
+            continue
         else:
             credential[key] = getattr(c_credential, key)
     return credential
