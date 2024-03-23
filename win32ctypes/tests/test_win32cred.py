@@ -38,18 +38,32 @@ class TestCred(unittest.TestCase):
         except error:
             pass
 
-    def _demo_credentials(self, UserName=u'jone'):
+    def _demo_attributes(self, multiple=False):
+        keyword = 'mysecret-attribute'
+        attribute1 = {
+            'Keyword': keyword,
+            'Value': b'Created by MiniPyWin32Cred test suite', 'Flags': 0}
+        attribute2 = {
+            'Keyword': keyword + '12',
+            'Value': b'Attribute from MiniPyWin32', 'Flags': 0}
+        if multiple:
+            return (attribute1, attribute2)
+        else:
+            return (attribute1,)
+
+    def _demo_credentials(self, UserName=u'jone', multiple=False):
         return {
-            "Type": CRED_TYPE_GENERIC,
-            "TargetName": u'jone@doe',
-            "UserName": UserName,
-            "CredentialBlob": u"doefsajfsakfj",
-            "Comment": u"Created by MiniPyWin32Cred test suite",
-            "Persist": CRED_PERSIST_ENTERPRISE}
+            'Type': CRED_TYPE_GENERIC,
+            'TargetName': u'jone@doe',
+            'UserName': UserName,
+            'CredentialBlob': u'doefsajfsakfj',
+            'Attributes': self._demo_attributes(multiple),
+            'Comment': u'Created by MiniPyWin32Cred test suite',
+            'Persist': CRED_PERSIST_ENTERPRISE}
 
     @unittest.skipIf(
-        pywin32_build == "223" and sys.version_info[:2] == (3, 7),
-        "pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)")
+        pywin32_build == '223' and sys.version_info[:2] == (3, 7),
+        'pywin32 version 223 bug with CredRead (mhammond/pywin32#1232)')
     def test_write_to_pywin32(self):
         # given
         target = u'jone@doe'
@@ -61,33 +75,35 @@ class TestCred(unittest.TestCase):
             TargetName=target, Type=CRED_TYPE_GENERIC)
 
         # then
-        self.assertEqual(credentials["Type"], CRED_TYPE_GENERIC)
-        self.assertEqual(credentials["UserName"], u"jone")
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['Type'], CRED_TYPE_GENERIC)
+        self.assertEqual(credentials['UserName'], u'jone')
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         # XXX: the fact that we have to decode the password when reading, but
         # not encode when writing is a bit strange, but that's what pywin32
         # seems to do and we try to be backward compatible here.
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_read_from_pywin32(self):
         # given
         target = u'jone@doe'
-        r_credentials = self._demo_credentials()
+        r_credentials = self._demo_credentials(multiple=True)
+        r_attributes = self._demo_attributes(multiple=True)
         win32cred.CredWrite(r_credentials)
 
         # when
         credentials = CredRead(target, CRED_TYPE_GENERIC)
 
         # then
-        self.assertEqual(credentials["UserName"], u"jone")
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['UserName'], u'jone')
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
+        self.assertEqual(credentials['Attributes'], r_attributes)
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_read_from_pywin32_with_none_usename(self):
         # given
@@ -98,12 +114,12 @@ class TestCred(unittest.TestCase):
         # when
         credentials = CredRead(target, CRED_TYPE_GENERIC)
 
-        self.assertEqual(credentials["UserName"], None)
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['UserName'], None)
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_write_to_pywin32_with_none_usename(self):
         # given
@@ -114,12 +130,12 @@ class TestCred(unittest.TestCase):
         # when
         credentials = win32cred.CredRead(target, CRED_TYPE_GENERIC)
 
-        self.assertEqual(credentials["UserName"], None)
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['UserName'], None)
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_read_write(self):
         # given
@@ -130,12 +146,12 @@ class TestCred(unittest.TestCase):
         CredWrite(r_credentials)
         credentials = CredRead(target, CRED_TYPE_GENERIC)
 
-        self.assertEqual(credentials["UserName"], u"jone")
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['UserName'], u'jone')
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_read_write_with_none_username(self):
         # given
@@ -147,12 +163,12 @@ class TestCred(unittest.TestCase):
         credentials = CredRead(target, CRED_TYPE_GENERIC)
 
         # then
-        self.assertEqual(credentials["UserName"], None)
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['UserName'], None)
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_enumerate_filter(self):
         # given
@@ -163,12 +179,12 @@ class TestCred(unittest.TestCase):
         credentials = CredEnumerate('jone*')[0]
 
         # then
-        self.assertEqual(credentials["UserName"], u"jone")
-        self.assertEqual(credentials["TargetName"], u'jone@doe')
+        self.assertEqual(credentials['UserName'], u'jone')
+        self.assertEqual(credentials['TargetName'], u'jone@doe')
         self.assertEqual(
-            credentials["Comment"], u"Created by MiniPyWin32Cred test suite")
+            credentials['Comment'], u'Created by MiniPyWin32Cred test suite')
         self.assertEqual(
-            credentials["CredentialBlob"].decode('utf-16'), u"doefsajfsakfj")
+            credentials['CredentialBlob'].decode('utf-16'), u'doefsajfsakfj')
 
     def test_enumerate_no_filter(self):
         # given
@@ -191,7 +207,7 @@ class TestCred(unittest.TestCase):
 
     def test_read_doesnt_exists(self):
         # given
-        target = "Floupi_dont_exists@MiniPyWin"
+        target = 'Floupi_dont_exists@MiniPyWin'
 
         # when/then
         with self.assertRaises(error) as ctx:
@@ -213,17 +229,17 @@ class TestCred(unittest.TestCase):
         with self.assertRaises(error) as ctx:
             CredRead(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
-        self.assertEqual(ctx.exception.funcname, "CredRead")
+        self.assertEqual(ctx.exception.funcname, 'CredRead')
 
     def test_delete_doesnt_exists(self):
         # given
-        target = u"Floupi_doesnt_exists@MiniPyWin32"
+        target = u'Floupi_doesnt_exists@MiniPyWin32'
 
         # when/then
         with self.assertRaises(error) as ctx:
             CredDelete(target, CRED_TYPE_GENERIC)
         self.assertEqual(ctx.exception.winerror, ERROR_NOT_FOUND)
-        self.assertEqual(ctx.exception.funcname, "CredDelete")
+        self.assertEqual(ctx.exception.funcname, 'CredDelete')
 
 
 if __name__ == '__main__':
