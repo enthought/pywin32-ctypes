@@ -9,9 +9,13 @@ import ctypes
 from ctypes import POINTER, Structure, c_char_p, cast
 from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR, LPWSTR)
+from weakref import WeakKeyDictionary
 
 from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_false_factory, dlls
+
+# values to ref and make sure that they will not go away
+_keep_alive = WeakKeyDictionary()
 
 
 class CREDENTIAL_ATTRIBUTE(Structure):
@@ -59,14 +63,14 @@ class CREDENTIAL(Structure):
 
     @classmethod
     def fromdict(cls, credential):
-        c_credentials = cls()
-        c_pcredentials = PCREDENTIAL(c_credentials)
-        ctypes.memset(c_pcredentials, 0, ctypes.sizeof(c_credentials))
+        c_credential = cls()
+        c_pcredential = PCREDENTIAL(c_credential)
+        ctypes.memset(c_pcredential, 0, ctypes.sizeof(c_credential))
         for key in credential:
             if key == 'CredentialBlob':
                 blob_data, blob_size = _make_blob(credential['CredentialBlob'])
-                c_credentials.CredentialBlob = blob_data
-                c_credentials.CredentialBlobSize = blob_size
+                c_credential.CredentialBlob = blob_data
+                c_credential.CredentialBlobSize = blob_size
             elif key == 'Attributes':
                 attributes = credential.get('Attributes', '')
                 count = len(attributes)
@@ -76,14 +80,13 @@ class CREDENTIAL(Structure):
                     raise ValueError('Multiple attributes are not supported')
                 c_attribute = CREDENTIAL_ATTRIBUTE.fromdict(attributes[0])
                 c_pattribute = PCREDENTIAL_ATTRIBUTE(c_attribute)
-                c_credentials.Attributes = c_pattribute
-                c_credentials.AttributeCount = count
+                c_credential.Attributes = c_pattribute
+                c_credential.AttributeCount = count
             else:
                 setattr(c_credentials, key, credential[key])
-        return c_credentials
+        return c_credential
 
 
-_data = []
 PCREDENTIAL = POINTER(CREDENTIAL)
 PPCREDENTIAL = POINTER(PCREDENTIAL)
 PPPCREDENTIAL = POINTER(PPCREDENTIAL)
@@ -103,7 +106,6 @@ def credential_attribute2dict(c_attribute):
 
 def credential2dict(c_credential):
     credential = {}
-
     for key, type_ in CREDENTIAL._fields_:
         if key == 'CredentialBlob':
             blob = _PyBytes_FromStringAndSize(
@@ -124,7 +126,7 @@ def credential2dict(c_credential):
 
 
 def _make_blob(data):
-    ''' Convert a string to LPBYTE compatible blob dict values
+    ''' Convert a string to LPBYTE compatible blob value
 
     '''
     blob_data = ctypes.create_unicode_buffer(data)
