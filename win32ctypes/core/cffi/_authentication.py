@@ -65,6 +65,7 @@ def make_unicode(password):
         code_page = _GetACP()
         return password.decode(encoding=str(code_page), errors='strict')
 
+
 class _FILETIME(object):
 
     def __call__(self):
@@ -112,7 +113,8 @@ class _CREDENTIAL(object):
                     setattr(c_credential, key, ffi.NULL)
                 else:
                     blob_pointer = ffi.new('wchar_t[]', value)
-                    setattr(c_credential, key, ffi.cast('LPWSTR', blob_pointer))
+                    setattr(
+                        c_credential, key, ffi.cast('LPWSTR', blob_pointer))
                     values.append(blob_pointer)
 
         # keep values alive until c_credential goes away.
