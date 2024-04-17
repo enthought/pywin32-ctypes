@@ -5,6 +5,7 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
+import gc
 import unittest
 
 from win32ctypes.core import _backend
@@ -53,6 +54,7 @@ class TestCREDENTIAL(unittest.TestCase):
             self.assertEqual(result.UserName, username)
             self.assertIsNone(result.TargetAlias)
 
+
     def test_roundtrip(self):
         # given
         username = 'john'
@@ -74,17 +76,18 @@ class TestCREDENTIAL(unittest.TestCase):
             'Persist': CRED_PERSIST_ENTERPRISE}
 
         # when
-        credential = CREDENTIAL.fromdict(data)
-        result = credential2dict(credential)
+        for _ in range(10):  # need to repeat to expose memory issues
+            credential = CREDENTIAL.fromdict(data)
+            result = credential2dict(credential)
 
-        # then
-        if _backend == 'ctypes':
-            self.assertIsInstance(result['LastWritten'], FILETIME)
-        del result['LastWritten']
-        result['CredentialBlob'] = result['CredentialBlob'].decode('utf-16')
-        attribute = result['Attributes'][0]
-        attribute['Value'] = attribute['Value'].decode('utf-16')
-        self.assertEqual(result, data)
+            # then
+            if _backend == 'ctypes':
+                self.assertIsInstance(result['LastWritten'], FILETIME)
+            del result['LastWritten']
+            result['CredentialBlob'] = result['CredentialBlob'].decode('utf-16')
+            attribute = result['Attributes'][0]
+            attribute['Value'] = attribute['Value'].decode('utf-16')
+            self.assertEqual(result, data)
 
 
 class TestCREDENTIAL_ATTRIBUTE(unittest.TestCase):
@@ -122,12 +125,12 @@ class TestCREDENTIAL_ATTRIBUTE(unittest.TestCase):
             'Value': value}
 
         # when
-        attribute = CREDENTIAL_ATTRIBUTE.fromdict(data)
-        result = credential_attribute2dict(attribute)
-
-        # then
-        result['Value'] = result['Value'].decode('utf-16')
-        self.assertEqual(result, data)
+        for _ in range(10):  # need to repeat to expose memory issues
+            attribute = CREDENTIAL_ATTRIBUTE.fromdict(data)
+            result = credential_attribute2dict(attribute)
+            # then
+            result['Value'] = result['Value'].decode('utf-16')
+            self.assertEqual(result, data)
 
     def test_roundtrip_with_bytes(self):
         # given
@@ -139,8 +142,9 @@ class TestCREDENTIAL_ATTRIBUTE(unittest.TestCase):
             'Value': value}
 
         # when
-        attribute = CREDENTIAL_ATTRIBUTE.fromdict(data)
-        result = credential_attribute2dict(attribute)
+        for _ in range(10):  # need to repeat to expose memory issues
+            attribute = CREDENTIAL_ATTRIBUTE.fromdict(data)
+            result = credential_attribute2dict(attribute)
 
         # then
         self.assertEqual(result, data)

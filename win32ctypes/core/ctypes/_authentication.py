@@ -15,9 +15,6 @@ from win32ctypes.core.compat import is_text
 from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_false_factory, dlls
 
-# values to ref and make sure that they will not go away
-_keep_alive = WeakKeyDictionary()
-
 
 class CREDENTIAL_ATTRIBUTE(Structure):
     _fields_ = [

@@ -5,15 +5,10 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from weakref import WeakKeyDictionary
-
 from win32ctypes.core.compat import is_text
 from ._util import ffi, check_false, dlls
 from ._nl_support import _GetACP
 from ._common import _PyBytes_FromStringAndSize
-
-# values to ref and make sure that they will not go away
-_keep_alive = WeakKeyDictionary()
 
 ffi.cdef("""
 
@@ -89,7 +84,7 @@ class _CREDENTIAL(object):
     def fromdict(cls, credential, flags=0):
         factory = cls()
         c_credential = factory()
-        values = []  # values to ref and make sure that they will not go away
+        values = []  # keep values in context during processing
         for key, value in credential.items():
             if key == 'CredentialBlob':
                 blob = ffi.new('wchar_t[]', value)
@@ -116,9 +111,6 @@ class _CREDENTIAL(object):
                     setattr(
                         c_credential, key, ffi.cast('LPWSTR', blob_pointer))
                     values.append(blob_pointer)
-
-        # keep values alive until c_credential goes away.
-        _keep_alive[c_credential] = tuple(values)
         return c_credential
 
 
@@ -143,13 +135,11 @@ class _CREDENTIAL_ATTRIBUTE(object):
             data, size = ffi.NULL,  0
         elif is_text(value):
             blob = ffi.new('wchar_t[]', value)
-            _keep_alive[c_attribute] = blob
             data = ffi.cast('LPBYTE', blob)
             size = ffi.sizeof(blob) - ffi.sizeof('wchar_t')  # noqa
         else:
             data = ffi.new('BYTE[]', value)
             size = ffi.sizeof(blob_pointer) - ffi.sizeof('BYTE')
-            _keep_alive[c_attribute] = data
         c_attribute.Value = data
         c_attribute.ValueSize = size
         return c_attribute
