@@ -9,7 +9,6 @@ import ctypes
 from ctypes import POINTER, Structure, c_char_p, cast
 from ctypes.wintypes import (
     BOOL, DWORD, FILETIME, LPCWSTR, LPWSTR)
-from weakref import WeakKeyDictionary
 
 from win32ctypes.core.compat import is_text
 from ._common import LPBYTE, _PyBytes_FromStringAndSize

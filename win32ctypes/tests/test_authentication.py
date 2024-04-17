@@ -5,7 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-import gc
 import unittest
 
 from win32ctypes.core import _backend
@@ -54,7 +53,6 @@ class TestCREDENTIAL(unittest.TestCase):
             self.assertEqual(result.UserName, username)
             self.assertIsNone(result.TargetAlias)
 
-
     def test_roundtrip(self):
         # given
         username = 'john'
@@ -84,7 +82,7 @@ class TestCREDENTIAL(unittest.TestCase):
             if _backend == 'ctypes':
                 self.assertIsInstance(result['LastWritten'], FILETIME)
             del result['LastWritten']
-            result['CredentialBlob'] = result['CredentialBlob'].decode('utf-16')
+            result['CredentialBlob'] = result['CredentialBlob'].decode('utf-16')  # noqa
             attribute = result['Attributes'][0]
             attribute['Value'] = attribute['Value'].decode('utf-16')
             self.assertEqual(result, data)

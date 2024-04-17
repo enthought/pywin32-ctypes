@@ -43,6 +43,7 @@ def _demo_attributes(multiple=False):
     else:
         return (attribute1,)
 
+
 def _demo_credentials(UserName=u'jone', multiple=False):
     return {
         'Type': CRED_TYPE_GENERIC,
@@ -52,6 +53,7 @@ def _demo_credentials(UserName=u'jone', multiple=False):
         'Attributes': _demo_attributes(multiple),
         'Comment': u'Created by MiniPyWin32Cred test suite',
         'Persist': CRED_PERSIST_ENTERPRISE}
+
 
 TEST_SUPPORTED_CREDENTIALS = [
     (_demo_credentials(), _demo_attributes()),
