@@ -55,7 +55,7 @@ def Time(value):
     elif isinstance(value, collections.abc.Sequence):
         time_value = time.mktime(value[:9])
         if len(value) == 10:
-            time_value +=  value[9] / 1000.0
+            time_value += value[9] / 1000.0
         return datetime.fromtimestamp(time_value)
     else:
         try:
