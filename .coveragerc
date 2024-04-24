@@ -2,6 +2,7 @@
 branch = True
 source = win32ctypes
 omit = */tests/*
+relative_files = True
 
 [report]
 # Regexes for lines to exclude from consideration
