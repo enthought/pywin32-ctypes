@@ -13,11 +13,12 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9, "3.10", "3.11", "3.12"]
         os: [windows-2019]
     runs-on: ${{ matrix.os }}
+    needs: code-lint
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
@@ -28,13 +29,13 @@ jobs:
           pip --version
     - name: Test on ${{ matrix.python-version }} 64-bit
       run: |
-          coverage run -m haas -v win32ctypes
+          coverage run -p -m haas -v win32ctypes
           pip install --upgrade cffi
-          coverage run -m haas -v win32ctypes
+          coverage run -p -m haas -v win32ctypes
       env:
           PYTHONFAULTHANDLER: 1
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: 'x86'
@@ -50,20 +51,40 @@ jobs:
           coverage run -p -m haas -v win32ctypes
       env:
           PYTHONFAULTHANDLER: 1
+    - name: Upload Coverage info
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-${{matrix.python-version}}
+        path: .coverage.*
+  coverage:    
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Download coverage artifacts
+      uses: actions/download-artifact@v4
+      with:
+          pattern: coverage-*
+          merge-multiple: true
+    - name: Install coverage
+      run: pip install coverage
     - name: Generate coverage report
       run: |
           coverage combine
+          coverage report
           coverage html
-    - uses: actions/upload-artifact@v3
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
       with:
-        name: Upload Coverage info
+        name: coverage-report
         path: htmlcov/*
   code-lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.8
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.8
     - name: Install flake8
