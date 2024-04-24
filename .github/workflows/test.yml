@@ -30,8 +30,10 @@ jobs:
     - name: Test on ${{ matrix.python-version }} 64-bit
       run: |
           coverage run -p -m haas -v win32ctypes
+          coverage run -p -m haas -v pywin32-tests
           pip install --upgrade cffi
           coverage run -p -m haas -v win32ctypes
+          coverage run -p -m haas -v pywin32-tests
       env:
           PYTHONFAULTHANDLER: 1
     - name: Set up Python ${{ matrix.python-version }}
@@ -47,8 +49,10 @@ jobs:
     - name: test on ${{ matrix.python-version }} 32-bit
       run: |
           coverage run -p -m haas -v win32ctypes
+          coverage run -p -m haas -v pywin32-tests
           pip install --upgrade cffi
           coverage run -p -m haas -v win32ctypes
+          coverage run -p -m haas -v pywin32-tests
       env:
           PYTHONFAULTHANDLER: 1
     - name: Upload Coverage info
