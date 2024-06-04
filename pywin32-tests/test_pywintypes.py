@@ -11,6 +11,9 @@ import shutil
 import faulthandler
 import datetime
 import time
+import warnings
+
+warnings.simplefilter("error")
 
 from win32ctypes import pywin32
 from win32ctypes.pywin32.pywintypes import error
