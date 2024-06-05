@@ -28,6 +28,7 @@ class BackendLoader(Loader):
 
     def create_module(self, spec):
         # TODO: this seems wrong, but let's see the behavior
+        #       please do tell me the right way :]
         return importlib.import_module(self.redirect_module)
  
     def exec_module(self, module):
@@ -48,9 +49,6 @@ class BackendFinder(MetaPathFinder):
                 redirected = f'win32ctypes.core.ctypes.{module_name}'
             else:
                 redirected = f'win32ctypes.core.cffi.{module_name}'
-            # spec = importlib.util.find_spec(redirected)
-            # spec.name = module_name
-            # return spec
             loader = BackendLoader(redirected)
             return importlib.machinery.ModuleSpec(module_name, loader)
         else:
