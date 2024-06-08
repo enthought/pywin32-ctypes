@@ -26,10 +26,14 @@ class BackendLoader(Loader):
     def __init__(self, redirect_module):
         self.redirect_module = redirect_module
 
-    def load_module(self, fullname):
-        module = importlib.import_module(self.redirect_module)
-        sys.modules[fullname] = module
-        return module
+    def create_module(self, spec):
+        if spec.name not in sys.modules:
+            module = importlib.import_module(self.redirect_module)
+            sys.modules[spec.name] = module
+        return sys.modules[spec.name]
+
+    def exec_module(self, module):
+        pass
 
 
 class BackendFinder(MetaPathFinder):
@@ -47,7 +51,8 @@ class BackendFinder(MetaPathFinder):
             else:
                 redirected = f'win32ctypes.core.cffi.{module_name}'
             loader = BackendLoader(redirected)
-            return importlib.machinery.ModuleSpec(module_name, loader)
+            return importlib.machinery.ModuleSpec(
+                f'win32ctypes.core.{module_name}', loader)
         else:
             return None
 
