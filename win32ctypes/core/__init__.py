@@ -27,10 +27,7 @@ class BackendLoader(Loader):
         self.redirect_module = redirect_module
 
     def create_module(self, spec):
-        if spec.name not in sys.modules:
-            module = importlib.import_module(self.redirect_module)
-            sys.modules[spec.name] = module
-        return sys.modules[spec.name]
+        return importlib.import_module(self.redirect_module)
 
     def exec_module(self, module):
         pass
