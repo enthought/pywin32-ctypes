@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.2.3
+-------------
+
+- Do not use loal_module in backend selection code (#131, #132)
+- Add pywin32.pywintypes.Time (#122)
+
 Version 0.2.2
 -------------
 
