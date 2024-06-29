@@ -2,3 +2,4 @@ coverage
 haas
 --only-binary pywin32
 pywin32
+parameterized

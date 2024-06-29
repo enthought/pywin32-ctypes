@@ -7,17 +7,19 @@
 #
 """ Interface to credentials management functions. """
 from win32ctypes.core import _authentication, _common, _backend
-from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
+from .pywintypes import pywin32error as _pywin32error
 
-CRED_TYPE_GENERIC = 0x1
-CRED_PERSIST_SESSION = 0x1
-CRED_PERSIST_LOCAL_MACHINE = 0x2
-CRED_PERSIST_ENTERPRISE = 0x3
-CRED_PRESERVE_CREDENTIAL_BLOB = 0
-CRED_ENUMERATE_ALL_CREDENTIALS = 0x1
+# Bring constants into namespace
+from win32ctypes.constants import (  # noqa
+    CRED_TYPE_GENERIC,
+    CRED_PERSIST_SESSION,
+    CRED_PERSIST_LOCAL_MACHINE,
+    CRED_PERSIST_ENTERPRISE,
+    CRED_ENUMERATE_ALL_CREDENTIALS,
+    CRED_PERSIST_ENTERPRISE)
 
 
-def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
+def CredWrite(Credential, Flags=0):
     """ Creates or updates a stored credential.
 
     Parameters
@@ -26,10 +28,15 @@ def CredWrite(Credential, Flags=CRED_PRESERVE_CREDENTIAL_BLOB):
         A dictionary corresponding to the PyWin32 ``PyCREDENTIAL``
         structure.
     Flags : int
-        Always pass ``CRED_PRESERVE_CREDENTIAL_BLOB`` (i.e. 0).
+        ``CRED_PRESERVE_CREDENTIAL_BLOB`` or 0. Default is 0.
+
+    Note
+    ----
+    The max number of the credential attributes supported by
+    the win32ctypes implementation is 1.
 
     """
-    c_creds = _authentication.CREDENTIAL.fromdict(Credential, Flags)
+    c_creds = _authentication.CREDENTIAL.fromdict(Credential)
     c_pcreds = _authentication.PCREDENTIAL(c_creds)
     with _pywin32error():
         _authentication._CredWrite(c_pcreds, 0)
