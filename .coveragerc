@@ -3,6 +3,7 @@ branch = True
 source = win32ctypes
 omit = */tests/*
 relative_files = True
+data_file = coverage
 
 [report]
 # Regexes for lines to exclude from consideration
