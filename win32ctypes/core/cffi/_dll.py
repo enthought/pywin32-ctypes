@@ -8,14 +8,6 @@
 from ._util import ffi, check_null, check_false, dlls, HMODULE, PVOID
 
 
-ffi.cdef("""
-
-HMODULE WINAPI LoadLibraryExW(LPCTSTR lpFileName, HANDLE hFile, DWORD dwFlags);
-BOOL WINAPI FreeLibrary(HMODULE hModule);
-
-""")
-
-
 def _LoadLibraryEx(lpFilename, hFile, dwFlags):
     result = check_null(
         dlls.kernel32.LoadLibraryExW(

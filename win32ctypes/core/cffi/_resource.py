@@ -10,34 +10,6 @@ from ._util import (
     PVOID, RESOURCE, resource, dlls)
 
 
-ffi.cdef("""
-
-typedef int WINBOOL;
-typedef WINBOOL (__stdcall *ENUMRESTYPEPROC) (HANDLE, LPTSTR, LONG_PTR);
-typedef WINBOOL (__stdcall *ENUMRESNAMEPROC) (HANDLE, LPCTSTR, LPTSTR, LONG_PTR);
-typedef WINBOOL (__stdcall *ENUMRESLANGPROC) (HANDLE, LPCTSTR, LPCTSTR, WORD, LONG_PTR);
-
-BOOL WINAPI EnumResourceTypesW(
-    HMODULE hModule, ENUMRESTYPEPROC lpEnumFunc, LONG_PTR lParam);
-BOOL WINAPI EnumResourceNamesW(
-    HMODULE hModule, LPCTSTR lpszType,
-    ENUMRESNAMEPROC lpEnumFunc, LONG_PTR lParam);
-BOOL WINAPI EnumResourceLanguagesW(
-    HMODULE hModule, LPCTSTR lpType,
-    LPCTSTR lpName, ENUMRESLANGPROC lpEnumFunc, LONG_PTR lParam);
-HRSRC WINAPI FindResourceExW(
-    HMODULE hModule, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage);
-DWORD WINAPI SizeofResource(HMODULE hModule, HRSRC hResInfo);
-HGLOBAL WINAPI LoadResource(HMODULE hModule, HRSRC hResInfo);
-LPVOID WINAPI LockResource(HGLOBAL hResData);
-
-HANDLE WINAPI BeginUpdateResourceW(LPCTSTR pFileName, BOOL bDeleteExistingResources);
-BOOL WINAPI EndUpdateResourceW(HANDLE hUpdate, BOOL fDiscard);
-BOOL WINAPI UpdateResourceW(HANDLE hUpdate, LPCTSTR lpType, LPCTSTR lpName, WORD wLanguage, LPVOID lpData, DWORD cbData);
-
-""")  # noqa
-
-
 def ENUMRESTYPEPROC(callback):
     def wrapped(hModule, lpszType, lParam):
         return callback(hModule, resource(lpszType), lParam)

@@ -1,12 +1,12 @@
 #
-# (C) Copyright 2018 Enthought, Inc., Austin, TX
+# (C) Copyright 2018-2024 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
 import ctypes
-from ctypes.wintypes import LPCWSTR, UINT, LPWSTR, MAX_PATH
+from ctypes.wintypes import LPCWSTR, UINT, LPWSTR, MAX_PATH, DWORD
 
 from ._util import check_zero, function_factory, dlls
 
@@ -21,6 +21,11 @@ def _GetSystemDirectory():
     buffer = ctypes.create_unicode_buffer(MAX_PATH)
     _BaseGetSystemDirectory(buffer, MAX_PATH)
     return ctypes.cast(buffer, LPCWSTR).value
+
+
+_GetTickCount = function_factory(
+    dlls.kernel32.GetTickCount,
+    None, DWORD)
 
 
 _BaseGetWindowsDirectory = function_factory(

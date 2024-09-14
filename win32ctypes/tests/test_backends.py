@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2023 Enthought, Inc., Austin, TX
+# (C) Copyright 2023-2024 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
@@ -11,7 +11,7 @@ import unittest
 from win32ctypes.core import _backend
 
 _modules = [
-    '_dll', '_authentication', '_time', '_common',
+    '_dll', '_authentication', '_common',
     '_resource',  '_nl_support', '_system_information']
 
 

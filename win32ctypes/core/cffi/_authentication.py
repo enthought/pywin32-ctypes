@@ -1,63 +1,14 @@
 #
-# (C) Copyright 2015 Enthought, Inc., Austin, TX
+# (C) Copyright 2015-2024 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-from weakref import WeakKeyDictionary
-
 from win32ctypes.core.compat import is_text
 from ._util import ffi, check_false, dlls
 from ._nl_support import _GetACP
 from ._common import _PyBytes_FromStringAndSize
-
-
-ffi.cdef("""
-
-typedef struct _FILETIME {
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
-} FILETIME, *PFILETIME;
-
-typedef struct _CREDENTIAL_ATTRIBUTE {
-  LPWSTR Keyword;
-  DWORD  Flags;
-  DWORD  ValueSize;
-  LPBYTE Value;
-} CREDENTIAL_ATTRIBUTE, *PCREDENTIAL_ATTRIBUTE;
-
-typedef struct _CREDENTIAL {
-  DWORD                 Flags;
-  DWORD                 Type;
-  LPWSTR                TargetName;
-  LPWSTR                Comment;
-  FILETIME              LastWritten;
-  DWORD                 CredentialBlobSize;
-  LPBYTE                CredentialBlob;
-  DWORD                 Persist;
-  DWORD                 AttributeCount;
-  PCREDENTIAL_ATTRIBUTE Attributes;
-  LPWSTR                TargetAlias;
-  LPWSTR                UserName;
-} CREDENTIAL, *PCREDENTIAL;
-
-
-BOOL WINAPI CredReadW(
-    LPCWSTR TargetName, DWORD Type, DWORD Flags, PCREDENTIAL *Credential);
-BOOL WINAPI CredWriteW(PCREDENTIAL Credential, DWORD);
-VOID WINAPI CredFree(PVOID Buffer);
-BOOL WINAPI CredDeleteW(LPCWSTR TargetName, DWORD Type, DWORD Flags);
-BOOL WINAPI CredEnumerateW(
-    LPCWSTR Filter, DWORD Flags, DWORD *Count, PCREDENTIAL **Credential);
-""")
-
-_keep_alive = WeakKeyDictionary()
-
-
-SUPPORTED_CREDKEYS = set((
-    u'Type', u'TargetName', u'Persist',
-    u'UserName', u'Comment', u'CredentialBlob'))
 
 
 def make_unicode(password):
@@ -77,41 +28,72 @@ class _CREDENTIAL(object):
         return ffi.new("PCREDENTIAL")[0]
 
     @classmethod
-    def fromdict(cls, credential, flag=0):
-        unsupported = set(credential.keys()) - SUPPORTED_CREDKEYS
-        if len(unsupported):
-            raise ValueError("Unsupported keys: {0}".format(unsupported))
-        if flag != 0:
-            raise ValueError("flag != 0 not yet supported")
-
+    def fromdict(cls, credential, flags=0):
         factory = cls()
-        c_creds = factory()
-        # values to ref and make sure that they will not go away
-        values = []
+        c_credential = factory()
+        values = []  # keep values in context during processing
         for key, value in credential.items():
-            if key == u'CredentialBlob':
-                blob = make_unicode(value)
-                blob_data = ffi.new('wchar_t[]', blob)
-                # new adds a NULL at the end that we do not want.
-                c_creds.CredentialBlobSize = \
-                    ffi.sizeof(blob_data) - ffi.sizeof('wchar_t')
-                c_creds.CredentialBlob = ffi.cast('LPBYTE', blob_data)
-                values.append(blob_data)
-            elif key in (u'Type', u'Persist'):
-                setattr(c_creds, key, value)
-            elif value is None:
-                setattr(c_creds, key, ffi.NULL)
-            else:
-                blob = make_unicode(value)
-                pblob = ffi.new('wchar_t[]', blob)
-                values.append(pblob)
-                setattr(c_creds, key, ffi.cast('LPTSTR', pblob))
-        # keep values alive until c_creds goes away.
-        _keep_alive[c_creds] = tuple(values)
-        return c_creds
+            if key == 'CredentialBlob':
+                blob = ffi.new('wchar_t[]', value)
+                c_credential.CredentialBlob = ffi.cast('LPBYTE', blob)
+                c_credential.CredentialBlobSize = ffi.sizeof(blob) - ffi.sizeof('wchar_t')  # noqa
+                values.append(blob)
+            elif key == 'Attributes':
+                count = len(value)
+                if count == 0:
+                    continue
+                elif count > 1:
+                    raise ValueError('Multiple attributes are not supported')
+                c_attribute = CREDENTIAL_ATTRIBUTE.fromdict(value[0])
+                c_credential.Attributes = PCREDENTIAL_ATTRIBUTE(c_attribute)
+                c_credential.AttributeCount = count
+                values.append(c_attribute)
+            elif key in ('Type', 'Persist', 'Flags'):
+                setattr(c_credential, key, value)
+            elif key in ('TargetName', 'Comment', 'TargetAlias', 'UserName'):
+                if value is None:
+                    setattr(c_credential, key, ffi.NULL)
+                else:
+                    blob_pointer = ffi.new('wchar_t[]', value)
+                    setattr(
+                        c_credential, key, ffi.cast('LPWSTR', blob_pointer))
+                    values.append(blob_pointer)
+        return c_credential
+
+
+class _CREDENTIAL_ATTRIBUTE(object):
+
+    def __call__(self):
+        return ffi.new("PCREDENTIAL_ATTRIBUTE")[0]
+
+    @classmethod
+    def fromdict(cls, attribute, flags=0):
+        factory = cls()
+        c_attribute = factory()
+        c_attribute.Flags = attribute.get('Flags', flags)
+        keyword = attribute.get('Keyword', None)
+        if keyword is None:
+            c_attribute.Keyword = ffi.NULL
+        else:
+            blob_pointer = ffi.new('wchar_t[]', keyword)
+            c_attribute.Keyword = ffi.cast('LPWSTR', blob_pointer)
+        value = attribute['Value']
+        if len(value) == 0:
+            data, size = ffi.NULL,  0
+        elif is_text(value):
+            blob = ffi.new('wchar_t[]', value)
+            data = ffi.cast('LPBYTE', blob)
+            size = ffi.sizeof(blob) - ffi.sizeof('wchar_t')  # noqa
+        else:
+            data = ffi.new('BYTE[]', value)
+            size = ffi.sizeof(blob_pointer) - ffi.sizeof('BYTE')
+        c_attribute.Value = data
+        c_attribute.ValueSize = size
+        return c_attribute
 
 
 CREDENTIAL = _CREDENTIAL()
+CREDENTIAL_ATTRIBUTE = _CREDENTIAL_ATTRIBUTE()
 
 
 def PCREDENTIAL(value=None):
@@ -126,47 +108,79 @@ def PPPCREDENTIAL(value=None):
     return ffi.new("PCREDENTIAL**", ffi.NULL if value is None else value)
 
 
-def credential2dict(pc_creds):
-    credentials = {}
-    for key in SUPPORTED_CREDKEYS:
-        if key == u'CredentialBlob':
+def PCREDENTIAL_ATTRIBUTE(value=None):
+    return ffi.new(
+        "PCREDENTIAL_ATTRIBUTE", ffi.NULL if value is None else value)
+
+
+def credential_attribute2dict(c_attribute):
+    attribute = {}
+    keyword = c_attribute.Keyword
+    if keyword == ffi.NULL:
+        attribute['Keyword'] = None
+    else:
+        attribute['Keyword'] = ffi.string(keyword)
+    attribute['Flags'] = c_attribute.Flags
+    size = c_attribute.ValueSize
+    if size > 0:
+        value = _PyBytes_FromStringAndSize(c_attribute.Value, size)
+        attribute['Value'] = value
+    return attribute
+
+
+def credential2dict(c_credential):
+    credential = {}
+    for key in dir(c_credential):
+        if key == 'CredentialBlob':
             data = _PyBytes_FromStringAndSize(
-                pc_creds.CredentialBlob, pc_creds.CredentialBlobSize)
-        elif key in (u'Type', u'Persist'):
-            data = int(getattr(pc_creds, key))
-        else:
-            string_pointer = getattr(pc_creds, key)
+                c_credential.CredentialBlob, c_credential.CredentialBlobSize)
+        elif key == 'Attributes':
+            attributes = []
+            count = c_credential.AttributeCount
+            c_attributes = c_credential.Attributes
+            for index in range(count):
+                attribute = credential_attribute2dict(c_attributes[index])
+                attributes.append(attribute)
+            data = tuple(attributes)
+        elif key == 'LastWritten':
+            data = c_credential.LastWritten
+        elif key in ('Type', 'Persist', 'Flags'):
+            data = int(getattr(c_credential, key))
+        elif key in ('TargetName', 'Comment', 'TargetAlias', 'UserName'):
+            string_pointer = getattr(c_credential, key)
             if string_pointer == ffi.NULL:
                 data = None
             else:
                 data = ffi.string(string_pointer)
-        credentials[key] = data
-    return credentials
+        else:
+            continue
+        credential[key] = data
+    return credential
 
 
 def _CredRead(TargetName, Type, Flags, ppCredential):
     target = make_unicode(TargetName)
     return check_false(
         dlls.advapi32.CredReadW(target, Type, Flags, ppCredential),
-        u'CredRead')
+        'CredRead')
 
 
 def _CredWrite(Credential, Flags):
     return check_false(
-        dlls.advapi32.CredWriteW(Credential, Flags), u'CredWrite')
+        dlls.advapi32.CredWriteW(Credential, Flags), 'CredWrite')
 
 
 def _CredDelete(TargetName, Type, Flags):
     return check_false(
         dlls.advapi32.CredDeleteW(
-            make_unicode(TargetName), Type, Flags), u'CredDelete')
+            make_unicode(TargetName), Type, Flags), 'CredDelete')
 
 
 def _CredEnumerate(Filter, Flags, Count, pppCredential):
     filter = make_unicode(Filter) if Filter is not None else ffi.NULL
     return check_false(
         dlls.advapi32.CredEnumerateW(filter, Flags, Count, pppCredential),
-        u'CredEnumerate')
+        'CredEnumerate')
 
 
 _CredFree = dlls.advapi32.CredFree

@@ -6,3 +6,4 @@ build/
 dist/
 /docs/build
 /docs/source/api
+win32ctypes/version.py

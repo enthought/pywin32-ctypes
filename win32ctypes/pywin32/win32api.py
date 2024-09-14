@@ -7,11 +7,9 @@
 #
 """ A module, encapsulating the Windows Win32 API. """
 from win32ctypes.core import (
-    _common, _dll, _resource, _system_information, _backend, _time)
-from win32ctypes.pywin32.pywintypes import pywin32error as _pywin32error
-
-LOAD_LIBRARY_AS_DATAFILE = 0x2
-LANG_NEUTRAL = 0x00
+    _common, _dll, _resource, _system_information, _backend)
+from win32ctypes.constants import LOAD_LIBRARY_AS_DATAFILE, LANG_NEUTRAL  # noqa
+from .pywintypes import pywin32error as _pywin32error
 
 
 def LoadLibraryEx(fileName, handle, flags):
@@ -186,7 +184,7 @@ def GetTickCount():
     counts : int
         The millisecond counts since system startup.
     """
-    return _time._GetTickCount()
+    return _system_information._GetTickCount()
 
 
 def BeginUpdateResource(filename, delete):
