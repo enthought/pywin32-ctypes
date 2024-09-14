@@ -9,8 +9,9 @@ import unittest
 
 from win32ctypes.core import _backend
 from win32ctypes.core._authentication import (
-    CREDENTIAL, CREDENTIAL_ATTRIBUTE, FILETIME,
+    CREDENTIAL, CREDENTIAL_ATTRIBUTE,
     credential2dict, credential_attribute2dict)
+from win32ctypes.core._winbase import FILETIME
 from win32ctypes.constants import (
     CRED_TYPE_GENERIC, CRED_PERSIST_ENTERPRISE)
 
