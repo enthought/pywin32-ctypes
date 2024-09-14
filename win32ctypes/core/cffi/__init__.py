@@ -6,6 +6,8 @@
 # LICENSE.txt
 #
 import logging
+# Initialize the ffi cdef
+from . import _cdefinitions  # noqa
 
 logger = logging.getLogger(__name__)
 logger.debug('Loaded cffi backend')

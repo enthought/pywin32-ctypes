@@ -7,12 +7,6 @@
 #
 from ._util import ffi, dlls
 
-ffi.cdef("""
-
-UINT WINAPI GetACP(void);
-
-""")
-
 
 def _GetACP():
     return dlls.kernel32.GetACP()

@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2015 Enthought, Inc., Austin, TX
+# (C) Copyright 2015-2024 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
@@ -7,47 +7,9 @@
 #
 from win32ctypes.core.compat import is_text
 from ._util import ffi, check_false, dlls
+from ._winbase import FILETIME
 from ._nl_support import _GetACP
 from ._common import _PyBytes_FromStringAndSize
-
-ffi.cdef("""
-
-typedef struct _FILETIME {
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
-} FILETIME, *PFILETIME;
-
-typedef struct _CREDENTIAL_ATTRIBUTE {
-  LPWSTR Keyword;
-  DWORD  Flags;
-  DWORD  ValueSize;
-  LPBYTE Value;
-} CREDENTIAL_ATTRIBUTE, *PCREDENTIAL_ATTRIBUTE;
-
-typedef struct _CREDENTIAL {
-  DWORD                 Flags;
-  DWORD                 Type;
-  LPWSTR                TargetName;
-  LPWSTR                Comment;
-  FILETIME              LastWritten;
-  DWORD                 CredentialBlobSize;
-  LPBYTE                CredentialBlob;
-  DWORD                 Persist;
-  DWORD                 AttributeCount;
-  PCREDENTIAL_ATTRIBUTE Attributes;
-  LPWSTR                TargetAlias;
-  LPWSTR                UserName;
-} CREDENTIAL, *PCREDENTIAL;
-
-
-BOOL WINAPI CredReadW(
-    LPCWSTR TargetName, DWORD Type, DWORD Flags, PCREDENTIAL *Credential);
-BOOL WINAPI CredWriteW(PCREDENTIAL Credential, DWORD);
-VOID WINAPI CredFree(PVOID Buffer);
-BOOL WINAPI CredDeleteW(LPCWSTR TargetName, DWORD Type, DWORD Flags);
-BOOL WINAPI CredEnumerateW(
-    LPCWSTR Filter, DWORD Flags, DWORD *Count, PCREDENTIAL **Credential);
-""")
 
 
 def make_unicode(password):
@@ -59,20 +21,6 @@ def make_unicode(password):
     else:
         code_page = _GetACP()
         return password.decode(encoding=str(code_page), errors='strict')
-
-
-class _FILETIME(object):
-
-    def __call__(self):
-        return ffi.new("PFILETIME")[0]
-
-    @classmethod
-    def fromdict(cls, filetime):
-        factory = cls()
-        c_filetime = factory()
-        c_filetime.dwLowDateTime = filetime['dwLowDateTime']
-        c_filetime.dwHighDateTime = filetime['dwHighDateTime']
-        return c_filetime
 
 
 class _CREDENTIAL(object):
@@ -147,11 +95,6 @@ class _CREDENTIAL_ATTRIBUTE(object):
 
 CREDENTIAL = _CREDENTIAL()
 CREDENTIAL_ATTRIBUTE = _CREDENTIAL_ATTRIBUTE()
-FILETIME = _FILETIME()
-
-
-def PFILETIME(value=None):
-    return ffi.new("PFILETIME", ffi.NULL if value is None else value)
 
 
 def PCREDENTIAL(value=None):

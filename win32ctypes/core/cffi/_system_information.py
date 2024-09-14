@@ -11,15 +11,6 @@ from ._util import ffi, dlls
 MAX_PATH = 260
 MAX_PATH_BUF = f'wchar_t[{MAX_PATH}]'
 
-ffi.cdef("""
-
-BOOL WINAPI Beep(DWORD dwFreq, DWORD dwDuration);
-UINT WINAPI GetWindowsDirectoryW(LPTSTR lpBuffer, UINT uSize);
-UINT WINAPI GetSystemDirectoryW(LPTSTR lpBuffer, UINT uSize);
-DWORD WINAPI GetTickCount(void);
-
-""")
-
 
 def _GetWindowsDirectory():
     buffer = ffi.new(MAX_PATH_BUF)

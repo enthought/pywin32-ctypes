@@ -8,15 +8,6 @@
 import enum
 from ._util import ffi
 
-ffi.cdef("""
-
-typedef struct _FILETIME {
-  DWORD dwLowDateTime;
-  DWORD dwHighDateTime;
-} FILETIME, *PFILETIME, *LPFILETIME;
-
-""")
-
 
 class _FILETIME(object):
 
