@@ -7,7 +7,6 @@
 #
 from win32ctypes.core.compat import is_text
 from ._util import ffi, check_false, dlls
-from ._winbase import FILETIME
 from ._nl_support import _GetACP
 from ._common import _PyBytes_FromStringAndSize
 

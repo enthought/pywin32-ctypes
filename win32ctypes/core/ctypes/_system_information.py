@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2018 Enthought, Inc., Austin, TX
+# (C) Copyright 2018-2024 Enthought, Inc., Austin, TX
 # All right reserved.
 #
 # This file is open source software distributed according to the terms in
@@ -23,7 +23,7 @@ def _GetSystemDirectory():
     return ctypes.cast(buffer, LPCWSTR).value
 
 
-def _GetTickCount = function_factory(
+_GetTickCount = function_factory(
     dlls.kernel32.GetTickCount,
     None, DWORD)
 

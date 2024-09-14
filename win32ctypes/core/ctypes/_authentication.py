@@ -13,6 +13,7 @@ from ctypes.wintypes import (
 from win32ctypes.core.compat import is_text
 from ._common import LPBYTE, _PyBytes_FromStringAndSize
 from ._util import function_factory, check_false_factory, dlls
+from ._winbase import FILETIME
 
 
 class CREDENTIAL_ATTRIBUTE(Structure):

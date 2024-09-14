@@ -5,7 +5,6 @@
 # This file is open source software distributed according to the terms in
 # LICENSE.txt
 #
-import enum
 from ._util import ffi
 
 
@@ -21,6 +20,7 @@ class _FILETIME(object):
         c_filetime.dwLowDateTime = filetime['dwLowDateTime']
         c_filetime.dwHighDateTime = filetime['dwHighDateTime']
         return c_filetime
+
 
 def PFILETIME(value=None):
     return ffi.new("PFILETIME", ffi.NULL if value is None else value)
